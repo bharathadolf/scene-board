@@ -1,0 +1,50 @@
+module.exports = {
+'E08-01': { tier: 3, why: 'A birth scene with a heavenly voice and a creature-like infant.',
+  story: 'A child is born in the palace of Chedi, and the room goes quiet. He has three eyes and four arms. The queen looks at him and the midwives step back. A voice from the sky speaks: the extra arms and the third eye will fall away when he is placed on the lap of the one who will cause his death. The king and queen listen. No one asks the voice who that will be.',
+  use: ['palace', 'digi_human', 'divine', 'volumetric', 'cloth'],
+  cg: [['Environment', 'The palace of Chedi, a birthing chamber.'], ['Characters', 'The king, the queen, midwives, the infant.'], ['Animation', 'Birth-room performance; a baby that moves strangely.'], ['FX and simulation', 'Heavenly voice as sound and a light shift.'], ['Camera and light', 'Intimate; the infant is seen briefly and unclearly.']],
+  prep: ['The infant with extra limbs needs a custom rig and is a short, careful effect.', 'Decide how disturbing the image is allowed to be.'],
+  gen: [['Horror', 'A birth with a terrible mark.'], ['Mythological epic', 'A prophecy at birth.'], ['Tragedy', 'A child whose fate is spoken before he can speak.']] },
+
+'E08-02': { tier: 3, why: 'A transformation effect with hands and a mother’s face.',
+  story: 'Krishna comes to the palace on a visit. The mother puts the child on his lap, because she has been told to. The extra arms and the eye vanish. She holds her breath. The child is just a child. She understands, all at once, that the man who made her son whole is the man who will end him. The scene ends on her face, not on his.',
+  use: ['digi_human', 'divine', 'hidden', 'palace'],
+  cg: [['Environment', 'A hall in Chedi.'], ['Characters', 'The mother (hero), the infant, Krishna (hands).'], ['Animation', 'A baby changing; the mother’s change.'], ['FX and simulation', 'Extra limbs and eye disappearing as a short, quiet effect.'], ['Camera and light', 'Close on her face.'], ['Krishna', 'Hands only.']],
+  prep: ['Time the vanishing effect to the mother’s face, not to the infant.', 'Reuse the infant rig from E08-01.'],
+  gen: [['Tragedy', 'A mother who learns who her son’s death will be.'], ['Horror', 'A miracle with a cost.'], ['Mythological epic', 'A prophecy half fulfilled.']] },
+
+'E08-03': { tier: 2, why: 'A short dialogue-driven scene of a bargain.',
+  story: 'She asks him to spare her son. He is kind and says he will pardon his faults. She asks how many. He says a hundred. She nods, and does not tell her son. The camera is on her. The number goes into the film like a clock that starts ticking and cannot be heard.',
+  use: ['digi_human', 'palace', 'hidden', 'palette'],
+  cg: [['Environment', 'A private hall.'], ['Characters', 'The mother, Krishna (voice, hands).'], ['Animation', 'A quiet bargaining scene.'], ['Camera and light', 'Close on the mother; Krishna off-frame.'], ['Krishna', 'A reported promise or a voice.']],
+  prep: ['Plan how the count of a hundred is made visible later (a tally, a bead, a sound).', 'Record the voice with a calm, almost casual tone.'],
+  gen: [['Drama', 'A mother’s bargain.'], ['Mythological epic', 'The hundred offences.'], ['Thriller', 'A clock that the audience hears and the character does not.']] },
+
+'E08-04': { tier: 4, why: 'A heavenly setting, a curse and a choice; mythic world-building.',
+  story: 'At the gate of Vaikuṇṭha two guards stop four sages. The sages are children in appearance and ancient in fact. Jaya and Vijaya say no one may enter. The sages curse them to be born in the world below. The Lord himself comes to the gate, and the guards fall at his feet. They can have seven births as his friends, or three as his enemies. They choose three, because they cannot bear to be away from him longer.',
+  use: ['sky', 'digi_human', 'divine', 'palace', 'cloth', 'hidden'],
+  cg: [['Environment', 'Vaikuṇṭha’s gate and hall.'], ['Characters', 'Jaya, Vijaya, four Kumāras.'], ['Animation', 'A formal confrontation; a plea.'], ['FX and simulation', 'Curse as a light and sound effect.'], ['Camera and light', 'A heavenly space; the Lord is unseen.'], ['Krishna', 'A voice from a doorway; no figure.']],
+  prep: ['This is the film’s second celestial curse (after E01-01); design its imagery to rhyme.', 'The Kumāras should look like children and act like elders.'],
+  gen: [['Mythological epic', 'A curse that explains a life.'], ['Fantasy', 'A heavenly gate.'], ['Tragedy', 'Two guards who choose enmity to return sooner.']] },
+
+'E08-05': { tier: 2, why: 'A man alone in a ceremony scene.',
+  story: 'In groom’s clothes with a garland on his neck, Śiśupāla waits at the temple. He has been told a bride will come. The forecourt is empty. He turns to someone and asks. They tell him. He looks at the road, and then at his own hands. He understands that she went willingly. His face changes slowly, and what takes its place is not grief.',
+  use: ['digi_human', 'crowd_close', 'cloth', 'palette'],
+  cg: [['Environment', 'The temple forecourt, now empty.'], ['Characters', 'Śiśupāla, a few attendants.'], ['Animation', 'A slow face and a long stillness.'], ['Camera and light', 'Steel light, low.']],
+  prep: ['Match the staging to E06-21.', 'The face carries the scene; test the rig on this shot.'],
+  gen: [['Tragedy', 'A groom without a bride.'], ['Drama', 'Humiliation turning to hatred.'], ['Political drama', 'A pride that becomes a feud.']] },
+
+'E08-06': { tier: 2, why: 'A moral confrontation between brothers.',
+  story: 'Balarama has defended his brother with an army, and he is not silent. He tells him the shaving was not worthy. He says it again more quietly. Then he turns to the army and tells them to stand down. He keeps both loyalties and does not pretend they are one. The scene ends on his back as he walks away.',
+  use: ['digi_human', 'crowd_close', 'palette'],
+  cg: [['Environment', 'A roadside or a camp.'], ['Characters', 'Balarama, an officer.'], ['Animation', 'Dialogue and a decision.'], ['Camera and light', 'Silver on Balarama.']],
+  prep: ['This scene overlaps with E06-28; merge or choose.', 'Balarama’s performance should be steady, not angry.'],
+  gen: [['Family drama', 'A brother’s two loyalties.'], ['Drama', 'Justice against love.'], ['Mythological epic', 'Śeṣa’s human face.']] },
+
+'E08-07': { tier: 3, why: 'A montage of one man’s ruin across places and years.',
+  story: 'Rukmī arranges a match. He swears an oath. He loses a duel. He builds a city. Four short images: a hall in which his voice is the loudest, a roadside where he swears, a road where he falls, a plain where he lays the first stone. The man does not change between them. The only thing that changes is how much he has left.',
+  use: ['digi_human', 'city', 'palace', 'wild', 'palette'],
+  cg: [['Environment', 'Four locations: hall, road, field, plain.'], ['Characters', 'Rukmī.'], ['Animation', 'Four short performances.'], ['Camera and light', 'Red torch light narrowing across the four.']],
+  prep: ['This is a montage built from E06-03, E06-24, E06-25 and E06-30; plan it as a re-cut, not a new shoot.', 'Keep it under two minutes.'],
+  gen: [['Tragedy', 'A man ruined by his own pride.'], ['Political drama', 'A rival’s arc compressed.'], ['Drama', 'A study of overreach.']] }
+};

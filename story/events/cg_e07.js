@@ -1,0 +1,57 @@
+module.exports = {
+'E07-01': { tier: 2, why: 'A single cut and a road; low asset load, high design weight.',
+  story: 'The road. Balarama’s consolation is over, and the chariot goes on. The text says that rites were done, and the film shows none of them. A cut: the wheels, the dust, a gap in the hills, and a line of light where the land ends. Somewhere in that gap a marriage has happened, and we are not shown it. The sea comes into view at the edge of the road.',
+  use: ['vehicle', 'wild', 'sea', 'hidden', 'palette'],
+  cg: [['Environment', 'A road and a pass opening onto the coast.'], ['Characters', 'The chariot, two figures, seen from behind.'], ['Animation', 'A steady, unhurried chariot ride.'], ['FX and simulation', 'Dust; sea haze.'], ['Camera and light', 'A single continuous move that ends on the sea.'], ['Krishna', 'Back view.']],
+  prep: ['Design the cut as a clear break in time: a shift of light and mood.', 'The sea appears for the first time in the film as seen by the characters here; match E07-02.'],
+  gen: [['Romance', 'A journey that closes a long wait.'], ['Road movie', 'A ride toward home.'], ['Mythological epic', 'An ellipsis at the edge of a miracle.']] },
+
+'E07-02': { tier: 4, why: 'The film’s grand reveal: a city on the sea seen for the first time by a lead.',
+  story: 'She has never seen the sea. From the chariot it comes first as a line, then as a wideness that does not end, then as a gold gate standing in the water. It is not the city of the songs. It is more, and it is smaller. She holds the rail. The wind pulls at her veil. She does not say anything. She is aware that he is beside her, and that the sea has her whole attention.',
+  use: ['sea', 'city', 'digi_human', 'vehicle', 'cloth', 'palette'],
+  cg: [['Environment', 'The coast, the sea and Dvārakā in the distance.'], ['Characters', 'Rukmini (hero), a figure beside her.'], ['Animation', 'A face in wonder; cloth in wind.'], ['FX and simulation', 'Sea, spray, haze; light on gold and crystal.'], ['Camera and light', 'A shot over her shoulder, then on her face; the city is lit by evening gold.'], ['Krishna', 'Beside her, partly out of frame.']],
+  prep: ['The city should be the same Dvārakā as E04-04, but now seen from outside as a place of arrival.', 'Make the imagined city of E04-10 slightly wrong so the real one can surprise her.', 'Grade this shot for the widest dynamic range in the film.'],
+  gen: [['Romance', 'Arrival at a new home.'], ['Spectacle/wonder', 'A city in the sea.'], ['Mythological epic', 'The fulfilment of a journey.']] },
+
+'E07-03': { tier: 5, why: 'A ledger scene with every recurring figure, a crowd and a festival city.',
+  story: 'The city has come out into the street. Doors are hung with lamps. Flowers lie on the ground. The vendor from Kuṇḍina stands at a corner with her basket, the water-carrier beside a clean wall, the potter at his wheel, the goatherd with his goats, the farmer with his cow, and the fisher family on the quay. Each lifts a hand. Citizens give gifts. The chariot goes through them slowly. In one wide shot, every one of them is in a doorway.',
+  use: ['city', 'crowd_close', 'crowd', 'animals', 'cloth', 'sea', 'palette'],
+  cg: [['Environment', 'The main street and quay of Dvārakā in festival state.'], ['Characters', 'The six ledger figures (hero faces), hundreds of citizens, the chariot.'], ['Animation', 'Reaction crowds; the ledger figures each in a short beat.'], ['FX and simulation', 'Flowers, lamps, banners.'], ['Camera and light', 'One continuous track along the street, then a wide shot.']],
+  prep: ['This is the film’s ledger payoff; confirm the casting of each figure in earlier scenes.', 'Place each ledger figure in a doorway so a single wide frame holds them all.', 'Budget it as a hero crowd scene with a lot of dressing.'],
+  gen: [['Folk tale', 'The ordinary people’s chorus.'], ['Mythological epic', 'The world’s gain made visible.'], ['Musical/lyrical', 'A celebratory street scene.']] },
+
+'E07-04': { tier: 2, why: 'A single prop, two lamps and a lead’s hands.',
+  story: 'In her new room she takes the lamp she carried from Kuṇḍina out of her bag. She has kept it through all of it. She puts it down on a ledge and sees that another lamp is already burning there, the same shape. A hand has lit it. She stands a long time. She lights her own and sets it beside the first.',
+  use: ['palace', 'digi_human', 'volumetric', 'hidden', 'palette'],
+  cg: [['Environment', 'A room in Dvārakā with a sea view.'], ['Characters', 'Rukmini.'], ['Animation', 'A lighting of a lamp; a held look.'], ['FX and simulation', 'Two flames of matching colour.'], ['Camera and light', 'A macro of the two lamps; shallow focus.'], ['Krishna', 'A hand lit the lamp before she arrived; no figure.']],
+  prep: ['Design the twin lamps as a motif and set it up early in Kuṇḍina (a plant).', 'The two flames should be nearly identical but not exactly.'],
+  gen: [['Romance', 'An answer to a letter.'], ['Art-house', 'A small image carrying the meaning.'], ['Drama', 'A quiet reunion of two lights.']] },
+
+'E07-05': { tier: 2, why: 'A table, an empty place and one face.',
+  story: 'In the middle of the feast a place is laid for someone. A small cup, a plate, a space at the end of the table. Nobody sits there. The talk goes on. Rukmini sees the place and then looks at the door. She does not say anything. Beside her, someone sees her look, and sets the place a little straighter. The meal goes on.',
+  use: ['palace', 'digi_human', 'crowd_close', 'hidden'],
+  cg: [['Environment', 'A festival hall in Dvārakā.'], ['Characters', 'Rukmini, guests, a servant.'], ['Animation', 'A feast; Rukmini’s attention to the empty seat.'], ['Camera and light', 'Warm light; the empty place is lit as the only still thing.'], ['Krishna', 'A hand straightens the place; no face.']],
+  prep: ['The empty place can be a single insert; keep it small.', 'The cost of the day is paid in this shot; do not explain it.'],
+  gen: [['Family drama', 'A brother’s absence.'], ['Tragedy', 'Joy with a missing piece.'], ['Art-house', 'A small object carrying a large feeling.']] },
+
+'E07-06': { tier: 3, why: 'A bard’s song with a crowd of listeners, including the kings.',
+  story: 'In a courtyard a bard begins to sing. It is the story of a girl in Vidarbha who heard of a man, and wrote to him, and walked out of a temple. He sings it from her side, which no one has ever done. Among the listeners are kings who came to the wedding as friends of the other side. They listen. At the end, the bard looks across the courtyard. She is there, and he bows.',
+  use: ['digi_human', 'crowd_close', 'palace', 'cloth', 'palette'],
+  cg: [['Environment', 'A courtyard in Dvārakā.'], ['Characters', 'The bard (recurring), Rukmini, guests, some of the kings.'], ['Animation', 'A sung performance and audience reactions.'], ['Camera and light', 'Evening light; each listener is lit by a different source.']],
+  prep: ['Write the song to echo the first telling in E06-01.', 'Use the same bard as the recurring carrier.'],
+  gen: [['Musical/lyrical', 'A song as closure.'], ['Folk tale', 'The story is told by the people.'], ['Romance', 'A story told from her side.']] },
+
+'E07-07': { tier: 3, why: 'A quiet two-hander on a terrace with a lead and a rare face.',
+  story: 'On a terrace by the sea, the two of them. One of them has to speak. If it is he, he answers her letter. If it is she, she tells him what she saw at the temple. The evening is almost over. A line, or a silence, and the film chooses one. The sea is loud behind them. She looks at him for the first time as a man and not a story.',
+  use: ['digi_human', 'sea', 'volumetric', 'palette'],
+  cg: [['Environment', 'A terrace above the sea at dusk.'], ['Characters', 'Rukmini, Krishna (face).'], ['Animation', 'A subtle two-hander.'], ['FX and simulation', 'Wind, cloth, sea.'], ['Camera and light', 'Two-shot in profile; her face is the one we watch.'], ['Krishna', 'Face, brief; Rukmini is the centre.']],
+  prep: ['Write both versions; decide in editing which is the film’s.', 'Keep his screen time here low: she carries the scene.'],
+  gen: [['Romance', 'The first quiet conversation.'], ['Drama', 'A conversation with a pause at its heart.'], ['Art-house', 'A scene about what is not said.']] },
+
+'E07-08': { tier: 3, why: 'A held final image with two figures and the sea.',
+  story: 'The two of them stand side by side at the edge of the sea, in profile or from behind. The light is long and low. Rukmini is the centre of the frame. She does not look at him. For the first time in the film there is no one else in the frame. The shot is held a little longer than any shot of him has been held. Then the film ends.',
+  use: ['sea', 'digi_human', 'cloth', 'volumetric', 'palette'],
+  cg: [['Environment', 'The shore at Dvārakā at sunset.'], ['Characters', 'Rukmini, Krishna.'], ['Animation', 'Almost still; wind in cloth and hair.'], ['FX and simulation', 'Sea, light on water.'], ['Camera and light', 'A locked-off or very slow shot; grade for the final colour palette, Krishna’s blue in the sea and sky.'], ['Krishna', 'Beside her, profile or back; shorter than her on the screen.']],
+  prep: ['This is the last image: compare it frame by frame with the film’s first image.', 'Hold the shot longer than any other of him.'],
+  gen: [['Romance', 'Two people, together.'], ['Mythological epic', 'The end of a long arc.'], ['Art-house', 'A single image as an ending.']] }
+};

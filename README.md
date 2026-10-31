@@ -1,0 +1,99 @@
+# Scene Board
+
+A tool for ordering the 115 scenes of **The Unseen Sun** (*Loka Kalyāṇam*), a
+feature film about Rukmini and Krishna told out of chronological order — and
+the story data the tool runs on.
+
+The whole tool is one self-contained HTML page. There is no framework, no
+bundler and no build step beyond pasting data into a script: `npm run build`
+reads `src/` and `data/` and writes `dist/scene_board.html`.
+
+## What the board does
+
+- **Five seeded orders** of the same 115 scenes (Rukmini's frame, a
+  chronological reference, flight and memory, two worlds converging, the
+  action cut), and as many copies as you want to make.
+- **Drag** scenes between sequences; left to right, top to bottom is the story
+  order. A rhythm strip shows drama against action across the whole board.
+- **Edit a scene or a sequence with a prompt** — Claude rewrites it, in English
+  and Telugu, and every earlier version is kept with a word-by-word diff.
+- **Shot lists** per scene, by hand or by prompt.
+- **A read-through**: the board as one continuous document, built to print.
+- **English / Telugu**: the story switches language, the interface stays
+  English.
+- **Desktop / mobile layouts**, chosen automatically and switchable by hand.
+- **Where every scene comes from**: chapter and verse, with a link.
+
+## Running it
+
+```bash
+npm install          # playwright, for the tests only
+npm run build        # writes dist/scene_board.html
+npm run serve        # http://localhost:8080
+npm test             # 105 checks in headless Chromium
+```
+
+Opened locally the page has no claude.ai runtime behind it, so it saves to
+browser storage (the status reads *Saved in this browser only*) and editing by
+prompt is hidden. Both come back when the page is published as an artifact —
+see [docs/DEPLOY.md](docs/DEPLOY.md).
+
+## Layout
+
+```
+src/
+  shell.html          markup and CSS; ends at the opening <script>
+  app.js              the whole application; data arrives via placeholders
+  ui.json             every interface string (English only, by design)
+data/
+  scenes.json         the 115 scenes: text, runtime, rasa, place, CG tier…
+  sources.json        per scene: the text it follows, and a link
+  te/                 the Telugu of the scenes, the terms and the names
+  boards/b1…b5.json   the five seeded orders
+story/
+  events/             the scene definitions the data is generated from
+  docs/               the story documents (events, framework, guides)
+scripts/
+  build.js            src + data → dist/scene_board.html
+  make-scenes.js      story/events → data/scenes.json
+  make-sources.js     story/events → data/sources.json
+  make-boards.js      the five board orders, with their checks
+  serve.js            a static server for dist/
+tests/                headless-browser checks (see tests/run.js)
+dist/scene_board.html the built page — generated, but committed
+```
+
+`app.js` holds four placeholders — `__DATA__`, `__TE__`, `__UI__`, `__SRC__` —
+which the build replaces with the JSON above. That is the only reason a build
+step exists; editing `src/app.js` and re-running `npm run build` is the whole
+development loop.
+
+## The data
+
+[docs/DATA_MODEL.md](docs/DATA_MODEL.md) describes every field of a scene, the
+shape of a board, what the artifact database holds, and what the page keeps in
+browser storage.
+
+Two rules hold across all the data, and the board checks them:
+
+- **Krishna is not seen before the abduction.** No scene whose Krishna field
+  says *Face* may be placed before `E06-18`, *First sight*.
+- **Nothing follows the final episode.** The eight scenes of event 7 end every
+  board, and there is no wedding scene.
+
+Scene codes (`S-438`) are drawn from a seeded shuffle so that no code implies a
+position in the story; `src` (`E06-18`) is the stable story id. **Changing the
+seed in `make-scenes.js` renumbers every scene and breaks every saved board.**
+
+## Branches
+
+`main` is what is published. `dev` is where work happens. See
+[CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Rights
+
+The story, its scene text and the Telugu are the author's own work. The
+underlying events come from the Bhāgavata Purāṇa, the Mahābhārata, the Viṣṇu
+Purāṇa and the Harivaṃśa, which are in the public domain; `data/sources.json`
+says, scene by scene, which passage each one follows and which were written for
+the film.
