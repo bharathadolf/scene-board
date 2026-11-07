@@ -3,6 +3,10 @@ const SCENES=__DATA__;
 const TE=__TE__;
 const UI=__UI__;
 const SRC=__SRC__;
+/* The five seeded board orders, built into the page from data/boards/.
+   They are the starting point when nothing has been saved yet: the whole tool
+   works offline on them, with or without a claude.ai runtime behind it. */
+const SEED=__BOARDS__;
 let lang='en';try{lang=localStorage.getItem('sceneboard.lang')==='te'?'te':'en'}catch(e){}
 /* The interface is always English. Only the story itself — scene text, scene
    terms, sequence and board names — follows the language switch. */
@@ -270,6 +274,15 @@ async function delBoard(){
   if(mode==='db'&&boardsRef){try{await boardsRef.doc(id).delete();setStatus('saved',true)}catch(e){setStatus('fail')}}
   toast('Deleted “'+gone+'”');
 }
+/* start from the orders built into the page */
+function seedBoards(){
+  const ids=Object.keys(SEED||{}).sort();
+  if(!ids.length)return false;
+  boardsData={};ids.forEach(id=>{boardsData[id]=readBoard(SEED[id],id)});
+  active=boardsData[active]?active:ids[0];
+  state.cols=curBoard().cols;lastJSON='';
+  return true;
+}
 function renderTabs(){
   $('boards').innerHTML=boardIds().map(id=>'<button type="button" data-board="'+id+'" aria-pressed="'+(id===active)+'" title="'+esc(bName(boardsData[id]))+'">'+esc(bName(boardsData[id]))+'</button>').join('')+'<button type="button" class="plus" id="dupboard" title="'+esc(T('copyTip'))+'">'+esc(T('copyBoard'))+'</button>';
   const bn=$('bname');if(document.activeElement!==bn)bn.value=bName(curBoard());
@@ -283,8 +296,10 @@ async function boot(){
   if(samp)render();
   if(!db){
     mode='local';
+    let saved=false;
     try{const r=JSON.parse(localStorage.getItem('sceneboard.v2')||'null');
-      if(r&&r.boards){boardsData={};Object.keys(r.boards).forEach(k=>boardsData[k]=readBoard(r.boards[k],k));state.cat=clean({cols:[],cat:r.cat}).cat;active=boardsData[r.active]?r.active:(boardIds()[0]||'b1');state.cols=curBoard().cols}}catch(e){}
+      if(r&&r.boards&&Object.keys(r.boards).length){saved=true;boardsData={};Object.keys(r.boards).forEach(k=>boardsData[k]=readBoard(r.boards[k],k));state.cat=clean({cols:[],cat:r.cat}).cat;active=boardsData[r.active]?r.active:(boardIds()[0]||'b1');state.cols=curBoard().cols}}catch(e){}
+    if(!saved)seedBoards();
     try{const o=JSON.parse(localStorage.getItem('sceneboard.ov')||'null');if(o&&typeof o==='object'){ov=o;applyOv()}}catch(e){}
     setStatus('local');render();return;
   }
@@ -301,6 +316,7 @@ async function boot(){
     clearTimeout(t);
     const seen={};qs.docs.forEach(d=>{seen[d.id]=readBoard(d.data(),d.id)});
     if(Object.keys(seen).length){if(pending&&boardsData[active])seen[active]=boardsData[active];boardsData=seen}
+    else if(!Object.keys(boardsData).length||!flat().length)seedBoards();   /* an empty store: start from the seeds */
     if(!boardsData[active])active=boardIds()[0]||'b1';
     const b=curBoard(),j=JSON.stringify(b.cols);
     if(!pending&&!dragging&&j!==lastJSON){state.cols=b.cols;lastJSON=j;render()}else renderTabs();
@@ -376,8 +392,15 @@ function fromDOM(){
     const o=by[el.dataset.id]||{id:el.dataset.id,name:'Sequence'};
     o.ids=[...el.querySelectorAll('.card')].map(c=>c.dataset.c);return o});
 }
+let dragWarned=false;
 function bindSortables(){
-  sortables.forEach(s=>s.destroy());sortables=[];
+  sortables.forEach(s=>{try{s.destroy()}catch(e){}});sortables=[];
+  /* Sortable comes from a CDN. Without it (offline, or a network that blocks
+     it) everything else still works, so say so once and carry on. */
+  if(typeof Sortable==='undefined'){
+    if(!dragWarned){dragWarned=true;toast('Dragging is off — the drag library could not be loaded. Use Options on a scene to move it.')}
+    return;
+  }
   const common={group:'scenes',animation:150,ghostClass:'ghost',chosenClass:'chosen',delay:140,delayOnTouchOnly:true,filter:'.add,.more,.fold,.cname,.xbtn,.ebtn',preventOnFilter:false,
     onStart:()=>{dragging=true;hidePeek();hideCtx()},
     onEnd:()=>{dragging=false;fromDOM();persist();setTimeout(render,0)}};

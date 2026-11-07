@@ -144,7 +144,13 @@ Per viewer, per browser; never shared, never read back by Claude:
 
 ## Build placeholders
 
-`src/app.js` contains `__DATA__`, `__TE__`, `__UI__` and `__SRC__`. The build
-replaces them with `data/scenes.json`, the three Telugu files, `src/ui.json`
-and `data/sources.json`. Nothing else is injected, and the page fetches
-nothing at runtime except the Sortable library and the fonts.
+`src/app.js` contains `__DATA__`, `__TE__`, `__UI__`, `__SRC__` and
+`__BOARDS__`. The build replaces them with `data/scenes.json`, the three Telugu
+files, `src/ui.json`, `data/sources.json` and every file in `data/boards/`.
+Nothing else is injected, and the page fetches nothing at runtime except the
+Sortable library and the fonts — and if that library cannot be reached, the
+page says dragging is off and everything else still works.
+
+`__BOARDS__` is what makes the page useful on its own: with no database behind
+it, and nothing in browser storage, the board starts from those five orders
+rather than empty. A published artifact whose database is empty does the same.

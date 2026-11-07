@@ -10,6 +10,10 @@ const read = (...p) => fs.readFileSync(path.join(ROOT, ...p), 'utf8').trim();
 const json = (...p) => JSON.parse(read(...p));
 
 const scenes = read('data', 'scenes.json');
+const boards = {};
+fs.readdirSync(path.join(ROOT, 'data', 'boards')).sort().forEach(f => {
+  if (f.endsWith('.json')) boards[path.basename(f, '.json')] = json('data', 'boards', f);
+});
 const sources = read('data', 'sources.json');
 const ui = JSON.stringify({ en: json('src', 'ui.json').en });
 const te = JSON.stringify({
@@ -22,7 +26,8 @@ let app = read('src', 'app.js')
   .replace('__DATA__', () => scenes)
   .replace('__TE__', () => te)
   .replace('__UI__', () => ui)
-  .replace('__SRC__', () => sources);
+  .replace('__SRC__', () => sources)
+  .replace('__BOARDS__', () => JSON.stringify(boards));
 
 const left = app.match(/__[A-Z]+__/g);
 if (left) {
@@ -42,4 +47,4 @@ fs.mkdirSync(path.join(ROOT, 'dist'), { recursive: true });
 fs.writeFileSync(path.join(ROOT, 'dist', 'scene_board.html'), html);
 
 const kb = (html.length / 1024).toFixed(0);
-console.log(`built dist/scene_board.html — ${kb} KB, ${json('data', 'scenes.json').length} scenes`);
+console.log(`built dist/scene_board.html — ${kb} KB, ${json('data', 'scenes.json').length} scenes, ${Object.keys(boards).length} boards`);
