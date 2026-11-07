@@ -122,6 +122,84 @@ SEQ = [
 
 INTERVAL_AFTER = "11"
 
+# job / the turn / why it is there / set piece or song, per sequence
+DETAIL = {
+ "0":  ("Open on scale", "A world older than anyone in the film",
+        "Nothing is at stake yet. This is a promise of size, and it is over in four minutes.",
+        "SONG 1 — a chant over the churning, under the titles"),
+ "1":  ("The hook", "Two men are burned alive",
+        "The enemy believes he has won, which is how the audience knows he has not.",
+        "SET PIECE — the hill burns"),
+ "2":  ("The hero's entry", "They walk out of it",
+        "The rumour gets a face. The film announces him once, here, and never again.",
+        "SONG 2 — ninety seconds of elevation on the ride back"),
+ "3":  ("The antagonist's reason", "A dead son-in-law and a vow",
+        "Jarasandha becomes a man with a case rather than a monster, which is what makes seventeen sieges bearable.",
+        ""),
+ "4":  ("The war that will not end", "Seventeen sieges, seventeen releases",
+        "He is not trying to win, and nobody on screen understands why. The audience files the question away.",
+        "SET PIECE — the gate, the conch, the wall"),
+ "5":  ("The heroine's entry", "She corrects a soldier's tally",
+        "She is not waiting to hear about him. She is already collecting him.",
+        "SONG 3 — a folk number in the Kuṇḍina market"),
+ "6":  ("The problem locked", "Her brother sells her to Chedi",
+        "From here the audience wants the abduction. Act one ends on this scene.",
+        ""),
+ "7":  ("Elevation: a second enemy", "Thirty million men at the other gate",
+        "He walks out unarmed and lets himself be chased — the flex that is not a fight.",
+        "SET PIECE — the unarmed chase"),
+ "8":  ("Elevation: the pay-off", "A sleeper's glance turns an army to ash",
+        "The biggest kill in the film is not his, and he never raises a hand to get it.",
+        "SET PIECE — the cave and the ash"),
+ "9":  ("Scale", "A city raised out of the sea in a night",
+        "He ends a seventeen-year war by refusing to fight it, and the screen gets its one piece of pure spectacle.",
+        ""),
+ "10": ("Her decision", "She writes",
+        "The woman being traded makes the only move nobody has guarded against.",
+        "SONG 4 — the letter, over the writing and the sealing"),
+ "11": ("Interval", "The letter reaches him and the chariot turns",
+        "Two clocks start in the same minute: his ride, and her wedding.",
+        "INTERVAL BANG — the night ride"),
+ "12": ("The board is set", "The coalition rings the city; Balarama lands behind it",
+        "The audience is handed the map, so that the chase twenty minutes later has rules.",
+        ""),
+ "13": ("The quiet before", "She is dressed for a wedding she will not attend",
+        "The only real stillness in the half, and it is paid for by the twenty minutes in front of it.",
+        ""),
+ "14": ("The meeting", "She prays, turns, and sees him",
+        "The whole first half is settled in four seconds, without a line of dialogue.",
+        ""),
+ "15": ("The break", "He lifts her and drives out through the kings",
+        "The thing the title promises. Everything after this is consequence.",
+        "SET PIECE — through the ring, and the market"),
+ "16": ("The chase", "A rear-guard holds a ford",
+        "The hero is off screen for most of it, which is exactly what makes the ford matter.",
+        "SET PIECE — Balarama at the crossing"),
+ "17": ("The climax", "Her brother breaks his own oath and loses",
+        "She steps between two swords and chooses a mercy that humiliates worse than a kill would.",
+        "SET PIECE — the duel"),
+ "18": ("The cost", "A shaved head, a friend's rebuke, an enemy told to wait",
+        "Victory is made to feel like a bill rather than a trophy, and the sequel is planted in one line.",
+        ""),
+ "19": ("The close", "The sea, a lamp, and the last line",
+        "No wedding scene. The film ends on the two of them and then stops.",
+        "SONG 5 — the melody on the crossing, running into the end titles"),
+}
+
+# the nine blocks the sequences group into
+BLOCKS = [
+ ("Opening",               "0",  "2",  "Scale, then a hook, then the man. Sixteen minutes before anyone sits back."),
+ ("The war",               "3",  "4",  "The antagonist earns his place, and a seventeen-year siege is told in ten minutes."),
+ ("Her half of the film",  "5",  "6",  "Kuṇḍina, and the sale. Act one closes on a woman promised to the wrong man."),
+ ("The elevation block",   "7",  "9",  "Twenty-three minutes of the hero at full stretch: chased, unarmed, and ahead of everybody."),
+ ("The decision",          "10", "11", "She writes, the letter crosses the country, the chariot turns. Interval."),
+ ("The board",             "12", "13", "The ring closes and the bride is dressed. The slowest stretch in the film, and the only one."),
+ ("The taking",            "14", "15", "The meeting, the lift, and the drive out through the middle of them."),
+ ("The chase and the duel","16", "17", "Twenty-two unbroken minutes of action, the longest run in the picture."),
+ ("The close",             "18", "19", "The cost, and then the sea."),
+]
+
+
 scenes = [(s, q[0], q[1]) for q in SEQ for s in q[3]]
 total = sum(s[3] for s, _, _ in scenes)
 act = sum(s[3] for s, _, _ in scenes if s[2] == 'A')
@@ -195,22 +273,140 @@ section 5.
 
 ## 2. The shape
 
-| # | sequence | min | mix |
-| --- | --- | --- | --- |""")
+Twenty sequences, one interval, and a running clock. **runs** is where the
+sequence sits in the finished film, in minutes from the first frame.
 
+| # | sequence | runs | min | mix | what it is for | the turn in it |
+| --- | --- | --- | --- | --- | --- | --- |""")
+
+clock = 0.0
+marks = {}
 for sid, name, blurb, items in SEQ:
     m = sum(i[3] for i in items)
     a = sum(1 for i in items if i[2] == 'A')
     d = len(items) - a
-    w(f"| {sid} | **{name}** | {mins(m)} | {a}A · {d}D |")
+    job, turn, why, piece = DETAIL[sid]
+    marks[sid] = (clock, clock + m)
+    w(f"| {sid} | **{name}** | {mins(clock)}–{mins(clock+m)} | {mins(m)} | {a}A · {d}D | {job} | {turn} |")
+    clock += m
     if sid == INTERVAL_AFTER:
-        w(f"| | **— INTERVAL —** | {int(first)} | |")
+        w(f"| | **— INTERVAL —** | {int(first)} | | | | |")
 
 w(f"""
-First half {int(first)} minutes, second half {int(total-first)}. The interval
-falls on the chariot turning out of Dvārakā, which is the loudest sound in the
-film before the duel.
+First half **{int(first)} minutes**, second half **{int(total-first)}**. The interval falls on the
+chariot turning out of Dvārakā, which is the loudest sound in the film before
+the duel.
 
+### The nine blocks
+
+The twenty sequences group into nine blocks. A block is what a producer reads:
+one job, one shape, one place it can be cut if the film runs long.
+
+| block | sequences | runs | min | what it is |
+| --- | --- | --- | --- | --- |""")
+
+for bname, s0, s1, bwhat in BLOCKS:
+    a0 = marks[s0][0]
+    b1 = marks[s1][1]
+    w(f"| **{bname}** | {s0}–{s1} | {mins(a0)}–{mins(b1)} | {mins(b1-a0)} | {bwhat} |")
+
+w("""
+### What each sequence is for""")
+w("")
+for sid, name, blurb, items in SEQ:
+    job, turn, why, piece = DETAIL[sid]
+    a0, b1 = marks[sid]
+    m = b1 - a0
+    av = sum(1 for i in items if i[2] == 'A')
+    w(f"**{sid}. {name}** — minute {mins(a0)}–{mins(b1)}, {mins(m)} min, {len(items)} scenes ({av} of them action)  ")
+    w(f"{blurb}")
+    w("")
+    w(f"*Its job:* {job}. {why}")
+    if piece:
+        w(f"**{piece}**")
+    w("")
+    if sid == INTERVAL_AFTER:
+        w(f"> **INTERVAL** — minute {int(first)}.")
+        w("")
+
+# the longest stretches without an action scene
+t = 0.0
+run = 0.0
+start = 0.0
+gaps = []
+for sid, name, blurb, items in SEQ:
+    for code, title, cat, m in items:
+        if cat == 'A':
+            if run > 0:
+                gaps.append((run, start, t))
+            run = 0.0
+        else:
+            if run == 0:
+                start = t
+            run += m
+        t += m
+if run > 0:
+    gaps.append((run, start, t))
+gaps.sort(reverse=True)
+
+w(f"""### The rhythm
+
+Of {mins(total)} minutes, **{mins(act)} are action** and {mins(dra)} are not — the master cut's
+ratio turned inside out. What matters more than the ratio is the spacing. The
+three longest stretches with no action scene in them:""")
+w("")
+for g, a0, b1 in gaps[:3]:
+    w(f"- **{mins(g)} minutes**, from minute {mins(a0)} to minute {mins(b1)}")
+w("")
+w("""The longest is the ending itself — the duel's aftermath and the sea — which is
+where a film is allowed to stop fighting. The next two are act one closing on
+Kuṇḍina and the night before the wedding, and neither runs past fourteen
+minutes. Both are bought by the block in front of them: twenty-three minutes
+of elevation before Kuṇḍina, the ring closing before the temple. Outside those
+three stretches the audience is never more than about six minutes from
+something moving.""")
+
+w(f"""
+### Songs
+
+The runtimes above are drama and action only. A commercial Telugu film carries
+four or five songs on top of that, and this shape has places for them that do
+not stop the story dead:
+
+| # | where | kind | adds |
+| --- | --- | --- | --- |
+| 1 | the prologue, sequence 0 | a chant over the churning, under the titles | — (inside the 4.5) |
+| 2 | the ride back from the hill, sequence 2 | ninety seconds of elevation, not a full number | 1.5 min |
+| 3 | the Kuṇḍina market, sequence 5 | folk, establishing her city and her | 3.5 min |
+| 4 | the letter and the ride, sequences 10–11 | a melody carrying the montage, and the clock | 3.5 min |
+| 5 | the crossing into the close, sequences 18–19 | the love melody; the end titles grow out of it | 4 min |
+
+With songs the film runs about **{int((total+12.5)//60)} h {int((total+12.5)%60)} min**, which is the length it should be.
+No item number: there is nowhere to put one that does not insult the woman the
+film is about.
+
+### The two clocks
+
+Two devices hold the second half tight, and both are planted in the first:
+
+- **The tally.** Jarasandha's sieges are counted out loud — *seventeen times* —
+  so the audience learns early that this enemy always comes back. When he rings
+  Kuṇḍina in sequence 12, nobody has to explain the danger to them.
+- **The hour.** Rukmiṇī's letter names a time and a place: the temple, the
+  morning of the wedding. From minute 74 to minute {mins(marks['14'][1])} every scene is measured
+  against it, which is why the quiet stretch before the temple does not feel
+  quiet.
+
+### Where it can be cut
+
+If the film has to come down to 2 h 20, the three cuts are: sequence 9 by two
+minutes (the city build is beautiful and the plot does not need all of it),
+sequence 12 by a minute and a half (the coalition can be two shots and a line),
+and sequence 18 by two minutes (the consoling scenes can go to one). Nothing in
+the elevation block or the chase should be touched; that is what sold the ticket.
+""")
+
+w(f"""
 ---
 
 ## 3. The scenes

@@ -50,33 +50,227 @@ section 5.
 
 ## 2. The shape
 
-| # | sequence | min | mix |
-| --- | --- | --- | --- |
-| 0 | **Prologue: the oldest war** | 4.5 | 3A · 1D |
-| 1 | **Cold open: the hill burns** | 5.5 | 3A · 0D |
-| 2 | **Introduction: the man they burned** | 6 | 2A · 1D |
-| 3 | **Why they keep coming** | 5 | 0A · 3D |
-| 4 | **Seventeen sieges** | 10 | 5A · 0D |
-| 5 | **Kuṇḍina: the one who is listening** | 6 | 0A · 3D |
-| 6 | **The sale** | 6 | 0A · 3D |
-| 7 | **Thirty million** | 10 | 4A · 1D |
-| 8 | **The glance** | 6.5 | 2A · 2D |
-| 9 | **The city from the sea** | 7 | 1A · 2D |
-| 10 | **She decides** | 7.5 | 0A · 4D |
-| 11 | **Interval: the ride** | 10 | 2A · 2D |
-| | **— INTERVAL —** | 84 | |
-| 12 | **The ring closes** | 7 | 2A · 1D |
-| 13 | **The night before** | 5.5 | 0A · 3D |
-| 14 | **The temple** | 8 | 0A · 4D |
-| 15 | **The lift** | 9 | 3A · 0D |
-| 16 | **The pursuit** | 12 | 3A · 1D |
-| 17 | **The duel** | 10 | 1A · 3D |
-| 18 | **The reckoning** | 7 | 0A · 4D |
-| 19 | **Together** | 8 | 0A · 6D |
+Twenty sequences, one interval, and a running clock. **runs** is where the
+sequence sits in the finished film, in minutes from the first frame.
 
-First half 84 minutes, second half 66. The interval
-falls on the chariot turning out of Dvārakā, which is the loudest sound in the
-film before the duel.
+| # | sequence | runs | min | mix | what it is for | the turn in it |
+| --- | --- | --- | --- | --- | --- | --- |
+| 0 | **Prologue: the oldest war** | 0–4.5 | 4.5 | 3A · 1D | Open on scale | A world older than anyone in the film |
+| 1 | **Cold open: the hill burns** | 4.5–10 | 5.5 | 3A · 0D | The hook | Two men are burned alive |
+| 2 | **Introduction: the man they burned** | 10–16 | 6 | 2A · 1D | The hero's entry | They walk out of it |
+| 3 | **Why they keep coming** | 16–21 | 5 | 0A · 3D | The antagonist's reason | A dead son-in-law and a vow |
+| 4 | **Seventeen sieges** | 21–31 | 10 | 5A · 0D | The war that will not end | Seventeen sieges, seventeen releases |
+| 5 | **Kuṇḍina: the one who is listening** | 31–37 | 6 | 0A · 3D | The heroine's entry | She corrects a soldier's tally |
+| 6 | **The sale** | 37–43 | 6 | 0A · 3D | The problem locked | Her brother sells her to Chedi |
+| 7 | **Thirty million** | 43–53 | 10 | 4A · 1D | Elevation: a second enemy | Thirty million men at the other gate |
+| 8 | **The glance** | 53–59.5 | 6.5 | 2A · 2D | Elevation: the pay-off | A sleeper's glance turns an army to ash |
+| 9 | **The city from the sea** | 59.5–66.5 | 7 | 1A · 2D | Scale | A city raised out of the sea in a night |
+| 10 | **She decides** | 66.5–74 | 7.5 | 0A · 4D | Her decision | She writes |
+| 11 | **Interval: the ride** | 74–84 | 10 | 2A · 2D | Interval | The letter reaches him and the chariot turns |
+| | **— INTERVAL —** | 84 | | | | |
+| 12 | **The ring closes** | 84–91 | 7 | 2A · 1D | The board is set | The coalition rings the city; Balarama lands behind it |
+| 13 | **The night before** | 91–96.5 | 5.5 | 0A · 3D | The quiet before | She is dressed for a wedding she will not attend |
+| 14 | **The temple** | 96.5–104.5 | 8 | 0A · 4D | The meeting | She prays, turns, and sees him |
+| 15 | **The lift** | 104.5–113.5 | 9 | 3A · 0D | The break | He lifts her and drives out through the kings |
+| 16 | **The pursuit** | 113.5–125.5 | 12 | 3A · 1D | The chase | A rear-guard holds a ford |
+| 17 | **The duel** | 125.5–135.5 | 10 | 1A · 3D | The climax | Her brother breaks his own oath and loses |
+| 18 | **The reckoning** | 135.5–142.5 | 7 | 0A · 4D | The cost | A shaved head, a friend's rebuke, an enemy told to wait |
+| 19 | **Together** | 142.5–150.5 | 8 | 0A · 6D | The close | The sea, a lamp, and the last line |
+
+First half **84 minutes**, second half **66**. The interval falls on the
+chariot turning out of Dvārakā, which is the loudest sound in the film before
+the duel.
+
+### The nine blocks
+
+The twenty sequences group into nine blocks. A block is what a producer reads:
+one job, one shape, one place it can be cut if the film runs long.
+
+| block | sequences | runs | min | what it is |
+| --- | --- | --- | --- | --- |
+| **Opening** | 0–2 | 0–16 | 16 | Scale, then a hook, then the man. Sixteen minutes before anyone sits back. |
+| **The war** | 3–4 | 16–31 | 15 | The antagonist earns his place, and a seventeen-year siege is told in ten minutes. |
+| **Her half of the film** | 5–6 | 31–43 | 12 | Kuṇḍina, and the sale. Act one closes on a woman promised to the wrong man. |
+| **The elevation block** | 7–9 | 43–66.5 | 23.5 | Twenty-three minutes of the hero at full stretch: chased, unarmed, and ahead of everybody. |
+| **The decision** | 10–11 | 66.5–84 | 17.5 | She writes, the letter crosses the country, the chariot turns. Interval. |
+| **The board** | 12–13 | 84–96.5 | 12.5 | The ring closes and the bride is dressed. The slowest stretch in the film, and the only one. |
+| **The taking** | 14–15 | 96.5–113.5 | 17 | The meeting, the lift, and the drive out through the middle of them. |
+| **The chase and the duel** | 16–17 | 113.5–135.5 | 22 | Twenty-two unbroken minutes of action, the longest run in the picture. |
+| **The close** | 18–19 | 135.5–150.5 | 15 | The cost, and then the sea. |
+
+### What each sequence is for
+
+**0. Prologue: the oldest war** — minute 0–4.5, 4.5 min, 4 scenes (3 of them action)  
+Under the titles. The churning, the poison, the goddess who chooses, the war — four images, no dialogue, one line of narration. The whole of the Manthana in the time it takes to read the cast.
+
+*Its job:* Open on scale. Nothing is at stake yet. This is a promise of size, and it is over in four minutes.
+**SONG 1 — a chant over the churning, under the titles**
+
+**1. Cold open: the hill burns** — minute 4.5–10, 5.5 min, 3 scenes (3 of them action)  
+An army sets a mountain alight to kill two men. We never see their faces. The enemy rides home certain he has won.
+
+*Its job:* The hook. The enemy believes he has won, which is how the audience knows he has not.
+**SET PIECE — the hill burns**
+
+**2. Introduction: the man they burned** — minute 10–16, 6 min, 3 scenes (2 of them action)  
+They walk out of the smoke. The hero's entry — the first full look at him, at minute seven, where a commercial film has to put it.
+
+*Its job:* The hero's entry. The rumour gets a face. The film announces him once, here, and never again.
+**SONG 2 — ninety seconds of elevation on the ride back**
+
+**3. Why they keep coming** — minute 16–21, 5 min, 3 scenes (0 of them action)  
+The antagonist in three strokes: a dead son-in-law, two widows, and a vow. Kuṇḍina hears of it in the same breath.
+
+*Its job:* The antagonist's reason. Jarasandha becomes a man with a case rather than a monster, which is what makes seventeen sieges bearable.
+
+**4. Seventeen sieges** — minute 21–31, 10 min, 5 scenes (5 of them action)  
+The long war as one escalating block: divisions at the gate, the conch, the wall, the capture — and the release that makes it happen again. Ends on the tally.
+
+*Its job:* The war that will not end. He is not trying to win, and nobody on screen understands why. The audience files the question away.
+**SET PIECE — the gate, the conch, the wall**
+
+**5. Kuṇḍina: the one who is listening** — minute 31–37, 6 min, 3 scenes (0 of them action)  
+The heroine's entry. Not a girl waiting to be told about him — a woman already collecting him, from murals, from soldiers, from sailors.
+
+*Its job:* The heroine's entry. She is not waiting to hear about him. She is already collecting him.
+**SONG 3 — a folk number in the Kuṇḍina market**
+
+**6. The sale** — minute 37–43, 6 min, 3 scenes (0 of them action)  
+Her brother trades her for a border. The scene that makes the audience want the abduction.
+
+*Its job:* The problem locked. From here the audience wants the abduction. Act one ends on this scene.
+
+**7. Thirty million** — minute 43–53, 10 min, 5 scenes (4 of them action)  
+The second enemy arrives at the other gate while the first is still at this one. The hero walks out unarmed and lets himself be chased.
+
+*Its job:* Elevation: a second enemy. He walks out unarmed and lets himself be chased — the flex that is not a fight.
+**SET PIECE — the unarmed chase**
+
+**8. The glance** — minute 53–59.5, 6.5 min, 4 scenes (2 of them action)  
+The pay-off of the chase: a sleeping king, a borrowed cloak, and an army that is ash before it knows it is in a fight.
+
+*Its job:* Elevation: the pay-off. The biggest kill in the film is not his, and he never raises a hand to get it.
+**SET PIECE — the cave and the ash**
+
+**9. The city from the sea** — minute 59.5–66.5, 7 min, 3 scenes (1 of them action)  
+The spectacle block. A kingdom moved overnight rather than defended — the hero outthinking a war instead of winning it.
+
+*Its job:* Scale. He ends a seventeen-year war by refusing to fight it, and the screen gets its one piece of pure spectacle.
+
+**10. She decides** — minute 66.5–74, 7.5 min, 4 scenes (0 of them action)  
+Everything she has gathered comes together and she does the one thing nobody expects of her: she writes.
+
+*Its job:* Her decision. The woman being traded makes the only move nobody has guarded against.
+**SONG 4 — the letter, over the writing and the sealing**
+
+**11. Interval: the ride** — minute 74–84, 10 min, 4 scenes (2 of them action)  
+A messenger crossing a country against a clock, cut with a wedding being built around a woman who has already left it. He reads the letter. The chariot turns. Interval.
+
+*Its job:* Interval. Two clocks start in the same minute: his ride, and her wedding.
+**INTERVAL BANG — the night ride**
+
+> **INTERVAL** — minute 84.
+
+**12. The ring closes** — minute 84–91, 7 min, 3 scenes (2 of them action)  
+Second half opens wide: the coalition deploying around a city, and a brother arriving by sea with an army nobody counted on.
+
+*Its job:* The board is set. The audience is handed the map, so that the chase twenty minutes later has rules.
+
+**13. The night before** — minute 91–96.5, 5.5 min, 3 scenes (0 of them action)  
+Six minutes of quiet, bought by the twenty before it. She is dressed for a wedding she will not attend.
+
+*Its job:* The quiet before. The only real stillness in the half, and it is paid for by the twenty minutes in front of it.
+
+**14. The temple** — minute 96.5–104.5, 8 min, 4 scenes (0 of them action)  
+The procession, the prayer, and the look at the door. The biggest moment in the film has no line in it.
+
+*Its job:* The meeting. The whole first half is settled in four seconds, without a line of dialogue.
+
+**15. The lift** — minute 104.5–113.5, 9 min, 3 scenes (3 of them action)  
+She is in the chariot before the guard understands what he has seen, and the chariot goes out through the middle of them.
+
+*Its job:* The break. The thing the title promises. Everything after this is consequence.
+**SET PIECE — through the ring, and the market**
+
+**16. The pursuit** — minute 113.5–125.5, 12 min, 4 scenes (3 of them action)  
+The biggest action block in the film: a rear-guard holding a ford against a coalition while the chariot runs.
+
+*Its job:* The chase. The hero is off screen for most of it, which is exactly what makes the ford matter.
+**SET PIECE — Balarama at the crossing**
+
+**17. The duel** — minute 125.5–135.5, 10 min, 4 scenes (1 of them action)  
+One man who swore an oath, one chariot, and a woman stepping between two swords.
+
+*Its job:* The climax. She steps between two swords and chooses a mercy that humiliates worse than a kill would.
+**SET PIECE — the duel**
+
+**18. The reckoning** — minute 135.5–142.5, 7 min, 4 scenes (0 of them action)  
+The cost, counted out: a brother's head, a friend's rebuke, and an enemy being told to wait his turn.
+
+*Its job:* The cost. Victory is made to feel like a bill rather than a trophy, and the sequel is planted in one line.
+
+**19. Together** — minute 142.5–150.5, 8 min, 6 scenes (0 of them action)  
+Eight minutes of warmth, earned. No wedding scene, and nothing after it.
+
+*Its job:* The close. No wedding scene. The film ends on the two of them and then stops.
+**SONG 5 — the melody on the crossing, running into the end titles**
+
+### The rhythm
+
+Of 150.5 minutes, **73.5 are action** and 77 are not — the master cut's
+ratio turned inside out. What matters more than the ratio is the spacing. The
+three longest stretches with no action scene in them:
+
+- **19.5 minutes**, from minute 131 to minute 150.5
+- **13.5 minutes**, from minute 91 to minute 104.5
+- **12 minutes**, from minute 31 to minute 43
+
+The longest is the ending itself — the duel's aftermath and the sea — which is
+where a film is allowed to stop fighting. The next two are act one closing on
+Kuṇḍina and the night before the wedding, and neither runs past fourteen
+minutes. Both are bought by the block in front of them: twenty-three minutes
+of elevation before Kuṇḍina, the ring closing before the temple. Outside those
+three stretches the audience is never more than about six minutes from
+something moving.
+
+### Songs
+
+The runtimes above are drama and action only. A commercial Telugu film carries
+four or five songs on top of that, and this shape has places for them that do
+not stop the story dead:
+
+| # | where | kind | adds |
+| --- | --- | --- | --- |
+| 1 | the prologue, sequence 0 | a chant over the churning, under the titles | — (inside the 4.5) |
+| 2 | the ride back from the hill, sequence 2 | ninety seconds of elevation, not a full number | 1.5 min |
+| 3 | the Kuṇḍina market, sequence 5 | folk, establishing her city and her | 3.5 min |
+| 4 | the letter and the ride, sequences 10–11 | a melody carrying the montage, and the clock | 3.5 min |
+| 5 | the crossing into the close, sequences 18–19 | the love melody; the end titles grow out of it | 4 min |
+
+With songs the film runs about **2 h 43 min**, which is the length it should be.
+No item number: there is nowhere to put one that does not insult the woman the
+film is about.
+
+### The two clocks
+
+Two devices hold the second half tight, and both are planted in the first:
+
+- **The tally.** Jarasandha's sieges are counted out loud — *seventeen times* —
+  so the audience learns early that this enemy always comes back. When he rings
+  Kuṇḍina in sequence 12, nobody has to explain the danger to them.
+- **The hour.** Rukmiṇī's letter names a time and a place: the temple, the
+  morning of the wedding. From minute 74 to minute 104.5 every scene is measured
+  against it, which is why the quiet stretch before the temple does not feel
+  quiet.
+
+### Where it can be cut
+
+If the film has to come down to 2 h 20, the three cuts are: sequence 9 by two
+minutes (the city build is beautiful and the plot does not need all of it),
+sequence 12 by a minute and a half (the coalition can be two shots and a line),
+and sequence 18 by two minutes (the consoling scenes can go to one). Nothing in
+the elevation block or the chase should be touched; that is what sold the ticket.
+
 
 ---
 
