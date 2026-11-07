@@ -61,12 +61,29 @@ with it, the page shows the English rather than stale Telugu.
       "note": "…",                            // story context, optional
       "te":   { "name": "…", "note": "…" },   // optional
       "lastp": "the last instruction given",  // optional
+      "ap": true, "apAt": "…",                // approved: name, note and order are locked
       "ids": ["S-470", "S-231", "S-247"] }    // scenes, in order
   ],
   "order": ["S-470", "…"],                    // every id, flattened; for reading outside the page
   "updated": "2026-11-01T…"
 }
 ```
+
+## Approval
+
+A shot, a scene or a sequence can be approved by hand. Approval is given from
+the bottom up and taken off from the top down.
+
+| to approve | what has to be true first | what it freezes |
+| --- | --- | --- |
+| a **shot** | nothing | its wording and its place in the list; a regenerated list rebuilds around it. An approved shot is the only kind that has a Midjourney prompt. |
+| an **image prompt** | its shot is approved | the prompt itself — a check never rewrites it, and the bulk writer skips it |
+| a **scene** | every one of its shots is approved | its text, its category, renaming, restoring from history — and all of its shots, their prompts and their images |
+| a **sequence** | every scene in it is approved | its name, its story context, the order of its scenes, deleting it, dragging in or out — and the approval of every scene in it |
+
+So a scene cannot be approved before its shots are, and a shot cannot be
+unapproved while its scene is approved. The page says which approval is in the
+way rather than silently refusing.
 
 ## An edited scene — the `scenes` collection
 
@@ -79,12 +96,31 @@ stored; the page merges it over `data/scenes.json`.
   "mins": "2", "tier": 4, "rasa": "…", "pov": "…", "pl": "…", "k": "…",
   "carrier": false, "gen": ["Thriller"],
   "te":    { "t": "…", "sum": "…", "why": "…", "turn": "…", "story": "…" },
-  "shots": [ { "t": "WIDE", "x": "what the camera does", "te": "…" } ],
+  "shots": [ { "t": "WIDE", "x": "what the camera does", "te": "…",
+               "mj": "the Midjourney prompt written from this shot",
+               "imgs": [ { "id": "<asset id>" } ],      // the pictures it made
+               "chk": { "best": 1,                       // index of the one that fits, -1 for none
+                        "note": "why", "at": "…",
+                        "per": [ { "i": 0, "ok": false, "note": "too close" } ] },
+               "a": true, "ma": true } ],               // a: shot approved, ma: prompt approved
+  "ap": true, "apAt": "…",                               // the scene is approved
+  "shotp": "the last instruction for the shots",
+  "mjp": "the last instruction for the prompts",
   "hist":  [ { "at": "…", "prompt": "…", "t": "…", "…": "…", "base": true } ],
   "prompt": "the instruction that produced this", "shotp": "…",
   "updated": "…"
 }
 ```
+
+A shot carries everything about itself: the line of direction, the Midjourney
+prompt written from it, the pictures that prompt produced, and Claude's
+judgement of them. They cannot drift apart — deleting a shot takes its prompt
+and pictures with it, and reordering carries them along.
+
+The pictures themselves are not in the database. `assets.upload()` stores a
+file and returns an id; `imgs` holds those ids, and the page builds
+`"/_blob/" + id` to show each one. Removing a picture deletes the asset and
+drops the id in one action. A shot holds at most eight.
 
 `hist` holds up to ten earlier versions, newest first; the one marked `base` is
 the scene as it was written. Restoring a version pushes the current one onto

@@ -17,8 +17,17 @@ reads `src/` and `data/` and writes `dist/scene_board.html`.
   order. A rhythm strip shows drama against action across the whole board.
 - **Edit a scene or a sequence with a prompt** — Claude rewrites it, in English
   and Telugu, and every earlier version is kept with a word-by-word diff.
-- **Shot lists** per scene, by hand or by prompt.
-- **A read-through**: the board as one continuous document, built to print.
+- **One page per scene**: the story, then its shots, then the options, then the
+  history. Nothing behind a tab.
+- **Shot lists** per scene, by hand or by prompt. Approve a shot and it earns a
+  **Midjourney prompt**: paste it into Midjourney, drop the pictures back onto
+  the shot, and Claude says which of them is the shot — or rewrites the prompt
+  when none of them is.
+- **Approval, in a chain**: a shot on its own; a scene once all its shots are
+  approved; a sequence once all its scenes are. An approved thing is frozen,
+  and it freezes everything under it.
+- **A read-through**: the board as one continuous document, built to print —
+  with the images, it is a storyboard.
 - **English / Telugu**: the story switches language, the interface stays
   English.
 - **Desktop / mobile layouts**, chosen automatically and switchable by hand.
@@ -30,7 +39,7 @@ reads `src/` and `data/` and writes `dist/scene_board.html`.
 npm install          # playwright, for the tests only
 npm run build        # writes dist/scene_board.html
 npm run serve        # http://localhost:8080
-npm test             # 105 checks in headless Chromium
+npm test             # 183 checks in headless Chromium
 ```
 
 Opened locally the page has no claude.ai runtime behind it, so it saves to

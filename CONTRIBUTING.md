@@ -47,6 +47,16 @@ file. CI fails if `dist/` does not match what the sources build.
 - `claude.use(...)` may return `null` — a viewer without that capability. Hide
   the feature, never fail.
 - Keep the page under about a megabyte. The data is already 250 KB of it.
+- A scene opens as one page, not a set of tabs: the story first, then the shots
+  with their prompts and images, then Options, then History. Nothing a
+  first-time reader needs may sit behind a click they have to guess at, and the
+  right-click menu only repeats ways *in* — never controls that live on the page.
+- Controls do not belong among the story text.
+- Anything that changes a scene, a sequence, a shot or a prompt checks the
+  approval first and refuses rather than writes. An approval is a promise to the
+  person who gave it. The chain is in `sceneApBlock`, `seqApBlock`, `shotLocked`
+  and `seqHolding`: approvals are given from the bottom up and taken off from
+  the top down.
 
 ## House rules for the story
 
@@ -66,6 +76,8 @@ runtime stubbed, and drives it. Add checks to the suite that fits:
 
 - `language.test.js` — what switches language and what must not.
 - `board.test.js` — scenes, shots, prompt editing, history, menus, read-through.
+- `shots.test.js` — shots, the prompt a shot earns, the pictures and the check.
+- `approval.test.js` — what may be approved, and what each approval freezes.
 - `mobile.test.js` — both layouts and the switch.
 
 Drag and drop is the one thing these tests cannot reach: Sortable is loaded
