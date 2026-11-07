@@ -75,6 +75,8 @@ data/
   te/                 the Telugu of the scenes, the terms and the names
   boards/b1…b5.json   the five seeded orders
 story/
+  REFERENCE.md        the people, the places and the eight story events
+  COMMERCIAL_CUT.md   the same story as a 2h30 action film, scene by scene
   events/             the scene definitions the data is generated from
   docs/               the story documents (events, framework, guides)
 scripts/
