@@ -28,14 +28,17 @@ with an empty database — which is how to make a staging copy on purpose.
 The page is published with:
 
 ```json
-{ "db": {}, "downloads": true, "sample": {} }
+{ "db": {}, "downloads": true, "sample": { "images": true }, "assets": {} }
 ```
 
 - `db` — the boards (`boards`), the scene edits (`scenes`) and the category
   overrides (`meta/cats`).
 - `downloads` — the CSV export.
-- `sample` — editing by prompt. The first use asks the viewer to allow it, and
-  it spends their own Claude usage.
+- `sample` with `images` — editing by prompt, and showing Claude the pictures a
+  shot's prompt produced. The first use asks the viewer to allow it, and it
+  spends their own Claude usage.
+- `assets` — the pictures dropped onto shots. Only people who can edit the
+  artifact may upload; everyone else sees them but gets no drop zone.
 
 A republish that does not state `capabilities` keeps the stored set. Clearing
 them (`{}`) would silently turn off saving and prompt editing, so don't.

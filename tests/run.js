@@ -1,8 +1,8 @@
 /* Runs every test suite in this folder. Exits non-zero if anything failed.
-   Run: npm test  (or: node tests/run.js board) */
-const { chromium, collector } = require('./harness');
+   Run: npm test   (or: node tests/run.js board) */
+const { chromium, collector, closeServer } = require('./harness');
 
-const SUITES = ['language', 'board', 'mobile'];
+const SUITES = ['language', 'board', 'shots', 'approval', 'mobile'];
 const only = process.argv.slice(2);
 
 (async () => {
@@ -23,6 +23,7 @@ const only = process.argv.slice(2);
     r.failed.forEach(f => console.log('   ✗ ' + f));
   }
   await browser.close();
+  closeServer();
   const bad = reports.reduce((n, r) => n + r.failed.length, 0);
   const good = reports.reduce((n, r) => n + r.passed, 0);
   console.log(`\n${good} passed, ${bad} failed`);

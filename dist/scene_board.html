@@ -116,33 +116,87 @@ main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(290px,350px) 
 .newcol{flex:0 0 200px;border:1px dashed var(--mut);background:none;border-radius:9px;padding:14px;color:var(--mut);font-weight:500}
 .newcol:hover{color:var(--ink);border-color:var(--ink)}
 
-/* drawer */
+/* the scene workspace */
 #veil{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:20}
-#drawer{position:fixed;top:0;right:0;bottom:0;width:min(440px,100%);background:var(--panel);border-left:1px solid var(--line);z-index:21;overflow-y:auto;padding:16px max(16px,env(safe-area-inset-right,0px)) 24px 18px;padding-top:calc(16px + env(safe-area-inset-top,0px));display:flex;flex-direction:column;gap:12px}
+#drawer{position:fixed;inset:0;z-index:21;background:var(--bg);overflow-y:auto}
 #drawer[hidden]{display:none}
-#drawer h3{font:700 20px/1.2 var(--f-display);margin:0;overflow-wrap:anywhere}
-#drawer .dh{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
-#drawer h4{margin:0 0 3px;font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--mut)}
-#drawer p{margin:0;max-width:65ch}
+.sbar{position:sticky;top:0;z-index:4;display:flex;gap:9px;align-items:center;flex-wrap:wrap;
+  padding:10px max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px));
+  padding-top:calc(10px + env(safe-area-inset-top,0px));background:var(--bg);border-bottom:1px solid var(--line)}
+.grow{flex:1 1 auto}
+.sheet{max-width:1000px;margin:0 auto;padding:4px max(16px,env(safe-area-inset-right,0px)) calc(90px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.sheet h1{font:700 26px/1.2 var(--f-display);margin:0;overflow-wrap:anywhere}
+.sect{border-top:1px solid var(--line);margin-top:18px;padding-top:16px;display:flex;flex-direction:column;gap:10px}
+.sect.first{border-top:0;margin-top:10px;padding-top:0}
+.sect>h3,.sect summary h3{font:600 11px var(--f-body);letter-spacing:.11em;text-transform:uppercase;color:var(--mut);margin:0}
+.sect h4{margin:10px 0 3px;font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--mut)}
+.sect h5{margin:0 0 4px;font:600 11px var(--f-body);letter-spacing:.06em;text-transform:uppercase;color:var(--mut)}
+.sect p{margin:0;max-width:72ch}
+.scgrid{display:grid;grid-template-columns:1.5fr 1fr;gap:24px;align-items:start}
 .kv{display:grid;grid-template-columns:auto 1fr;gap:3px 12px;font-size:13px}
 .kv dt{color:var(--mut)} .kv dd{margin:0;min-width:0;overflow-wrap:anywhere}
-.tags{display:flex;flex-wrap:wrap;gap:5px}
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
 .tags span{border:1px solid var(--line);border-radius:12px;padding:1px 9px;font-size:12px;background:var(--card)}
 .acts{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
-.acts select{border:1px solid var(--line);background:var(--card);border-radius:6px;padding:5px 8px;max-width:100%}
-#drawer textarea{width:100%;border:1px solid var(--line);background:var(--card);border-radius:7px;padding:8px;resize:vertical;min-height:66px;font:13.5px/1.45 var(--f-body)}
-.ebtn{border:0;background:none;color:var(--mut);font-size:14px;line-height:1;padding:3px 5px;border-radius:5px}
-.ebtn:hover{color:var(--ink);background:var(--line2)}
-.cnote{font-size:12px;color:var(--mut);padding:0 12px 7px;line-height:1.45;overflow-wrap:anywhere;white-space:pre-wrap}
-.edflag{font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--mut);border:1px solid var(--line);border-radius:4px;padding:0 4px}
-.busy{display:inline-flex;gap:5px;align-items:center;font-size:12.5px;color:var(--mut)}
-.busy i{width:8px;height:8px;border-radius:50%;background:var(--mut);animation:pulse 1s infinite ease-in-out}
-.busy i:nth-child(2){animation-delay:.18s}.busy i:nth-child(3){animation-delay:.36s}
-@keyframes pulse{0%,100%{opacity:.22}50%{opacity:1}}
-.edwrap{display:flex;flex-direction:column;gap:7px;border:1px solid var(--line);border-radius:9px;padding:10px;background:var(--card)}
-.edwrap .lab{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--mut)}
-.err{color:var(--action);font-size:12.5px}
-.hist{font-size:12px;color:var(--mut);line-height:1.5;overflow-wrap:anywhere}
+.acts select,.orow select{border:1px solid var(--line);background:var(--card);border-radius:6px;padding:5px 8px;max-width:100%}
+.orow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.olab{font-size:12px;color:var(--mut);min-width:84px}
+.btn.ap.on{border-color:var(--ok);color:var(--ok)}
+/* shots */
+.shotlist{display:flex;flex-direction:column;gap:12px}
+.shotcard{border:1px solid var(--line);border-radius:10px;background:var(--card);padding:11px 12px;display:flex;flex-direction:column;gap:9px}
+.shotcard.apd{border-color:var(--ok)}
+.shhead{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.shhead .n{font:600 13px var(--f-mono);color:var(--ink)}
+.shhead .st{font:600 10.5px var(--f-mono);letter-spacing:.06em;color:var(--drama);background:var(--drama-bg);border-radius:4px;padding:1px 6px}
+.shtext{font-size:14.5px;line-height:1.5;margin:0;overflow-wrap:anywhere}
+.shotgrid{display:grid;grid-template-columns:300px 1fr;gap:16px;align-items:start}
+.shotgrid .acts .btn{padding:4px 9px;font-size:12.5px}
+.shotgrid .acts{gap:5px;margin-top:7px}
+.shotimg{display:grid;place-items:center;aspect-ratio:16/9;border:1px dashed var(--line);border-radius:8px;background:var(--bg);color:var(--mut);font-size:12.5px;text-align:center;padding:8px;cursor:pointer;overflow:hidden}
+.shotimg.over{border-color:var(--ink);background:var(--line2);color:var(--ink)}
+.shotimg.has{border-style:solid;padding:0;cursor:default}
+.shotimg img{width:100%;height:100%;object-fit:cover;display:block}
+/* image strip */
+.imgcol{min-width:0}
+.thumbs{display:flex;flex-wrap:wrap;gap:7px}
+.thumb{position:relative;width:86px;height:56px;padding:0;border:2px solid var(--line);border-radius:7px;overflow:hidden;background:var(--bg)}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.thumb .tn{position:absolute;left:3px;bottom:3px;font:600 10px var(--f-mono);background:rgba(0,0,0,.6);color:#fff;border-radius:3px;padding:0 4px}
+.thumb.sel{border-color:var(--ink)}
+.thumb.best{border-color:var(--ok)}
+.thumb.bad{opacity:.55}
+.hint{border-left:2px solid var(--line);padding-left:9px}
+label.btn{display:inline-flex;align-items:center;cursor:pointer}
+.verdict{font-size:12.5px;margin-top:7px;line-height:1.45}
+.verdict.ok{color:var(--ok)} .verdict.bad{color:var(--action)}
+.verdict .sub{color:var(--mut);margin-top:2px}
+.mjcol{min-width:0}
+.sform{display:flex;flex-direction:column;gap:6px}
+.sform input{border:1px solid var(--line);background:var(--bg);border-radius:6px;padding:5px 7px;width:100%}
+#drawer textarea{width:100%;border:1px solid var(--line);background:var(--card);border-radius:7px;padding:8px;resize:vertical;min-height:60px;font:13.5px/1.45 var(--f-body)}
+/* versions */
+.vrows{display:flex;flex-direction:column;gap:6px}
+.vrow{display:block;width:100%;text-align:left;border:1px solid var(--line);border-radius:7px;padding:7px 9px;background:var(--card)}
+.vrow[aria-pressed="true"]{border-color:var(--ink)}
+.vrow b{display:block;font-size:13.5px}
+.vrow span{font-size:12px;color:var(--mut)}
+.seqlist{display:flex;flex-direction:column;gap:6px}
+details.hsect summary{cursor:pointer;list-style:none}
+details.hsect summary::-webkit-details-marker{display:none}
+details.hsect summary h3::after{content:" ▸";color:var(--mut)}
+details.hsect[open] summary h3::after{content:" ▾"}
+ins{background:rgba(44,122,75,.2);text-decoration:none;border-radius:3px}
+del{background:var(--action-bg);color:var(--action);border-radius:3px}
+.dfield{margin-bottom:9px}
+.dfield h5{margin:0 0 2px}
+.dfield div{font-size:13.5px;line-height:1.5;overflow-wrap:anywhere}
+details.srcd{border-top:1px solid var(--line);padding-top:9px;margin-top:12px}
+details.srcd summary{cursor:pointer;font:600 11px var(--f-body);letter-spacing:.07em;text-transform:uppercase;color:var(--mut)}
+details.srcd .sbody{font-size:13px;margin-top:6px;line-height:1.55}
+details.srcd a{color:var(--drama)}
+.rimg{max-width:320px;margin:7px 0 2px}
+.rimg img{width:100%;border:1px solid var(--line);border-radius:7px;display:block}
 #toast{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--btn);color:var(--btn-ink);padding:7px 14px;border-radius:7px;font-size:13px;z-index:30;max-width:90%}
 /* ---------- mobile view ---------- */
 .more,.fold{display:none}
@@ -186,52 +240,40 @@ body[data-view="mobile"] .pos{font-size:17px;min-width:26px}
 body[data-view="mobile"] .add{width:34px;height:34px;font-size:18px}
 body[data-view="mobile"] .more{display:block;flex:0 0 auto;align-self:flex-start;border:1px solid var(--line);background:var(--panel);border-radius:6px;width:34px;height:34px;line-height:1;font-size:15px;padding:0;color:var(--mut)}
 body[data-view="mobile"] .card .cb{padding-right:2px}
-body[data-view="mobile"] #drawer{width:100%;border-left:0;padding:14px max(14px,env(safe-area-inset-right,0px)) calc(28px + env(safe-area-inset-bottom,0px)) max(14px,env(safe-area-inset-left,0px));padding-top:calc(12px + env(safe-area-inset-top,0px))}
-body[data-view="mobile"] #drawer h3{font-size:19px}
-body[data-view="mobile"] .dtabs button{padding:9px 12px;font-size:13.5px}
+body[data-view="mobile"] .scgrid,body[data-view="mobile"] .shotgrid{grid-template-columns:1fr}
+body[data-view="mobile"] .sheet{padding-bottom:calc(70px + env(safe-area-inset-bottom,0px))}
+body[data-view="mobile"] .sheet h1{font-size:21px}
+body[data-view="mobile"] .olab{min-width:0;flex:1 1 100%}
+body[data-view="mobile"] .mjbox{font-size:12px}
 body[data-view="mobile"] .acts .btn,body[data-view="mobile"] .acts select{padding:8px 11px}
-body[data-view="mobile"] .shot .sa button{padding:6px 7px;font-size:14px}
+body[data-view="mobile"] .ebtn{padding:6px 8px;font-size:15px}
 body[data-view="mobile"] #ctx{min-width:min(280px,86vw);max-width:92vw}
 body[data-view="mobile"] #ctx button{padding:10px 11px;font-size:14px}
 body[data-view="mobile"] #ctx .ch{padding:7px 11px 4px}
 body[data-view="mobile"] .rwrap{padding:18px 14px calc(70px + env(safe-area-inset-bottom,0px))}
 body[data-view="mobile"] .rwrap h1{font-size:23px}
 body[data-view="mobile"] .rbar{padding:9px 14px}
-body[data-view="mobile"] #drawer p,body[data-view="mobile"] .shot .sx,body[data-view="mobile"] .dfield div{font-size:15px;line-height:1.55}
+body[data-view="mobile"] #drawer p,body[data-view="mobile"] .shtext,body[data-view="mobile"] .dfield div{font-size:15px;line-height:1.55}
 body[data-view="mobile"] .kv{font-size:13.5px}
-body[data-view="mobile"] #drawer h4{font-size:11.5px}
+body[data-view="mobile"] .sect h4{font-size:11.5px}
 body[data-view="mobile"] .rsc p,body[data-view="mobile"] .rshots li{font-size:15px;line-height:1.55}
 body[data-view="mobile"] #peek{display:none}
-/* drawer tabs */
-.dtabs{display:flex;gap:2px;border-bottom:1px solid var(--line)}
-.dtabs button{border:0;background:none;padding:7px 10px;font:600 13px var(--f-body);color:var(--mut);border-bottom:2px solid transparent;border-radius:0}
-.dtabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ink)}
-/* shots */
-.shot{display:flex;gap:8px;border:1px solid var(--line);border-radius:7px;padding:7px 8px;background:var(--card)}
-.shot .n{font:600 13px var(--f-mono);color:var(--mut);flex:0 0 auto;min-width:18px}
-.shot .sb{flex:1;min-width:0}
-.shot .st{font:600 10.5px var(--f-mono);letter-spacing:.06em;color:var(--drama);background:var(--drama-bg);border-radius:4px;padding:1px 5px;display:inline-block}
-.shot .sx{font-size:13.5px;margin-top:3px;overflow-wrap:anywhere;white-space:pre-wrap}
-.shot .sa{display:flex;flex-direction:column;gap:1px}
-.shot .sa button{border:0;background:none;color:var(--mut);font-size:12px;line-height:1;padding:2px 4px;border-radius:4px}
-.shot .sa button:hover{color:var(--ink);background:var(--line2)}
-.sform{display:flex;flex-direction:column;gap:6px;border:1px solid var(--mut);border-radius:7px;padding:8px;background:var(--card)}
-.sform input{border:1px solid var(--line);background:var(--bg);border-radius:6px;padding:5px 7px;width:100%}
-/* history and diff */
-.vrow{display:flex;gap:8px;align-items:flex-start;border:1px solid var(--line);border-radius:7px;padding:7px 9px;background:var(--card);width:100%;text-align:left}
-.vrow[aria-pressed="true"]{border-color:var(--ink)}
-.vrow b{display:block;font-size:13px}
-.vrow span{font-size:12px;color:var(--mut)}
-ins{background:rgba(44,122,75,.2);text-decoration:none;border-radius:3px}
-del{background:var(--action-bg);color:var(--action);border-radius:3px}
-.dfield{margin-bottom:9px}
-.dfield h5{margin:0 0 2px;font:600 11px var(--f-body);letter-spacing:.06em;text-transform:uppercase;color:var(--mut)}
-.dfield div{font-size:13.5px;line-height:1.5;overflow-wrap:anywhere}
-/* source */
-details.srcd{border-top:1px solid var(--line);padding-top:9px}
-details.srcd summary{cursor:pointer;font:600 11px var(--f-body);letter-spacing:.07em;text-transform:uppercase;color:var(--mut)}
-details.srcd .sbody{font-size:13px;margin-top:6px;line-height:1.55}
-details.srcd a{color:var(--drama)}
+/* approval */
+.apchip{font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--ok);border:1px solid var(--ok);border-radius:4px;padding:0 5px;white-space:nowrap}
+.apmark{color:var(--ok);font-weight:700;font-size:13px;padding:0 2px}
+.card.apd{border-left-color:var(--ok)!important;background:linear-gradient(90deg,rgba(44,122,75,.07),transparent 40%),var(--card)}
+.card.apd .add{opacity:.5}
+.col.apd{border-color:var(--ok)}
+.col.apd .chead{background:linear-gradient(90deg,rgba(44,122,75,.1),transparent)}
+.shot.apd{border-color:var(--ok)}
+.apb{color:var(--mut)}
+.apb.on{color:var(--ok)}
+.lockmsg{border:1px solid var(--ok);border-radius:8px;padding:9px 11px;font-size:13px;color:var(--ink);background:rgba(44,122,75,.08)}
+.opt{border-top:1px solid var(--line);padding-top:10px;display:flex;flex-direction:column;gap:7px}
+.opt h4{margin:0;font:600 11px var(--f-body);letter-spacing:.07em;text-transform:uppercase;color:var(--mut)}
+.opt p.sub{margin:0}
+.opt .acts .btn[disabled],.seg button[disabled]{opacity:.45;cursor:not-allowed}
+.mjbox{font:12.5px/1.5 var(--f-mono);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:7px 8px;margin-top:5px;overflow-wrap:anywhere;white-space:pre-wrap}
 /* context menu */
 #ctx{position:fixed;z-index:40;background:var(--panel);border:1px solid var(--line);border-radius:9px;box-shadow:0 10px 30px rgba(0,0,0,.25);padding:4px;min-width:200px;max-width:270px}
 #ctx button{display:block;width:100%;text-align:left;border:0;background:none;padding:6px 9px;border-radius:6px;font-size:13px}
@@ -271,6 +313,7 @@ details.srcd a{color:var(--drama)}
   .rwrap{max-width:none;padding:0}
   .rsc,.rseq{break-inside:avoid;page-break-inside:avoid}
   .rshots{border-left:1px solid #999}
+  .rimg{max-width:70mm}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
@@ -284,6 +327,7 @@ details.srcd a{color:var(--drama)}
     <div class="stat"><b id="s-placed">0/0</b><span data-i="onboard">On board</span></div>
     <div class="stat"><b id="s-run">0 min</b><span data-i="runtime">Board runtime</span></div>
     <div class="stat"><b id="s-mix">0 · 0</b><span data-i="mix">Drama · Action</span></div>
+    <div class="stat"><b id="s-appr">0</b><span>Approved</span></div>
   </div>
   <div class="tools">
     <div class="seg" role="group" id="viewseg" aria-label="Layout"><button type="button" data-view="desktop" aria-pressed="true">Desktop</button><button type="button" data-view="mobile" aria-pressed="false">Mobile</button></div>
@@ -420,6 +464,7 @@ function clean(d){
     const o={id:String(c.id||('c'+Date.now()+i)),name:String(c.name||'Sequence').slice(0,60),ids};
     if(typeof c.note==='string'&&c.note.trim())o.note=c.note.slice(0,600);
     if(typeof c.lastp==='string'&&c.lastp.trim())o.lastp=c.lastp.slice(0,400);
+    if(c.ap===true){o.ap=true;if(typeof c.apAt==='string')o.apAt=c.apAt.slice(0,40)}
     if(c.te&&typeof c.te==='object'){const t={};
       if(typeof c.te.name==='string'&&c.te.name.trim())t.name=c.te.name.slice(0,80);
       if(typeof c.te.note==='string'&&c.te.note.trim())t.note=c.te.note.slice(0,700);
@@ -438,6 +483,20 @@ function cleanShots(a){
     const txt=String(x.x||x.text||'').trim();if(!txt)return;
     const o={t:String(x.t||x.type||'SHOT').trim().toUpperCase().slice(0,16)||'SHOT',x:txt.slice(0,700)};
     const te=String(x.te||'').trim();if(te)o.te=te.slice(0,700);
+    const mj=String(x.mj||'').trim();if(mj)o.mj=mj.slice(0,1400);
+    const imgs=[];
+    if(Array.isArray(x.imgs))x.imgs.forEach(g=>{const id=String((g&&g.id)||g||'').trim();if(id&&imgs.length<8)imgs.push({id:id.slice(0,64)})});
+    else{const im=String(x.img||'').trim();if(im)imgs.push({id:im.slice(0,64)})}
+    if(imgs.length)o.imgs=imgs;
+    if(x.chk&&typeof x.chk==='object'){
+      const per=[];
+      if(Array.isArray(x.chk.per))x.chk.per.forEach(q=>{if(q)per.push({i:Number(q.i)||0,ok:q.ok===true,note:String(q.note||'').slice(0,300)})});
+      o.chk={best:typeof x.chk.best==='number'?x.chk.best:-1,note:String(x.chk.note||'').slice(0,500),
+        fix:String(x.chk.fix||'').slice(0,400),at:String(x.chk.at||'').slice(0,40)};
+      if(per.length)o.chk.per=per.slice(0,8);
+    }
+    if(x.a===true)o.a=true;          /* the shot is approved */
+    if(x.ma===true)o.ma=true;        /* its image prompt is approved */
     out.push(o);
   });
   return out.slice(0,60);
@@ -462,6 +521,7 @@ function applyOv(){
     const sh=cleanShots(o.shots);if(sh)b.shots=sh;
     b.hist=Array.isArray(o.hist)?o.hist:[];
     b.ovf=f;b.ed=Object.keys(f).length>0;b.lastp=typeof o.prompt==='string'?o.prompt:'';
+    b.ap=o.ap===true;b.apAt=typeof o.apAt==='string'?o.apAt:'';
     BY[code]=b;
   });
 }
@@ -488,6 +548,62 @@ async function saveOv(code){
     if(o&&Object.keys(o).length)await ovRef.doc(code).set(o);else await ovRef.doc(code).delete();
     setStatus('saved',true);
   }catch(e){setStatus('fail')}
+}
+
+/* ---------- approval ----------
+   A scene, a sequence, a shot or an image prompt can be approved by hand.
+   An approved thing is frozen: no prompt can rewrite it, no edit by hand can
+   touch it, and it cannot be restored over, until the approval is removed. */
+const sceneAp=c=>!!(ov[c]&&ov[c].ap);
+const seqApId=id=>{const c=state.cols.find(x=>x.id===id);return !!(c&&c.ap)};
+const shotsOf=c=>(BY[c]&&BY[c].shots)||[];
+const apShots=c=>shotsOf(c).filter(x=>x.a).length;
+/* a scene may be approved only once every one of its shots is approved */
+function sceneApBlock(code){
+  const a=shotsOf(code);
+  if(!a.length)return 'Write its shots first, then approve them — a scene is approved only when all of its shots are.';
+  const n=a.filter(x=>x.a).length;
+  return n<a.length?('Approve all of its shots first — '+n+' of '+a.length+' are approved.'):'';
+}
+/* a sequence may be approved only once every scene in it is approved */
+function seqApBlock(col){
+  if(!col.ids.length)return 'Put scenes in it first.';
+  const n=col.ids.filter(i=>sceneAp(i)).length;
+  return n<col.ids.length?('Approve all of its scenes first — '+n+' of '+col.ids.length+' are approved.'):'';
+}
+/* an approval holds everything under it: the sequence holds its scenes, the
+   scene holds its shots, so the lock is taken off from the top down */
+const seqHolding=code=>{const w=where(code);return w&&state.cols[w.ci].ap?state.cols[w.ci]:null};
+const LOCKED_BY_SEQ='Its sequence is approved. Take that approval off first.';
+const LOCKED_BY_SCENE='This scene is approved. Take that approval off first.';
+const shotLocked=code=>sceneAp(code);
+const apChip=on=>on?'<span class="apchip" title="Approved">approved</span>':'';
+const apCount=()=>ORDER.reduce((n,c)=>n+(sceneAp(c)?1:0),0);
+const LOCKED_SCENE='This scene is approved. Remove the approval in Options before changing it.';
+const LOCKED_SEQ='This sequence is approved. Remove the approval before changing it.';
+function setSceneAp(code,on){
+  if(on){const why=sceneApBlock(code);if(why){toast(why);return}}
+  else if(seqHolding(code)){toast(LOCKED_BY_SEQ);return}
+  const prev=ov[code]||{},next=Object.assign({},prev);
+  if(on){next.ap=true;next.apAt=new Date().toISOString()}else{delete next.ap;delete next.apAt}
+  if(Object.keys(next).length)ov[code]=next;else delete ov[code];
+  applyOv();saveOv(code);render();
+  toast(on?'Scene approved — its text and category are locked':'Approval removed from the scene');
+}
+function setSeqAp(id,on){
+  const c=state.cols.find(x=>x.id===id);if(!c)return;
+  if(on){const why=seqApBlock(c);if(why){toast(why);return}}
+  if(on){c.ap=true;c.apAt=new Date().toISOString()}else{delete c.ap;delete c.apAt}
+  persist();render();
+  toast(on?'Sequence approved — its name, context and order are locked':'Approval removed from the sequence');
+}
+function setShotAp(code,i,key,on){
+  if(shotLocked(code)){toast(LOCKED_BY_SCENE);return}
+  const a=(BY[code].shots||[]).slice();if(!a[i])return;
+  if(key==='a'&&!on&&a[i].a&&sceneAp(code)){toast(LOCKED_BY_SCENE);return}
+  a[i]=Object.assign({},a[i]);
+  if(on)a[i][key]=true;else delete a[i][key];
+  setShots(code,a,on?(key==='a'?'Shot approved':'Image prompt approved'):'Approval removed');
 }
 
 /* ---------- persistence ---------- */
@@ -549,6 +665,7 @@ async function boot(){
   curBoard();applyOv();render();
   let db=null;try{db=await (window.claude&&window.claude.use?window.claude.use('db'):null)}catch(e){}
   try{samp=await (window.claude&&window.claude.use?window.claude.use('sample'):null)}catch(e){samp=null}
+  try{assets=await (window.claude&&window.claude.use?window.claude.use('assets'):null)}catch(e){assets=null}
   if(samp)render();
   if(!db){
     mode='local';
@@ -582,11 +699,11 @@ let dragging=false;
 function cardHTML(code,pos){
   const s=BY[code],cat=catOf(code);
   const dots=[1,2,3,4,5].map(i=>'<i class="'+(i<=s.tier?'on':'')+'"></i>').join('');
-  return '<div class="card" data-c="'+code+'" data-cat="'+cat+'" tabindex="0" role="button" aria-label="'+esc(sc(s,'t'))+', '+catLabel(cat)+'">'+
+  return '<div class="card'+(s.ap?' apd':'')+'" data-c="'+code+'" data-cat="'+cat+'"'+(s.ap?' data-ap="1"':'')+' tabindex="0" role="button" aria-label="'+esc(sc(s,'t'))+', '+catLabel(cat)+(s.ap?', approved':'')+'">'+
     (pos?'<span class="pos">'+pos+'</span>':'')+
-    '<div class="cb"><div class="top"><span class="code">'+code+'</span><span class="chip">'+catLabel(cat)+'</span>'+(s.ed?'<span class="edflag">edited</span>':'')+'</div>'+
+    '<div class="cb"><div class="top"><span class="code">'+code+'</span><span class="chip">'+catLabel(cat)+'</span>'+(s.ed?'<span class="edflag">edited</span>':'')+apChip(s.ap)+'</div>'+
     '<div class="ttl">'+esc(sc(s,'t'))+'</div>'+
-    '<div class="meta"><span>'+esc(term('evn',s.evn))+'</span><span>'+esc(s.mins)+' '+T('min')+'</span><span class="dots" title="'+T('tier')+' '+s.tier+'">'+dots+'</span>'+(s.carrier?'<span>'+T('carrier')+'</span>':'')+(s.shots&&s.shots.length?'<span>'+s.shots.length+' shots</span>':'')+'</div></div>'+
+    '<div class="meta"><span>'+esc(term('evn',s.evn))+'</span><span>'+esc(s.mins)+' '+T('min')+'</span><span class="dots" title="'+T('tier')+' '+s.tier+'">'+dots+'</span>'+(s.carrier?'<span>'+T('carrier')+'</span>':'')+(s.shots&&s.shots.length?'<span>'+s.shots.filter(x=>x.a).length+'/'+s.shots.length+' shots'+(s.shots.reduce((n,x)=>n+((x.imgs||[]).length),0)?' · '+s.shots.reduce((n,x)=>n+((x.imgs||[]).length),0)+' images':'')+'</span>':'')+'</div></div>'+
     (pos?'':'<button class="add" type="button" data-add="'+code+'" title="'+esc(T('addTip'))+'" aria-label="'+esc(T('addAria'))+'">+</button>')+
     '<button class="more" type="button" data-more="'+code+'" title="More" aria-label="More options">⋯</button></div>';
 }
@@ -605,10 +722,11 @@ function render(){
   let n=0;
   $('board').innerHTML=state.cols.map(c=>{
     const mins=c.ids.reduce((a,i)=>a+BY[i].mid,0),note=colNote(c);
-    return '<div class="col'+(folded.has(c.id)?' folded':'')+'" data-id="'+esc(c.id)+'"><div class="chead">'+
+    return '<div class="col'+(folded.has(c.id)?' folded':'')+(c.ap?' apd':'')+'" data-id="'+esc(c.id)+'"><div class="chead">'+
       '<button class="fold" type="button" data-fold="'+esc(c.id)+'" aria-expanded="'+(!folded.has(c.id))+'" aria-label="Fold or unfold this sequence">'+(folded.has(c.id)?'▸':'▾')+'</button>'+
       '<span class="grip" title="'+esc(T('gripTip'))+'" aria-hidden="true">⠿</span>'+
-      '<input class="cname" value="'+esc(colName(c))+'" aria-label="'+esc(T('seqName'))+'" maxlength="60">'+
+      '<input class="cname" value="'+esc(colName(c))+'" aria-label="'+esc(T('seqName'))+'" maxlength="60"'+(c.ap?' readonly title="Approved — the name is locked"':'')+'>'+
+      (c.ap?'<span class="apmark" title="Approved">✓</span>':'')+
       '<button class="ebtn" type="button" data-seq="'+esc(c.id)+'" title="Open this sequence (right-click for more)" aria-label="Edit sequence">✎</button>'+
       '<button class="xbtn" type="button" data-del="'+esc(c.id)+'" title="'+esc(T('delTip'))+'" aria-label="'+esc(T('delAria'))+'">×</button></div>'+
       '<div class="cinfo">'+T('colInfo',{n:c.ids.length,w:T(c.ids.length===1?'scene':'scenes'),t:fmtMin(mins)})+'</div>'+
@@ -617,7 +735,8 @@ function render(){
   }).join('')+'<button class="newcol" id="newcol" type="button">'+esc(T('addSeq'))+'</button>';
   renderTabs();stats();bindSortables();
   const ae=document.activeElement;
-  if(!(ae&&(ae.id==='edp'||ae.id==='shx'||ae.id==='sht'))){if(openCode)drawer(openCode,true);else if(openSeq)seqDrawer(openSeq,true)}
+  const typing=ae&&((ae.classList&&ae.classList.contains('edp'))||ae.id==='shx'||ae.id==='sht'||ae.id==='mjx');
+  if(!typing){if(openCode)scenePanel(openCode,true);else if(openSeq)seqPanel(openSeq,true)}
   if(!$('read').hidden)readThrough(true);
 }
 function stats(){
@@ -625,6 +744,8 @@ function stats(){
   $('s-placed').textContent=order.length+'/'+TOTAL;
   $('s-run').textContent='≈ '+fmtMin(order.reduce((a,i)=>a+BY[i].mid,0));
   const d=order.filter(i=>catOf(i)==='D').length;$('s-mix').textContent=d+' · '+(order.length-d);
+  const aps=order.filter(i=>sceneAp(i)).length,apq=state.cols.filter(c=>c.ap&&c.ids.length).length;
+  $('s-appr').textContent=aps+(apq?' · '+apq:'');
   let h='';state.cols.forEach(c=>{
     if(!c.ids.length)return;if(h)h+='<i class="gap"></i>';
     c.ids.forEach(i=>{const s=BY[i];h+='<i class="'+catOf(i)+'" data-open="'+i+'" style="flex-grow:'+Math.max(s.mid,.5)+';flex-basis:0" title="'+esc(order.indexOf(i)+1+'. '+sc(s,'t'))+'"></i>'});
@@ -647,23 +768,25 @@ function bindSortables(){
     onStart:()=>{dragging=true;hidePeek();hideCtx()},
     onEnd:()=>{dragging=false;fromDOM();persist();setTimeout(render,0)}};
   sortables.push(new Sortable($('bin'),Object.assign({},common,{sort:false})));
-  document.querySelectorAll('.cards').forEach(el=>sortables.push(new Sortable(el,common)));
+  document.querySelectorAll('.cards').forEach(el=>{
+    const col=state.cols.find(c=>c.id===el.closest('.col').dataset.id);
+    sortables.push(new Sortable(el,Object.assign({},common,col&&col.ap?{disabled:true}:{})));
+  });
   sortables.push(new Sortable($('board'),{animation:150,draggable:'.col',handle:'.grip',ghostClass:'ghost',filter:'.newcol',
     onStart:()=>{dragging=true;hidePeek();hideCtx()},onEnd:()=>{dragging=false;fromDOM();persist();setTimeout(render,0)}}));
 }
 
 /* ---------- editing by prompt ---------- */
-let samp=null,asking=null,ctl=null,draft={},edErr='';
-const edKey=()=>openCode?(dtab==='shots'?'h:'+openCode:'s:'+openCode):(openSeq?('q:'+openSeq):null);
-function reopen(){if(openCode)drawer(openCode,true);else if(openSeq)seqDrawer(openSeq,true)}
-function edPanel(key,ph,last,extra){
+let samp=null,assets=null,asking=null,ctl=null,draft={},edErr={},busyShot=null;
+function reopen(){if(openCode)scenePanel(openCode,true);else if(openSeq)seqPanel(openSeq,true)}
+function edPanel(key,label,ph,last,extra){
   const busy=asking===key;
-  return '<div class="edwrap"><span class="lab">Edit with a prompt</span>'+
-    '<textarea id="edp" rows="3" placeholder="'+esc(ph)+'"'+(busy?' disabled':'')+'>'+esc(draft[key]||'')+'</textarea>'+
+  return '<div class="edwrap"><span class="lab">'+esc(label)+' — tell Claude what you want</span>'+
+    '<textarea class="edp" data-k="'+key+'" rows="2" placeholder="'+esc(ph)+'"'+(busy?' disabled':'')+'>'+esc(draft[key]||'')+'</textarea>'+
     '<div class="acts">'+(busy
-      ?'<span class="busy"><i></i><i></i><i></i></span><span class="sub">Claude is writing…</span><button class="btn" id="edstop" type="button">Stop</button>'
-      :'<button class="btn pri" id="edgo" type="button">Apply</button>'+(extra||''))+'</div>'+
-    (edErr?'<div class="err">'+esc(edErr)+'</div>':'')+
+      ?'<span class="busy"><i></i><i></i><i></i></span><span class="sub">Claude is writing…</span><button class="btn" type="button" data-stop="1">Stop</button>'
+      :'<button class="btn pri" type="button" data-go="'+key+'">Apply</button>'+(extra||''))+'</div>'+
+    (edErr[key]?'<div class="err">'+esc(edErr[key])+'</div>':'')+
     (last?'<div class="hist">Last instruction: “'+esc(last)+'”</div>':'')+
     '</div>';
 }
@@ -692,6 +815,7 @@ async function askScene(code,prompt){
   return await samp.json(p,{signal:ctl.signal,cache:false,modelTier:'default'});
 }
 function applySceneEdit(code,prompt,r){
+  if(sceneAp(code))throw new Error('this scene is approved — remove the approval first');
   if(!r||typeof r!=='object'||Array.isArray(r))throw new Error('nothing usable came back');
   const o={};
   TXT.forEach(k=>{if(typeof r[k]==='string'&&r[k].trim())o[k]=r[k].trim().slice(0,k==='t'?90:5000)});
@@ -720,11 +844,64 @@ async function askShots(code,prompt){
   return await samp.json(p,{signal:ctl.signal,cache:false,modelTier:'default'});
 }
 function applyShotsEdit(code,prompt,r){
-  const arr=cleanShots(r&&(r.shots||r.shot_list||(Array.isArray(r)?r:null)));
+  if(shotLocked(code))throw new Error('this scene is approved — take the approval off first');
+  let arr=cleanShots(r&&(r.shots||r.shot_list||(Array.isArray(r)?r:null)));
   if(!arr||!arr.length)throw new Error('no shots came back');
+  const old=BY[code].shots||[];
+  /* approved shots keep their place and their wording whatever came back */
+  const locked=old.map((x,i)=>(x.a?i:-1)).filter(i=>i>=0);
+  if(locked.length){
+    const maxI=Math.max.apply(null,locked);
+    while(arr.length<=maxI)arr.push(old[arr.length]||{t:'SHOT',x:'—'});
+    locked.forEach(i=>{arr[i]=old[i]});
+  }
+  /* an approved image prompt is kept whatever happens to its shot; an
+     unapproved one stays only while the shot's wording is unchanged */
+  arr=arr.map((x,i)=>{const o=old[i];
+    if(!o)return x;
+    if(o.ma&&o.mj)return Object.assign({},x,{mj:o.mj,ma:true});
+    if(o.mj&&o.x===x.x&&!x.mj)return Object.assign({},x,{mj:o.mj});
+    return x});
   pushHist(code);
   const prev=ov[code]||{};
   ov[code]=Object.assign({},prev,{shots:arr,shotp:String(prompt).slice(0,400),updated:new Date().toISOString()});
+  applyOv();saveOv(code);
+}
+const MJ_STYLE='photoreal cinematic film still, ancient India, mythic epic, natural light, shallow depth of field, 35mm';
+async function askPrompts(code,prompt){
+  const s=BY[code],shots=s.shots||[];
+  const cur={title:s.t,what_happens:s.sum,as_filmed_in_cg:s.story||'',place:s.pl,point_of_view:s.pov,
+    krishna_presence:s.k,category:catOf(code)==='A'?'A (action)':'D (drama)',
+    shots:shots.map((x,i)=>({n:i+1,type:x.t,shot:x.x,approved:!!x.ma,prompt:x.mj||''})).filter((x,i)=>shots[i].a)};
+  const p=PREM+'\n\nYou are writing MIDJOURNEY image prompts, one for each shot, so that the shot list can be looked at as a storyboard.\n\n'+
+   'The scene and its shots:\n'+JSON.stringify(cur,null,1)+
+   '\n\nThe writer\'s instruction:\n+prompt+\n\n'+
+   'Write one prompt per shot, in the same order, for every shot in the list. A prompt is a single line of comma-separated visual clauses in this order: what is in frame and what it is doing, where it is, the time of day and the light, the shot size and lens, the mood, then the look ('+MJ_STYLE+' unless the instruction says otherwise), and it ends with Midjourney parameters, by default --ar 21:9 --style raw --v 7. Describe only what a still image can show: no camera moves, no cuts, no sound, no words or captions in the image, no named real people. Krishna may never be shown more than this scene shows him — if his presence is "Not present", "Spoken of", "Shadow or sound", "Hands" or "Effect", his face must not appear in the prompt. Keep each prompt under 60 words.\n\n'+
+   'A shot marked "approved": true must be returned with its existing prompt word for word.\n\n'+
+   'Reply with only a JSON object: {"prompts":[{"n":1,"text":"…"}]} with one entry for every shot, numbered from 1.';
+  return await samp.json(p,{signal:ctl.signal,cache:false,modelTier:'default'});
+}
+function applyPromptsEdit(code,prompt,r){
+  if(shotLocked(code))throw new Error('this scene is approved — take the approval off first');
+  const list=r&&(r.prompts||r.shots||(Array.isArray(r)?r:null));
+  if(!Array.isArray(list)||!list.length)throw new Error('no prompts came back');
+  const old=(BY[code].shots||[]).slice();
+  if(!old.length)throw new Error('there are no shots to write prompts for');
+  let used=0;
+  list.forEach((p,k)=>{
+    if(!p)return;
+    const txt=String(typeof p==='string'?p:(p.text||p.prompt||p.mj||'')).trim();
+    if(!txt)return;
+    let i=Number(p.n);i=isFinite(i)&&i>=1?Math.round(i)-1:k;
+    if(!old[i])return;
+    if(!old[i].a)return;                     /* only approved shots have prompts */
+    if(old[i].ma)return;                     /* approved prompt: left alone */
+    old[i]=Object.assign({},old[i],{mj:txt.slice(0,1400)});
+    used++;
+  });
+  if(!used)throw new Error('nothing usable came back');
+  const prev=ov[code]||{};
+  ov[code]=Object.assign({},prev,{shots:cleanShots(old),mjp:String(prompt).slice(0,400),updated:new Date().toISOString()});
   applyOv();saveOv(code);
 }
 async function askSeq(col,prompt){
@@ -736,6 +913,7 @@ async function askSeq(col,prompt){
   return await samp.json(p,{signal:ctl.signal,cache:false,modelTier:'default'});
 }
 function applySeqEdit(col,prompt,r){
+  if(col.ap)throw new Error('this sequence is approved — remove the approval first');
   if(!r||typeof r!=='object'||Array.isArray(r))throw new Error('nothing usable came back');
   let touched=false;
   if(typeof r.name==='string'&&r.name.trim()){col.name=r.name.trim().slice(0,60);touched=true}
@@ -752,22 +930,24 @@ function applySeqEdit(col,prompt,r){
   col.lastp=String(prompt).slice(0,400);
   persist();
 }
-async function runEdit(){
-  const key=edKey();if(!key||asking)return;
+async function runEdit(key){
+  if(!key||asking)return;
   const txt=(draft[key]||'').trim();
-  edErr='';
-  if(!txt){edErr='Type what you want changed first.';reopen();return}
-  if(!samp){edErr='Claude is not available in this view, so prompt editing is off.';reopen();return}
+  edErr={};
+  if(!txt){edErr[key]='Type what you want changed first.';reopen();return}
+  if(!samp){edErr[key]='Claude is not available in this view, so prompt editing is off.';reopen();return}
   asking=key;ctl=new AbortController();reopen();
   const kind=key.charAt(0),id=key.slice(2);
   try{
     if(kind==='s'){const r=await askScene(id,txt);applySceneEdit(id,txt,r);draft[key]='';asking=null;render();toast('Scene rewritten')}
     else if(kind==='h'){const r=await askShots(id,txt);applyShotsEdit(id,txt,r);draft[key]='';asking=null;render();toast('Shot list updated')}
+    else if(kind==='m'){const r=await askPrompts(id,txt);applyPromptsEdit(id,txt,r);draft[key]='';asking=null;render();toast('Image prompts written')}
     else{const col=state.cols.find(c=>c.id===id);if(!col)throw new Error('that sequence is gone');
       const r=await askSeq(col,txt);applySeqEdit(col,txt,r);draft[key]='';asking=null;render();toast('Sequence updated')}
-  }catch(e){asking=null;edErr=msgFor(e);reopen()}
+  }catch(e){asking=null;edErr[key]=msgFor(e);reopen()}
 }
 function renameScene(code,v){
+  if(sceneAp(code)){toast(LOCKED_SCENE);return}
   v=String(v||'').trim().slice(0,90);if(!v)return;
   const s=BY[code];if(v===sc(s,'t'))return;
   pushHist(code);
@@ -777,6 +957,7 @@ function renameScene(code,v){
   applyOv();saveOv(code);render();toast('Renamed');
 }
 function restoreVersion(code,i){
+  if(sceneAp(code)){toast(LOCKED_SCENE);return}
   const h=(ov[code]&&ov[code].hist)||[];const v=h[i];if(!v)return;
   pushHist(code);
   const prev=ov[code]||{};
@@ -794,8 +975,8 @@ function restoreVersion(code,i){
   ov[code]=next;applyOv();saveOv(code);render();toast('Restored');
 }
 /* ---------- shots by hand ---------- */
-let shotEdit=null;
 function setShots(code,arr,msg){
+  if(shotLocked(code)){toast(LOCKED_BY_SCENE);return}
   const prev=ov[code]||{};
   const a=cleanShots(arr)||[];
   if(a.length)ov[code]=Object.assign({},prev,{shots:a,updated:new Date().toISOString()});
@@ -806,6 +987,109 @@ function moveShot(code,i,d){
   const a=(BY[code].shots||[]).slice(),j=i+d;
   if(j<0||j>=a.length)return;const t=a[i];a[i]=a[j];a[j]=t;setShots(code,a);
 }
+
+/* ---------- the image a prompt made ----------
+   The viewer pastes the prompt into Midjourney, brings the picture back, and
+   Claude says whether the picture is the shot. */
+function shotPatch(code,i,patch,msg){
+  if(shotLocked(code)){toast(LOCKED_BY_SCENE);return}
+  const a=(BY[code].shots||[]).slice();if(!a[i])return;
+  a[i]=Object.assign({},a[i],patch);
+  Object.keys(patch).forEach(k=>{if(patch[k]===undefined)delete a[i][k]});
+  setShots(code,a,msg);
+}
+async function uploadImage(file){
+  if(!/^image\//.test(file.type||''))throw {code:'unsupported_type'};
+  if(file.size>20*1024*1024)throw {code:'too_large'};
+  if(!assets)throw {code:'not_granted'};
+  return await assets.upload(file,{type:file.type});
+}
+/* add a picture to a shot, or put one in the place of another */
+async function addShotImage(code,i,file,replaceAt){
+  const sh=(BY[code].shots||[])[i];if(!sh||!file)return;
+  if(shotLocked(code)){toast(LOCKED_BY_SCENE);return}
+  if(!sh.a){toast('Approve the shot first');return}
+  busyShot=i;reopen();
+  try{
+    const r=await uploadImage(file);
+    const imgs=(sh.imgs||[]).slice();
+    if(typeof replaceAt==='number'&&imgs[replaceAt]){
+      const old=imgs[replaceAt].id;
+      imgs[replaceAt]={id:r.id};
+      if(assets&&old)assets.delete(old).catch(()=>{});
+    }else{
+      if(imgs.length>=8){busyShot=null;toast('Eight images is the most a shot can hold');reopen();return}
+      imgs.push({id:r.id});
+    }
+    busyShot=null;
+    shotSel[code+':'+i]=typeof replaceAt==='number'?replaceAt:imgs.length-1;
+    shotPatch(code,i,{imgs:imgs,chk:undefined},typeof replaceAt==='number'?'Image replaced':'Image added');
+  }catch(e){
+    busyShot=null;
+    toast(e&&e.code==='too_large'?'That image is over 20 MB'
+      :e&&e.code==='unsupported_type'?'That is not an image file'
+      :e&&e.code==='not_granted'?'Images need edit access to this page':'Could not store the image');
+    reopen();
+  }
+}
+async function blobOf(id){
+  try{const r=await fetch('/_blob/'+id);if(!r.ok)return null;const b=await r.blob();return b.size?b:null}catch(e){return null}
+}
+/* show Claude every picture on the shot: which of them is the shot, and if
+   none of them is, how the prompt should change */
+async function checkShotImages(code,i){
+  const s=BY[code],sh=(s.shots||[])[i];
+  if(!sh||!(sh.imgs||[]).length)return;
+  if(!samp){toast('Claude is not available in this view');return}
+  busyShot=i;reopen();
+  try{
+    const blobs=[];
+    for(const g of sh.imgs){const b=await blobOf(g.id);if(b)blobs.push(b)}
+    if(!blobs.length){busyShot=null;toast('Could not read the images back — add them again');reopen();return}
+    const q=PREM+'\n\nYou are judging the pictures a writer generated for one shot of the film.\n\n'+
+      'The scene: '+s.t+'. '+s.sum+'\nPlace: '+s.pl+'. How much of Krishna is present in this scene: '+s.k+'.\n'+
+      'The shot ('+(i+1)+', '+sh.t+'): '+sh.x+'\n'+(sh.mj?'The prompt that made them: '+sh.mj+'\n':'')+
+      '\nThere '+(blobs.length===1?'is 1 image':'are '+blobs.length+' images')+', in order. For each one judge what is in frame, the framing and shot size, the place, the time of day and the light, and whether anyone shown should be shown — if the scene keeps Krishna off screen, his face must not be in the picture. Then say which single image is the best one for this shot, or none if not one of them will do.\n\n'+
+      'Reply with only a JSON object: {"best": the 1-based number of the best image or 0 if none will do, "note": "one or two plain sentences on the pick", "images": [{"n": 1, "ok": true or false, "note": "one short sentence"}], "prompt": "a better Midjourney prompt, only if none of them is right — otherwise an empty string"}';
+    const r=await samp.json(q,{images:blobs,cache:false,modelTier:'default'});
+    const per=[];
+    if(r&&Array.isArray(r.images))r.images.forEach((x,k)=>{if(x)per.push({i:(Number(x.n)||k+1)-1,ok:x.ok===true,note:String(x.note||'')})});
+    const best=Math.round(Number(r&&r.best)||0)-1;
+    const chk={best:best>=0&&best<(sh.imgs||[]).length?best:-1,note:String((r&&r.note)||''),fix:'',at:new Date().toISOString(),per:per};
+    const better=String((r&&r.prompt)||'').trim();
+    const patch={chk:chk};
+    if(chk.best<0&&better&&!sh.ma)patch.mj=better.slice(0,1400);
+    if(chk.best>=0)shotSel[code+':'+i]=chk.best;
+    busyShot=null;
+    shotPatch(code,i,patch,chk.best>=0?('Image '+(chk.best+1)+' is the one that fits'):(patch.mj?'None of them fit — the prompt has been rewritten':'None of them fit'));
+  }catch(e){
+    busyShot=null;
+    toast(e&&e.code==='images_unavailable'?'This view cannot send images to Claude':msgFor(e));
+    reopen();
+  }
+}
+/* write the prompt for one shot: the first time, and again after a bad batch */
+async function genShotPrompt(code,i,again){
+  const s=BY[code],sh=(s.shots||[])[i];
+  if(!sh||!samp||sh.ma)return;
+  if(shotLocked(code)){toast(LOCKED_BY_SCENE);return}
+  busyShot=i;reopen();
+  try{
+    const q=PREM+'\n\nWrite ONE Midjourney prompt, for one shot of the film.\n\n'+
+      'The scene: '+s.t+'. '+s.sum+'\n'+(s.story?'How the scene is filmed: '+s.story+'\n':'')+
+      'Place: '+s.pl+'. Krishna in this scene: '+s.k+'.\n'+
+      'The shot ('+sh.t+'): '+sh.x+'\n'+
+      (again?'The prompt that failed: '+(sh.mj||'(none)')+'\nWhat was wrong with the pictures it made: '+((sh.chk&&sh.chk.note)||'they did not match')+'\n':'')+
+      '\nThe prompt is a single line of comma-separated visual clauses, in this order: what is in frame and what it is doing, where it is, the time of day and the light, the shot size and lens, the mood, then the look ('+MJ_STYLE+'), and it ends with the Midjourney parameters --ar 21:9 --style raw --v 7. Describe only what a still image can show: no camera moves, no cuts, no sound, no words in the image. Never show more of Krishna than the scene shows. Keep it under 60 words.\n\n'+
+      'Reply with only a JSON object: {"text": "the prompt"}';
+    const r=await samp.json(q,{cache:false,modelTier:'default'});
+    const txt=String((r&&(r.text||r.prompt))||'').trim();
+    if(!txt)throw new Error('nothing came back');
+    busyShot=null;
+    shotPatch(code,i,{mj:txt.slice(0,1400),chk:undefined},again?'Prompt rewritten — try it in Midjourney again':'Prompt written');
+  }catch(e){busyShot=null;toast(msgFor(e));reopen()}
+}
+const fixShotPrompt=(code,i)=>genShotPrompt(code,i,true);
 
 /* ---------- diff ---------- */
 function diffWords(a,b){
@@ -829,8 +1113,11 @@ const diffHTML=(a,b)=>diffWords(a,b).map(p=>{
   return k==='-'?'<del>'+t+'</del>':k==='+'?'<ins>'+t+'</ins>':k==='~'?'<ins>'+t+'</ins>':t;
 }).join('');
 
-/* ---------- drawer ---------- */
-let dtab='scene';
+/* ---------- the scene workspace ----------
+   One page per scene, nothing hidden behind a tab: what the scene is, then
+   its shots, each with its image prompt and the image made from it, then the
+   options, then the history. */
+let shotEdit=null,mjEdit=null,histSel=0,histOpen=false,shotSel={};
 function where(code){for(let ci=0;ci<state.cols.length;ci++){const i=state.cols[ci].ids.indexOf(code);if(i>=0)return {ci,i}}return null}
 function srcHTML(code){
   const r=SRC[code];if(!r)return '';
@@ -839,35 +1126,123 @@ function srcHTML(code){
     : esc(r.c)+' ('+esc(r.k)+'): this scene is not in the texts.'+(r.n?' '+esc(r.n)+'.':'');
   return '<details class="srcd"><summary>Where this comes from</summary><div class="sbody">'+body+'</div></details>';
 }
-function shotsHTML(code){
-  const s=BY[code],shots=s.shots||[];
-  let h='<div class="acts"><button class="btn" id="addshot" type="button">Add a shot</button>'+
-    (shots.length?'<span class="sub">'+shots.length+' '+(shots.length===1?'shot':'shots')+'</span>':'<span class="sub">No shots yet</span>')+'</div>';
-  h+=shots.map((x,i)=>{
-    if(shotEdit===i)return '<div class="sform"><input id="sht" value="'+esc(x.t)+'" maxlength="16" placeholder="WIDE" aria-label="Shot type">'+
-      '<textarea id="shx" rows="3" placeholder="What the camera sees and does">'+esc(x.x)+'</textarea>'+
-      '<div class="acts"><button class="btn pri" type="button" data-shsave="'+i+'">Save</button><button class="btn" type="button" data-shcancel="1">Cancel</button></div></div>';
-    return '<div class="shot"><span class="n">'+(i+1)+'</span><div class="sb"><span class="st">'+esc(x.t)+'</span>'+
-      '<div class="sx">'+esc(shotText(x))+'</div></div>'+
-      '<div class="sa"><button type="button" data-shup="'+i+'" title="Move up" aria-label="Move up">↑</button>'+
-      '<button type="button" data-shdn="'+i+'" title="Move down" aria-label="Move down">↓</button>'+
-      '<button type="button" data-shed="'+i+'" title="Edit" aria-label="Edit">✎</button>'+
-      '<button type="button" data-shdel="'+i+'" title="Delete" aria-label="Delete">×</button></div></div>';
-  }).join('');
-  if(shotEdit===-1)h+='<div class="sform"><input id="sht" value="" maxlength="16" placeholder="WIDE" aria-label="Shot type">'+
-    '<textarea id="shx" rows="3" placeholder="What the camera sees and does"></textarea>'+
-    '<div class="acts"><button class="btn pri" type="button" data-shsave="-1">Save</button><button class="btn" type="button" data-shcancel="1">Cancel</button></div></div>';
-  if(samp)h+=edPanel('h:'+code,shots.length?'e.g. make shot 3 a close-up on her hands · add a shot of the door before the last one':'e.g. break this into 6 shots, open on the lamp and end on her face',(ov[code]&&ov[code].shotp)||'');
-  return h;
+function apBtn(on,attr,what,block){
+  if(!on&&block)return '<button class="btn ap" type="button" disabled title="'+esc(block)+'">Approve '+what+'</button><span class="sub">'+esc(block)+'</span>';
+  return '<button class="btn ap'+(on?' on':'')+'" type="button" '+attr+'>'+(on?'✓ Approved':'Approve '+what)+'</button>';
 }
-let histSel=0;
-function histHTML(code){
+/* one shot: what it is, the prompt that draws it, the image it made */
+function shotCard(code,x,i){
+  const lock=!!x.a,plock=!!x.ma,frozen=shotLocked(code),busy=busyShot===i;
+  if(shotEdit===i)return '<div class="shotcard"><div class="sform">'+
+    '<input id="sht" value="'+esc(x.t||'')+'" maxlength="16" placeholder="WIDE" aria-label="Shot type">'+
+    '<textarea id="shx" rows="3" placeholder="What the camera sees and does">'+esc(x.x||'')+'</textarea>'+
+    '<div class="acts"><button class="btn pri" type="button" data-shsave="'+i+'">Save the shot</button><button class="btn" type="button" data-shcancel="1">Cancel</button></div></div></div>';
+  let body='';
+  if(!lock){
+    body='<p class="sub hint">Approve this shot and it gets its Midjourney prompt, and a place to keep the pictures you make from it.</p>';
+  }else if(!x.mj){
+    body='<div class="mjcol"><h5>Midjourney prompt</h5>'+
+      (samp?'<div class="acts"><button class="btn pri" type="button" data-mjgen="'+i+'">Generate the prompt</button>'+
+        '<span class="sub">Claude writes it from this shot and the scene.</span></div>'
+        :'<p class="sub">Claude is not available in this view.</p>')+
+      '<div class="acts"><button class="btn" type="button" data-mjed="'+i+'">Write it by hand</button></div></div>';
+  }else{
+    const imgs=x.imgs||[];
+    const sel=Math.min(Math.max(shotSel[code+':'+i]||0,0),Math.max(imgs.length-1,0));
+    const chk=x.chk;
+    const per=k=>{const q=(chk&&chk.per||[]).find(z=>z.i===k);return q?q:null};
+    const strip=imgs.length
+      ? '<div class="thumbs">'+imgs.map((g,k)=>{const q=per(k);
+          return '<button type="button" class="thumb'+(k===sel?' sel':'')+(chk&&chk.best===k?' best':'')+(q&&!q.ok?' bad':'')+'" data-shpick="'+i+'_'+k+'" title="'+esc(q?q.note:('Image '+(k+1)))+'">'+
+            '<img src="/_blob/'+esc(g.id)+'" alt="Image '+(k+1)+' for shot '+(i+1)+'" loading="lazy">'+
+            '<span class="tn">'+(k+1)+(chk&&chk.best===k?' ✓':'')+'</span></button>'}).join('')+'</div>'
+      : '<label class="shotimg drop" data-drop="'+i+'"><span>Paste the prompt into Midjourney, then drop the picture here<br><u>or choose a file</u></span>'+
+        '<input type="file" accept="image/png,image/jpeg,image/webp,image/gif" data-shadd="'+i+'" hidden></label>';
+    const verdict=chk
+      ? '<div class="verdict '+(chk.best>=0?'ok':'bad')+'">'+(chk.best>=0?'✓ Image '+(chk.best+1)+' is the one that fits':'✗ None of these is the shot')+
+        (chk.note?'<div class="sub">'+esc(chk.note)+'</div>':'')+
+        ((chk.per||[]).length>1?'<div class="sub">'+chk.per.map(q=>(q.i+1)+': '+(q.ok?'fits':'no')+(q.note?' — '+esc(q.note):'')).join('<br>')+'</div>':'')+'</div>'
+      : (imgs.length?'<div class="sub">Not checked yet.</div>':'');
+    const imgActs='<div class="acts">'+
+      '<label class="btn">+ Add an image<input type="file" accept="image/png,image/jpeg,image/webp,image/gif" data-shadd="'+i+'" hidden></label>'+
+      (imgs.length?'<label class="btn">Replace<input type="file" accept="image/png,image/jpeg,image/webp,image/gif" data-shrep="'+i+'_'+sel+'" hidden></label>'+
+        '<button class="btn warn" type="button" data-shrm="'+i+'_'+sel+'">Remove</button>'+
+        (samp?'<button class="btn pri" type="button" data-shcheck="'+i+'">Check '+(imgs.length>1?('all '+imgs.length):'it')+'</button>':'')
+        :'')+'</div>'+
+      (imgs.length>1?'<p class="sub">Replace and Remove act on image '+(sel+1)+' — click a picture to pick another.</p>':'');
+    body='<div class="shotgrid"><div class="imgcol"><h5>Images'+(imgs.length?' ('+imgs.length+')':'')+'</h5>'+strip+verdict+imgActs+'</div>'+
+      '<div class="mjcol"><h5>Midjourney prompt'+(plock?' <span class="apchip">approved</span>':'')+'</h5>'+
+      (mjEdit===i
+        ? '<div class="sform"><textarea id="mjx" rows="5" placeholder="The prompt you would paste into Midjourney">'+esc(x.mj||'')+'</textarea>'+
+          '<div class="acts"><button class="btn pri" type="button" data-mjsave="'+i+'">Save the prompt</button><button class="btn" type="button" data-mjcancel="1">Cancel</button></div></div>'
+        : '<div class="mjbox">'+esc(x.mj)+'</div>'+
+          '<div class="acts"><button class="btn" type="button" data-mjcopy="'+i+'">Copy</button>'+
+          (plock||frozen?'':'<button class="btn" type="button" data-mjed="'+i+'">Edit</button>'+
+            '<button class="btn" type="button" data-mjgen="'+i+'">Write it again</button>')+
+          (frozen?'':apBtn(plock,'data-mjap="'+i+'"','this prompt'))+'</div>')+
+      '</div></div>';
+  }
+  return '<div class="shotcard'+(lock?' apd':'')+'" data-shot="'+i+'">'+
+    '<div class="shhead"><span class="n">Shot '+(i+1)+'</span><span class="st">'+esc(x.t||'SHOT')+'</span>'+
+      (busy?'<span class="busy"><i></i><i></i><i></i></span>':'')+
+      '<span class="grow"></span>'+
+      (lock||frozen?'':'<button class="ebtn" type="button" data-shup="'+i+'" title="Move this shot up" aria-label="Move up">↑</button>'+
+        '<button class="ebtn" type="button" data-shdn="'+i+'" title="Move this shot down" aria-label="Move down">↓</button>'+
+        '<button class="ebtn" type="button" data-shed="'+i+'" title="Edit this shot" aria-label="Edit">✎</button>'+
+        '<button class="ebtn" type="button" data-shdel="'+i+'" title="Delete this shot" aria-label="Delete">×</button>')+
+      (frozen?apChip(true):apBtn(lock,'data-shap="'+i+'"','this shot'))+'</div>'+
+    '<p class="shtext">'+esc(shotText(x))+'</p>'+
+    body+'</div>';
+}
+function shotsSection(code){
+  const s=BY[code],shots=s.shots||[],frozen=shotLocked(code);
+  const ap=shots.filter(x=>x.a).length,mj=shots.filter(x=>x.mj).length,imgs=shots.reduce((n,x)=>n+((x.imgs||[]).length),0);
+  let h='<div class="sect" id="sect-shots"><h3>Shots, prompts and images</h3>'+
+    '<p class="sub">Each shot is one camera take. Approve a shot and it gets a Midjourney prompt: paste the prompt into Midjourney, bring the picture back here, and Claude will say which picture is the shot.</p>'+
+    '<div class="acts">'+(frozen?'':'<button class="btn" id="addshot" type="button">Add a shot</button>')+
+    '<span class="sub">'+(shots.length
+      ? shots.length+' '+(shots.length===1?'shot':'shots')+' · '+ap+' approved · '+mj+' with a prompt'+(imgs?' · '+imgs+' image'+(imgs===1?'':'s'):'')
+      : 'No shots yet')+'</span>'+
+    (mj?'<span class="grow"></span><button class="btn" id="mjcopyall" type="button">Copy every prompt</button>':'')+'</div>';
+  if(frozen)h+='<div class="lockmsg">'+LOCKED_BY_SCENE+' Until then the shots, their prompts and their images stay as they are.</div>';
+  else if(samp)h+=edPanel('h:'+code,'Write or change the shots',
+    shots.length?'e.g. make shot 3 a close-up on her hands · add a shot of the door before the last one'
+      :'e.g. break this scene into 6 shots, open on the lamp and end on her face',
+    (ov[code]&&ov[code].shotp)||'');
+  if(shots.length)h+='<div class="shotlist">'+shots.map((x,i)=>shotCard(code,x,i)).join('')+'</div>';
+  if(shotEdit===-1)h+='<div class="shotcard"><div class="sform"><input id="sht" value="" maxlength="16" placeholder="WIDE" aria-label="Shot type">'+
+    '<textarea id="shx" rows="3" placeholder="What the camera sees and does"></textarea>'+
+    '<div class="acts"><button class="btn pri" type="button" data-shsave="-1">Add the shot</button><button class="btn" type="button" data-shcancel="1">Cancel</button></div></div></div>';
+  if(samp&&!frozen&&ap>mj)h+=edPanel('m:'+code,'Write the prompts for every approved shot',
+    'e.g. make them all night, add film grain · keep his face out of frame',
+    (ov[code]&&ov[code].mjp)||'');
+  return h+'</div>';
+}
+function optionsSection(code){
+  const s=BY[code],w=where(code),cat=catOf(code),ap=sceneAp(code);
+  const colOpts=state.cols.map((c,i)=>'<option value="'+i+'"'+(w&&w.ci===i?' selected':'')+'>'+esc(colName(c))+(c.ap?' ✓':'')+'</option>').join('');
+  const inAp=!!(w&&state.cols[w.ci].ap);
+  return '<div class="sect"><h3>Options</h3>'+
+   '<div class="orow"><span class="olab">'+T('category')+'</span><div class="seg" role="group" aria-label="'+esc(T('category'))+'">'+
+     '<button type="button" data-setcat="D" aria-pressed="'+(cat==='D')+'"'+(ap?' disabled':'')+'>'+T('catD')+'</button>'+
+     '<button type="button" data-setcat="A" aria-pressed="'+(cat==='A')+'"'+(ap?' disabled':'')+'>'+T('catA')+'</button></div>'+
+     '<span class="sub">How it counts in the rhythm strip.</span></div>'+
+   '<div class="orow"><span class="olab">Position</span>'+(w
+     ?'<button class="btn" type="button" data-mv="-1">'+T('earlier')+'</button><button class="btn" type="button" data-mv="1">'+T('later')+'</button>'+
+      '<label class="sub" for="dcol2">'+T('moveTo')+'</label><select id="dcol2">'+colOpts+'</select>'+
+      '<button class="btn" type="button" data-unplace="1">'+T('toBin')+'</button>'
+     :'<select id="dcol" aria-label="'+esc(T('sequence'))+'">'+colOpts+'</select><button class="btn pri" type="button" data-place="1">'+T('addToSeq')+'</button>')+'</div>'+
+   (inAp?'<div class="lockmsg">This scene sits in an approved sequence, so it cannot be moved.</div>':'')+
+   '<div class="orow"><span class="olab">Reference</span><button class="btn" type="button" data-copycode="1">Copy the code ('+code+')</button>'+
+     (SRC[code]&&SRC[code].u?'<button class="btn" type="button" data-opensrc="1">Open the source ↗</button>':'')+'</div>'+
+   '</div>';
+}
+function histSection(code){
   const s=BY[code],h=s.hist||[];
-  if(!h.length)return '<div class="hist">This scene has not been changed yet. Every edit from here on is kept, with the earlier wording beside the new one.</div>';
+  if(!h.length)return '<div class="sect"><h3>History</h3><p class="sub">This scene has not been changed yet. Every edit from here on is kept, with the earlier wording beside the new one.</p></div>';
   const sel=Math.min(histSel,h.length-1),v=h[sel];
-  const rows='<div class="acts" style="flex-direction:column;align-items:stretch;gap:6px">'+h.map((x,i)=>
-    '<button class="vrow" type="button" data-ver="'+i+'" aria-pressed="'+(i===sel)+'"><span class="vt"><b>'+(x.base?'The original':esc(x.t||'Earlier version'))+'</b>'+
-    '<span>'+esc(when(x.at))+(x.prompt?' · “'+esc(x.prompt)+'”':'')+'</span></span></button>').join('')+'</div>';
+  const rows=h.map((x,i)=>'<button class="vrow" type="button" data-ver="'+i+'" aria-pressed="'+(i===sel)+'"><b>'+(x.base?'The original':esc(x.t||'Earlier version'))+'</b>'+
+    '<span>'+esc(when(x.at))+(x.prompt?' · “'+esc(x.prompt)+'”':'')+'</span></button>').join('');
   const F=[['t','Title'],['sum',T('hWhat')],['story',T('hCG')],['why',T('hWhy')],['turn',T('hTurn')]];
   let d='';
   F.forEach(f=>{
@@ -883,98 +1258,133 @@ function histHTML(code){
   if((v.rasa||'')!==s.rasa)meta.push('rasa '+esc(v.rasa||'—')+' → '+esc(s.rasa));
   if((v.k||'')!==s.k)meta.push('Krishna '+esc(v.k||'—')+' → '+esc(s.k));
   if((v.shots||[]).length!==(s.shots||[]).length)meta.push('shots '+(v.shots||[]).length+' → '+(s.shots||[]).length);
-  return rows+
-    '<div class="sub" style="margin-top:4px">Red is what that version said; green is what it says now.</div>'+
-    d+(meta.length?'<div class="hist">'+meta.join(' · ')+'</div>':'')+
-    '<div class="acts"><button class="btn pri" type="button" data-restore="'+sel+'">Restore this version</button></div>';
+  return '<details class="sect hsect"'+(histOpen?' open':'')+'><summary><h3>History ('+h.length+')</h3></summary>'+
+    '<div class="vrows">'+rows+'</div>'+
+    '<p class="sub">Red is what that version said; green is what it says now.</p>'+
+    d+(meta.length?'<p class="sub">'+meta.join(' · ')+'</p>':'')+
+    (sceneAp(code)?'<div class="lockmsg">'+LOCKED_SCENE+'</div>'
+      :'<div class="acts"><button class="btn" type="button" data-restore="'+sel+'">Restore this version</button></div>')+
+    '</details>';
 }
-function drawer(code,keep){
+function scenePanel(code,keep){
   const s=BY[code];if(!s)return;
-  if(openCode!==code){dtab='scene';histSel=0;shotEdit=null}
+  if(openCode!==code){histSel=0;shotEdit=null;mjEdit=null;histOpen=false}
   openCode=code;openSeq=null;
-  const w=where(code),cat=catOf(code),order=flat();
-  const colOpts=state.cols.map((c,i)=>'<option value="'+i+'"'+(w&&w.ci===i?' selected':'')+'>'+esc(colName(c))+'</option>').join('');
-  const tabs='<div class="dtabs" role="tablist">'+
-    [['scene','Scene'],['shots','Shots'+(s.shots&&s.shots.length?' ('+s.shots.length+')':'')],['hist','History'+(s.hist&&s.hist.length?' ('+s.hist.length+')':'')]]
-    .map(t=>'<button type="button" role="tab" data-dtab="'+t[0]+'" aria-selected="'+(dtab===t[0])+'">'+t[1]+'</button>').join('')+'</div>';
-  let body='';
-  if(dtab==='shots')body=shotsHTML(code);
-  else if(dtab==='hist')body=histHTML(code);
-  else body=
-   '<div class="acts"><div class="seg" role="group" aria-label="'+esc(T('category'))+'"><button type="button" data-setcat="D" aria-pressed="'+(cat==='D')+'">'+T('catD')+'</button><button type="button" data-setcat="A" aria-pressed="'+(cat==='A')+'">'+T('catA')+'</button></div>'+
-   (w?'<button class="btn" type="button" data-mv="-1">'+T('earlier')+'</button><button class="btn" type="button" data-mv="1">'+T('later')+'</button><button class="btn" type="button" data-unplace="1">'+T('toBin')+'</button>'
-     :'<select id="dcol" aria-label="'+esc(T('sequence'))+'">'+colOpts+'</select><button class="btn pri" type="button" data-place="1">'+T('addToSeq')+'</button>')+'</div>'+
-   (w?'<div class="acts"><label for="dcol2" class="sub">'+T('moveTo')+'</label><select id="dcol2">'+colOpts+'</select></div>':'')+
-   (samp?edPanel('s:'+code,'e.g. make the turn land harder and cut it to one minute · give her the last line · move it to night',s.lastp||''):'')+
-   '<div><h4>'+T('hWhat')+'</h4><p>'+esc(sc(s,'sum'))+'</p></div>'+
-   (s.story?'<div><h4>'+T('hCG')+'</h4><p>'+esc(sc(s,'story'))+'</p></div>':'')+
-   '<div><h4>'+T('hWhy')+'</h4><p>'+esc(sc(s,'why'))+'</p></div>'+
-   (s.turn?'<div><h4>'+T('hTurn')+'</h4><p>'+esc(sc(s,'turn'))+'</p></div>':'')+
-   '<dl class="kv"><dt>'+T('kEvent')+'</dt><dd>'+esc(term('evn',s.evn))+' ('+s.src+')</dd><dt>'+T('kPlace')+'</dt><dd>'+esc(term('pl',s.pl))+'</dd><dt>'+T('kPov')+'</dt><dd>'+esc(term('pov',s.pov))+'</dd><dt>'+T('kKrishna')+'</dt><dd>'+esc(term('k',s.k))+'</dd><dt>'+T('kRasa')+'</dt><dd>'+esc(term('rasa',s.rasa))+'</dd><dt>'+T('kRun')+'</dt><dd>'+esc(s.mins)+' '+T('min')+'</dd><dt>'+T('kTier')+'</dt><dd>'+T('tierOf',{t:s.tier})+'</dd></dl>'+
-   '<div><h4>'+T('hGenres')+'</h4><div class="tags">'+s.gen.map(g=>'<span>'+esc(term('gen',g))+'</span>').join('')+'</div></div>'+
-   srcHTML(code);
+  const w=where(code),cat=catOf(code),order=flat(),ap=sceneAp(code);
   $('drawer').innerHTML=
-   '<div class="dh"><div><div class="top"><span class="code">'+code+'</span><span class="chip" style="'+(cat==='A'?'background:var(--action-bg);color:var(--action)':'')+'">'+catLabel(cat)+'</span>'+(s.ed?'<span class="edflag">edited</span>':'')+'</div><h3>'+esc(sc(s,'t'))+'</h3>'+
-   '<div class="sub">'+(w?esc(T('pos',{p:order.indexOf(code)+1,n:order.length,s:colName(state.cols[w.ci])})):esc(T('inBin')))+'</div></div><button class="btn" id="dclose" type="button">'+esc(T('close'))+'</button></div>'+
-   tabs+body;
-  $('drawer').hidden=false;$('veil').hidden=false;
-  if(!keep)$('dclose').focus();
+   '<div class="sbar"><button class="btn" id="dclose" type="button">‹ Back to the board</button>'+
+     '<span class="code">'+code+'</span>'+
+     '<span class="chip" style="'+(cat==='A'?'background:var(--action-bg);color:var(--action)':'')+'">'+catLabel(cat)+'</span>'+
+     (s.ed?'<span class="edflag">edited</span>':'')+apChip(ap)+
+     '<span class="sub">'+(w?esc(T('pos',{p:order.indexOf(code)+1,n:order.length,s:colName(state.cols[w.ci])})):esc(T('inBin')))+'</span>'+
+     '<span class="grow"></span>'+apBtn(ap,'data-sceneap="1"','this scene',ap?'':sceneApBlock(code))+'</div>'+
+   '<div class="sheet">'+
+   '<div class="sect first"><h3>The scene</h3><h1>'+esc(sc(s,'t'))+'</h1>'+
+     (ap?'<div class="lockmsg">Approved '+esc(when(s.apAt))+'. Nothing rewrites this scene, its shots, its prompts or its images until the approval is taken off'+(seqHolding(code)?', and its sequence is approved too, so that one comes off first':'')+'.</div>'
+       :'<p class="sub">'+esc(sceneApBlock(code)||'Every shot is approved — this scene is ready to approve.')+'</p>')+
+     '<div class="scgrid"><div>'+
+       '<h4>'+T('hWhat')+'</h4><p>'+esc(sc(s,'sum'))+'</p>'+
+       (s.story?'<h4>'+T('hCG')+'</h4><p>'+esc(sc(s,'story'))+'</p>':'')+
+       '<h4>'+T('hWhy')+'</h4><p>'+esc(sc(s,'why'))+'</p>'+
+       (s.turn?'<h4>'+T('hTurn')+'</h4><p>'+esc(sc(s,'turn'))+'</p>':'')+
+     '</div><div>'+
+       '<dl class="kv"><dt>'+T('kEvent')+'</dt><dd>'+esc(term('evn',s.evn))+' ('+s.src+')</dd><dt>'+T('kPlace')+'</dt><dd>'+esc(term('pl',s.pl))+'</dd><dt>'+T('kPov')+'</dt><dd>'+esc(term('pov',s.pov))+'</dd><dt>'+T('kKrishna')+'</dt><dd>'+esc(term('k',s.k))+'</dd><dt>'+T('kRasa')+'</dt><dd>'+esc(term('rasa',s.rasa))+'</dd><dt>'+T('kRun')+'</dt><dd>'+esc(s.mins)+' '+T('min')+'</dd><dt>'+T('kTier')+'</dt><dd>'+T('tierOf',{t:s.tier})+'</dd></dl>'+
+       '<div class="tags">'+s.gen.map(g=>'<span>'+esc(term('gen',g))+'</span>').join('')+'</div>'+
+       srcHTML(code)+
+     '</div></div>'+
+     (ap?'':(samp?edPanel('s:'+code,'Rewrite this scene','e.g. make the turn land harder and cut it to one minute · give her the last line · move it to night',s.lastp||''):''))+
+   '</div>'+
+   shotsSection(code)+
+   optionsSection(code)+
+   histSection(code)+
+   '</div>';
+  $('drawer').hidden=false;$('veil').hidden=true;
+  if(!keep){$('drawer').scrollTop=0;$('dclose').focus()}
 }
-function seqDrawer(id,keep){
+function seqPanel(id,keep){
   const col=state.cols.find(c=>c.id===id);if(!col){closeDrawer();return}
   openSeq=id;openCode=null;
   const mins=col.ids.reduce((a,i)=>a+BY[i].mid,0),note=colNote(col);
   const shots=col.ids.reduce((a,i)=>a+((BY[i].shots||[]).length),0);
+  const imgs=col.ids.reduce((a,i)=>a+((BY[i].shots||[]).filter(x=>x.img).length),0);
   const list=col.ids.length
-    ? col.ids.map((i,n)=>'<div class="hist"><b class="mono">'+(n+1)+'. '+i+'</b> · '+esc(sc(BY[i],'t'))+' · '+catLabel(catOf(i))+((BY[i].shots||[]).length?' · '+BY[i].shots.length+' shots':'')+'</div>').join('')
-    : '<div class="hist">No scenes here yet.</div>';
+    ? '<div class="seqlist">'+col.ids.map((i,n)=>{const x=BY[i];
+        return '<button class="vrow" type="button" data-open="'+i+'"><b>'+(n+1)+'. '+esc(sc(x,'t'))+'</b>'+
+          '<span>'+i+' · '+catLabel(catOf(i))+' · '+esc(x.mins)+' '+T('min')+
+          ((x.shots||[]).length?' · '+x.shots.filter(y=>y.a).length+'/'+x.shots.length+' shots':'')+(sceneAp(i)?' · approved':'')+'</span></button>'}).join('')+'</div>'
+    : '<p class="sub">No scenes here yet.</p>';
   $('drawer').innerHTML=
-   '<div class="dh"><div><div class="top"><span class="code">SEQUENCE</span></div><h3>'+esc(colName(col))+'</h3>'+
-   '<div class="sub">'+col.ids.length+' '+T(col.ids.length===1?'scene':'scenes')+' · ≈ '+fmtMin(mins)+(shots?' · '+shots+' shots':'')+'</div></div><button class="btn" id="dclose" type="button">'+esc(T('close'))+'</button></div>'+
-   (note?'<div><h4>Story context</h4><p>'+esc(note)+'</p></div>':'')+
-   (samp?edPanel('q:'+id,'e.g. call it “Ink and the letter” and say in two lines what it does in the story · put the night scenes last',col.lastp||''):'')+
-   '<div><h4>Scenes in order</h4>'+list+'</div>';
-  $('drawer').hidden=false;$('veil').hidden=false;
-  if(!keep)$('dclose').focus();
+   '<div class="sbar"><button class="btn" id="dclose" type="button">‹ Back to the board</button>'+
+     '<span class="code">SEQUENCE</span>'+apChip(col.ap)+
+     '<span class="sub">'+col.ids.length+' '+T(col.ids.length===1?'scene':'scenes')+' · ≈ '+fmtMin(mins)+(shots?' · '+shots+' shots':'')+(imgs?' · '+imgs+' images':'')+'</span>'+
+     '<span class="grow"></span>'+apBtn(col.ap,'data-seqap="'+esc(id)+'"','this sequence',col.ap?'':seqApBlock(col))+'</div>'+
+   '<div class="sheet">'+
+   '<div class="sect first"><h3>The sequence</h3><h1>'+esc(colName(col))+'</h1>'+
+     (col.ap?'<div class="lockmsg">Approved '+esc(when(col.apAt))+'. Its name, its story context and the order of its scenes are locked, its scenes cannot be unapproved, and it cannot be deleted.</div>'
+       :'<p class="sub">'+esc(seqApBlock(col)||'Every scene in it is approved — this sequence is ready to approve.')+'</p>')+
+     (note?'<h4>Story context</h4><p>'+esc(note)+'</p>':'<p class="sub">No story context yet.</p>')+
+     (col.ap?'':(samp?edPanel('q:'+id,'Rename it or change its context','e.g. call it “Ink and the letter” and say in two lines what it does in the story · put the night scenes last',col.lastp||''):''))+
+   '</div>'+
+   '<div class="sect"><h3>Scenes in order</h3>'+list+'</div>'+
+   '<div class="sect"><h3>Options</h3><div class="orow"><span class="olab">This sequence</span>'+
+     '<button class="btn" type="button" data-seqread="'+esc(id)+'">Read it through</button>'+
+     '<button class="btn warn" type="button" data-seqdel="'+esc(id)+'"'+(col.ap?' disabled':'')+'>Delete it</button></div></div>'+
+   '</div>';
+  $('drawer').hidden=false;$('veil').hidden=true;
+  if(!keep){$('drawer').scrollTop=0;$('dclose').focus()}
 }
+const drawer=scenePanel,seqDrawer=seqPanel;
 function closeDrawer(){
   if(asking&&ctl){ctl.abort();asking=null}
-  openCode=null;openSeq=null;edErr='';shotEdit=null;$('drawer').hidden=true;$('veil').hidden=true;
+  openCode=null;openSeq=null;edErr={};shotEdit=null;mjEdit=null;busyShot=null;$('drawer').hidden=true;$('veil').hidden=true;
 }
 function place(code,ci,at){
   if(!state.cols.length)state.cols.push({id:'c'+Date.now(),name:'Sequence A',ids:[]});
   ci=Math.max(0,Math.min(ci,state.cols.length-1));
-  const w=where(code);if(w)state.cols[w.ci].ids.splice(w.i,1);
+  const w=where(code);
+  if(w&&state.cols[w.ci].ap){toast('That scene sits in an approved sequence');return false}
+  if(state.cols[ci].ap){toast('That sequence is approved — its order is locked');return false}
+  if(w)state.cols[w.ci].ids.splice(w.i,1);
   const ids=state.cols[ci].ids;ids.splice(at==null?ids.length:at,0,code);
+  return true;
 }
 function move(code,d){
-  const w=where(code);if(!w)return;const ids=state.cols[w.ci].ids,t=w.i+d;
+  const w=where(code);if(!w)return false;
+  if(state.cols[w.ci].ap){toast(LOCKED_SEQ);return false}
+  const nx=state.cols[w.ci+(d<0?-1:1)];
+  const ids=state.cols[w.ci].ids,t=w.i+d;
+  if((t<0||t>=ids.length)&&nx&&nx.ap){toast('The next sequence is approved — its order is locked');return false}
   if(t>=0&&t<ids.length){const x=ids[w.i];ids[w.i]=ids[t];ids[t]=x}
   else if(d<0&&w.ci>0){ids.splice(w.i,1);state.cols[w.ci-1].ids.push(code)}
   else if(d>0&&w.ci<state.cols.length-1){ids.splice(w.i,1);state.cols[w.ci+1].ids.unshift(code)}
+  return true;
 }
 
 /* ---------- read-through ---------- */
+let rdMj=false;
 function readThrough(keep){
   const order=flat();
   const b=curBoard();
   let n=0,h='<div class="rbar"><span class="rstat">'+order.length+' '+T(order.length===1?'scene':'scenes')+' · ≈ '+fmtMin(order.reduce((a,i)=>a+BY[i].mid,0))+'</span>'+
+    '<button class="btn" id="rmj" type="button" aria-pressed="'+rdMj+'">Image prompts: '+(rdMj?'on':'off')+'</button>'+
     '<button class="btn" id="rprint" type="button">Print</button><button class="btn" id="rclose" type="button">Close</button></div>'+
     '<div class="rwrap"><h1>'+esc(bName(b))+'</h1>'+(bDesc(b)?'<div class="rdesc">'+esc(bDesc(b))+'</div>':'');
   if(!order.length)h+='<p class="rdesc">Nothing is on this board yet.</p>';
   state.cols.forEach(c=>{
     if(!c.ids.length)return;
     const mins=c.ids.reduce((a,i)=>a+BY[i].mid,0);
-    h+='<div class="rseq"><h2>'+esc(colName(c))+'</h2><div class="rstat">'+c.ids.length+' '+T(c.ids.length===1?'scene':'scenes')+' · ≈ '+fmtMin(mins)+'</div>'+
+    h+='<div class="rseq"><h2>'+esc(colName(c))+(c.ap?' <span class="apchip">approved</span>':'')+'</h2><div class="rstat">'+c.ids.length+' '+T(c.ids.length===1?'scene':'scenes')+' · ≈ '+fmtMin(mins)+'</div>'+
       (colNote(c)?'<div class="rnote">'+esc(colNote(c))+'</div>':'')+'</div>';
     c.ids.forEach(i=>{
       const s=BY[i];n++;
-      h+='<div class="rsc"><div class="rh"><span>'+n+'</span><span>'+i+'</span><span>'+catLabel(catOf(i)).toUpperCase()+'</span><span>'+esc(term('pl',s.pl))+'</span><span>'+esc(s.mins)+' '+T('min')+'</span></div>'+
+      h+='<div class="rsc"><div class="rh"><span>'+n+'</span><span>'+i+'</span>'+(s.ap?'<span class="apchip">approved</span>':'')+'<span>'+catLabel(catOf(i)).toUpperCase()+'</span><span>'+esc(term('pl',s.pl))+'</span><span>'+esc(s.mins)+' '+T('min')+'</span></div>'+
         '<h3>'+esc(sc(s,'t'))+'</h3>'+
         '<p>'+esc(sc(s,'sum'))+'</p>'+
         (s.story?'<p class="rcg">'+esc(sc(s,'story'))+'</p>':'')+
         (s.turn?'<p class="rcg"><b>'+T('hTurn')+'</b> — '+esc(sc(s,'turn'))+'</p>':'')+
-        ((s.shots&&s.shots.length)?'<ul class="rshots">'+s.shots.map((x,k)=>'<li><b>'+(k+1)+' · '+esc(x.t)+'</b> — '+esc(shotText(x))+'</li>').join('')+'</ul>':'')+
+        ((s.shots&&s.shots.length)?'<ul class="rshots">'+s.shots.map((x,k)=>'<li><b>'+(k+1)+' · '+esc(x.t)+'</b>'+(x.a?' <span class="apchip">approved</span>':'')+' — '+esc(shotText(x))+
+          (x.img?'<div class="rimg"><img src="/_blob/'+esc(x.img)+'" alt="" loading="lazy"></div>':'')+
+          (rdMj&&x.mj?'<div class="mjbox">'+esc(x.mj)+'</div>':'')+'</li>').join('')+'</ul>':'')+
         '</div>';
     });
   });
@@ -994,29 +1404,23 @@ function showCtx(x,y,html,kind,id){
   c.style.top=Math.max(6,Math.min(y,innerHeight-r.height-6))+'px';
 }
 function ctxScene(code,x,y){
-  const s=BY[code],w=where(code),cat=catOf(code),r=SRC[code];
+  const s=BY[code];
   const h='<div class="ch">'+esc(sc(s,'t'))+'</div>'+
-    '<button type="button" data-cx="open">Open scene</button>'+
-    '<button type="button" data-cx="rename">Rename…</button>'+
-    (samp?'<button type="button" data-cx="prompt">Edit with a prompt…</button>':'')+
-    '<button type="button" data-cx="shots">Shots'+((s.shots&&s.shots.length)?' ('+s.shots.length+')':'')+'…</button>'+
-    '<button type="button" data-cx="hist">History'+((s.hist&&s.hist.length)?' ('+s.hist.length+')':'')+'…</button><hr>'+
-    '<button type="button" data-cx="cat">Make it '+(cat==='A'?T('catD'):T('catA'))+'</button>'+
-    (w?'<button type="button" data-cx="up">Move earlier</button><button type="button" data-cx="down">Move later</button><button type="button" data-cx="bin">Return to the bin</button>'
-      :'<button type="button" data-cx="add">Add to the last sequence</button>')+'<hr>'+
-    '<button type="button" data-cx="copy">Copy the code ('+code+')</button>'+
-    (r&&r.u?'<button type="button" data-cx="src">Open the source ↗</button>':'');
+    '<button type="button" data-cx="open">Open this scene</button>'+
+    '<button type="button" data-cx="shots">Go to its shots'+((s.shots||[]).length?' ('+s.shots.length+')':'')+'</button>'+
+    '<button type="button" data-cx="rename"'+(s.ap?' disabled':'')+'>Rename…</button><hr>'+
+    '<button type="button" data-cx="approve">'+(s.ap?'Remove the approval':'Approve this scene')+'</button>';
   showCtx(x,y,h,'scene',code);
 }
 function ctxSeq(id,x,y){
   const col=state.cols.find(c=>c.id===id);if(!col)return;
   const h='<div class="ch">'+esc(colName(col))+'</div>'+
-    '<button type="button" data-cx="open">Open sequence</button>'+
-    '<button type="button" data-cx="rename">Rename…</button>'+
-    (samp?'<button type="button" data-cx="prompt">Edit with a prompt…</button>':'')+
-    '<button type="button" data-cx="read">Read this sequence</button><hr>'+
+    '<button type="button" data-cx="open">Open this sequence</button>'+
+    '<button type="button" data-cx="read">Read it through</button>'+
+    '<button type="button" data-cx="rename"'+(col.ap?' disabled':'')+'>Rename…</button><hr>'+
+    '<button type="button" data-cx="approve">'+(col.ap?'Remove the approval':'Approve this sequence')+'</button>'+
     '<button type="button" data-cx="after">Add a sequence after this</button>'+
-    '<button type="button" data-cx="del">Delete the sequence</button>';
+    '<button type="button" data-cx="del"'+(col.ap?' disabled':'')+'>Delete the sequence</button>';
   showCtx(x,y,h,'seq',id);
 }
 function ctxRename(cur){
@@ -1031,7 +1435,7 @@ function hidePeek(){clearTimeout(peekT);peekT=null;peekFor=null;peekArm=null;$('
 function showPeek(code,el){
   const s=BY[code];if(!s)return;
   const sh=(s.shots||[]).slice(0,3);
-  $('peek').innerHTML='<div class="pm"><span>'+code+'</span><span>'+catLabel(catOf(code)).toUpperCase()+'</span><span>'+esc(term('evn',s.evn))+'</span><span>'+esc(s.mins)+' '+T('min')+'</span></div>'+
+  $('peek').innerHTML='<div class="pm"><span>'+code+'</span>'+(s.ap?'<span class="apchip">approved</span>':'')+'<span>'+catLabel(catOf(code)).toUpperCase()+'</span><span>'+esc(term('evn',s.evn))+'</span><span>'+esc(s.mins)+' '+T('min')+'</span></div>'+
     '<h4>'+esc(sc(s,'t'))+'</h4>'+
     '<p>'+esc(sc(s,'sum'))+'</p>'+
     (s.turn?'<p><span class="pl">'+T('hTurn')+'</span><br>'+esc(sc(s,'turn'))+'</p>':'')+
@@ -1050,11 +1454,10 @@ function showPeek(code,el){
 document.addEventListener('click',e=>{
   const t=e.target;
   if(!t.closest('#ctx'))hideCtx();
-  const add=t.closest('[data-add]');if(add){place(add.dataset.add,state.cols.length-1);persist();render();toast('tAdded',{s:colName(state.cols[state.cols.length-1])});return}
+  const add=t.closest('[data-add]');if(add){if(place(add.dataset.add,state.cols.length-1)){persist();render();toast('tAdded',{s:colName(state.cols[state.cols.length-1])})}return}
   const mo=t.closest('[data-more]');if(mo){const r=mo.getBoundingClientRect();hidePeek();ctxScene(mo.dataset.more,r.left-4,r.bottom+4);return}
   const fo=t.closest('[data-fold]');if(fo){toggleFold(fo.dataset.fold);return}
-  const sq=t.closest('[data-seq]');if(sq){
-    if(isMob()){const r=sq.getBoundingClientRect();ctxSeq(sq.dataset.seq,r.left-150,r.bottom+4)}else seqDrawer(sq.dataset.seq);return}
+  const sq=t.closest('[data-seq]');if(sq){seqPanel(sq.dataset.seq);return}
   const del=t.closest('[data-del]');if(del){delSeq(del.dataset.del);return}
   if(t.id==='newcol'){addSeq();return}
   if(t.id==='delboard'){delBoard();return}
@@ -1062,31 +1465,27 @@ document.addEventListener('click',e=>{
   if(t.id==='dupboard'){dupBoard();return}
   if(t.id==='btn-read'){readThrough();return}
   if(t.id==='rclose'){closeRead();return}
+  if(t.id==='rmj'){rdMj=!rdMj;readThrough(true);return}
   if(t.id==='rprint'){window.print();return}
-  const op=t.closest('[data-open]');if(op){drawer(op.dataset.open);return}
+  const op=t.closest('[data-open]');if(op){scenePanel(op.dataset.open);return}
   if(t.closest('#ctx')){
     const b=t.closest('button[data-cx]');if(!b||!ctxFor)return;
     const a=b.dataset.cx,k=ctxFor.kind,id=ctxFor.id;
-    if(a==='rename'){ctxRename(k==='scene'?sc(BY[id],'t'):colName(state.cols.find(c=>c.id===id)||{name:''}));return}
+    if(a==='rename'){
+      if(k==='scene'&&sceneAp(id)){hideCtx();toast(LOCKED_SCENE);return}
+      if(k==='seq'&&seqApId(id)){hideCtx();toast(LOCKED_SEQ);return}
+      ctxRename(k==='scene'?sc(BY[id],'t'):colName(state.cols.find(c=>c.id===id)||{name:''}));return}
     if(a==='rcancel'){hideCtx();return}
     if(a==='rsave'){const v=$('ctxin').value;hideCtx();if(k==='scene')renameScene(id,v);else renameSeq(id,v);return}
     hideCtx();
     if(k==='scene'){
-      if(a==='open'){drawer(id)}
-      else if(a==='prompt'){dtab='scene';drawer(id);const p=$('edp');if(p){p.focus()}}
-      else if(a==='shots'){drawer(id);dtab='shots';drawer(id,true)}
-      else if(a==='hist'){drawer(id);dtab='hist';drawer(id,true)}
-      else if(a==='cat'){const n=catOf(id)==='A'?'D':'A';if(n===BASE[id].cat)delete state.cat[id];else state.cat[id]=n;persist(true);render()}
-      else if(a==='up'){move(id,-1);persist();render()}
-      else if(a==='down'){move(id,1);persist();render()}
-      else if(a==='bin'){const w=where(id);if(w){state.cols[w.ci].ids.splice(w.i,1);persist();render()}}
-      else if(a==='add'){place(id,state.cols.length-1);persist();render()}
-      else if(a==='copy'){navigator.clipboard&&navigator.clipboard.writeText(id).then(()=>toast('Copied '+id),()=>{})}
-      else if(a==='src'){const r=SRC[id];if(r&&r.u)window.open(r.u,'_blank','noopener')}
+      if(a==='open'){scenePanel(id)}
+      else if(a==='shots'){scenePanel(id);const el=$('sect-shots');if(el)el.scrollIntoView({block:'start'})}
+      else if(a==='approve'){setSceneAp(id,!sceneAp(id))}
     }else{
-      if(a==='open'){seqDrawer(id)}
-      else if(a==='prompt'){seqDrawer(id);const p=$('edp');if(p)p.focus()}
+      if(a==='open'){seqPanel(id)}
       else if(a==='read'){readSeq(id)}
+      else if(a==='approve'){setSeqAp(id,!seqApId(id))}
       else if(a==='after'){addSeq(id)}
       else if(a==='del'){delSeq(id)}
     }
@@ -1095,10 +1494,20 @@ document.addEventListener('click',e=>{
   if(t.closest('#drawer')){
     const b=t.closest('button');if(!b)return;
     if(b.id==='dclose'){closeDrawer();return}
-    if(b.dataset.dtab){dtab=b.dataset.dtab;shotEdit=null;edErr='';reopen();return}
-    if(b.id==='edgo'){runEdit();return}
-    if(b.id==='edstop'){if(ctl)ctl.abort();return}
-    if(b.id==='addshot'){shotEdit=-1;reopen();const x=$('shx');if(x)x.focus();return}
+    if(b.dataset.go){runEdit(b.dataset.go);return}
+    if(b.dataset.stop){if(ctl)ctl.abort();return}
+    if(b.dataset.sceneap){setSceneAp(openCode,!sceneAp(openCode));return}
+    if(b.dataset.shcheck!=null){checkShotImages(openCode,+b.dataset.shcheck);return}
+    if(b.dataset.mjgen!=null){const i=+b.dataset.mjgen;genShotPrompt(openCode,i,!!(BY[openCode].shots||[])[i].mj);return}
+    if(b.dataset.shpick){const q=b.dataset.shpick.split('_');shotSel[openCode+':'+q[0]]=+q[1];reopen();return}
+    if(b.dataset.shrm){
+      const q=b.dataset.shrm.split('_'),i=+q[0],k=+q[1],x=(BY[openCode].shots||[])[i];
+      if(!x||!(x.imgs||[])[k])return;
+      const id=x.imgs[k].id,imgs=x.imgs.slice();imgs.splice(k,1);
+      if(assets&&id)assets.delete(id).catch(()=>{});
+      shotSel[openCode+':'+i]=Math.max(0,k-1);
+      shotPatch(openCode,i,{imgs:imgs.length?imgs:undefined,chk:undefined},'Image removed');return}
+    if(b.id==='addshot'){shotEdit=-1;mjEdit=null;reopen();const x=$('shx');if(x)x.focus();return}
     if(b.dataset.shsave!=null){
       const i=+b.dataset.shsave,type=$('sht').value,txt=$('shx').value;
       const a=(BY[openCode].shots||[]).slice();
@@ -1106,16 +1515,35 @@ document.addEventListener('click',e=>{
       shotEdit=null;setShots(openCode,a,i<0?'Shot added':'Shot saved');return;
     }
     if(b.dataset.shcancel){shotEdit=null;reopen();return}
-    if(b.dataset.shed!=null){shotEdit=+b.dataset.shed;reopen();const x=$('shx');if(x)x.focus();return}
+    if(b.dataset.shed!=null){shotEdit=+b.dataset.shed;mjEdit=null;reopen();const x=$('shx');if(x)x.focus();return}
     if(b.dataset.shdel!=null){const a=(BY[openCode].shots||[]).slice();a.splice(+b.dataset.shdel,1);shotEdit=null;setShots(openCode,a,'Shot deleted');return}
     if(b.dataset.shup!=null){moveShot(openCode,+b.dataset.shup,-1);return}
     if(b.dataset.shdn!=null){moveShot(openCode,+b.dataset.shdn,1);return}
-    if(b.dataset.ver!=null){histSel=+b.dataset.ver;reopen();return}
+    if(b.dataset.ver!=null){histSel=+b.dataset.ver;histOpen=true;reopen();return}
     if(b.dataset.restore!=null){restoreVersion(openCode,+b.dataset.restore);return}
     if(b.dataset.setcat){const c=openCode;if(b.dataset.setcat===BASE[c].cat)delete state.cat[c];else state.cat[c]=b.dataset.setcat;persist(true);render();return}
-    if(b.dataset.mv){move(openCode,+b.dataset.mv);persist();render();return}
-    if(b.dataset.unplace){const w=where(openCode);if(w)state.cols[w.ci].ids.splice(w.i,1);persist();render();return}
-    if(b.dataset.place){place(openCode,+$('dcol').value);persist();render();return}
+    if(b.dataset.mv){if(move(openCode,+b.dataset.mv)){persist();render()}return}
+    if(b.dataset.unplace){const w=where(openCode);if(!w)return;
+      if(state.cols[w.ci].ap){toast(LOCKED_SEQ);return}
+      state.cols[w.ci].ids.splice(w.i,1);persist();render();return}
+    if(b.dataset.place){if(place(openCode,+$('dcol').value)){persist();render()}return}
+    if(b.dataset.seqap){setSeqAp(b.dataset.seqap,!seqApId(b.dataset.seqap));return}
+    if(b.dataset.seqread){readSeq(b.dataset.seqread);return}
+    if(b.dataset.seqdel){delSeq(b.dataset.seqdel);return}
+    if(b.dataset.shap!=null){const i=+b.dataset.shap,x=(BY[openCode].shots||[])[i];if(x)setShotAp(openCode,i,'a',!x.a);return}
+    if(b.dataset.mjap!=null){const i=+b.dataset.mjap,x=(BY[openCode].shots||[])[i];if(x)setShotAp(openCode,i,'ma',!x.ma);return}
+    if(b.dataset.mjcopy!=null){const x=(BY[openCode].shots||[])[+b.dataset.mjcopy];
+      if(x&&x.mj&&navigator.clipboard)navigator.clipboard.writeText(x.mj).then(()=>toast('Prompt copied'),()=>toast('Could not copy'));return}
+    if(b.id==='mjcopyall'){const s=BY[openCode],txt=(s.shots||[]).map((x,i)=>x.mj?((i+1)+'. '+x.mj):null).filter(Boolean).join('\n\n');
+      if(txt&&navigator.clipboard)navigator.clipboard.writeText(sc(s,'t')+'\n\n'+txt).then(()=>toast('All the prompts copied'),()=>toast('Could not copy'));return}
+    if(b.dataset.mjed!=null){mjEdit=+b.dataset.mjed;shotEdit=null;reopen();const x=$('mjx');if(x)x.focus();return}
+    if(b.dataset.mjcancel){mjEdit=null;reopen();return}
+    if(b.dataset.mjsave!=null){const i=+b.dataset.mjsave,v=$('mjx').value.trim();
+      const a=(BY[openCode].shots||[]).slice();if(!a[i])return;
+      a[i]=Object.assign({},a[i]);if(v)a[i].mj=v;else delete a[i].mj;
+      mjEdit=null;setShots(openCode,a,v?'Prompt saved':'Prompt cleared');return}
+    if(b.dataset.copycode){if(navigator.clipboard)navigator.clipboard.writeText(openCode).then(()=>toast('Copied '+openCode),()=>{});return}
+    if(b.dataset.opensrc){const r=SRC[openCode];if(r&&r.u)window.open(r.u,'_blank','noopener');return}
     return;
   }
   if(t===$('veil')){closeDrawer();return}
@@ -1129,6 +1557,7 @@ function addSeq(afterId){
 }
 function delSeq(id){
   const i=state.cols.findIndex(c=>c.id===id);if(i<0)return;
+  if(state.cols[i].ap){toast(LOCKED_SEQ);return}
   const n=state.cols[i].ids.length;
   if(openSeq===id)closeDrawer();
   state.cols.splice(i,1);persist();render();
@@ -1136,6 +1565,7 @@ function delSeq(id){
 }
 function renameSeq(id,v){
   const c=state.cols.find(x=>x.id===id);if(!c)return;
+  if(c.ap){toast(LOCKED_SEQ);render();return}
   v=String(v||'').trim().slice(0,60);if(!v||v===colName(c))return;
   if(isTe()){c.te=c.te||{};c.te.name=v}else c.name=v;
   persist();render();toast('Renamed');
@@ -1151,11 +1581,24 @@ document.addEventListener('contextmenu',e=>{
   if(col){e.preventDefault();hidePeek();ctxSeq(col.dataset.id,e.clientX,e.clientY)}
 });
 document.addEventListener('input',e=>{
-  if(e.target.id==='edp'){const k=edKey();if(k)draft[k]=e.target.value}
+  if(e.target.classList&&e.target.classList.contains('edp')){const k=e.target.dataset.k;if(k)draft[k]=e.target.value}
+});
+document.addEventListener('change',e=>{
+  const t=e.target;if(!t.closest||!t.files||!t.files[0]||openCode==null)return;
+  if(t.dataset.shadd!=null){addShotImage(openCode,+t.dataset.shadd,t.files[0]);t.value=''}
+  else if(t.dataset.shrep!=null){const q=t.dataset.shrep.split('_');addShotImage(openCode,+q[0],t.files[0],+q[1]);t.value=''}
+});
+document.addEventListener('dragover',e=>{const d=e.target.closest&&e.target.closest('[data-drop]');if(d){e.preventDefault();d.classList.add('over')}});
+document.addEventListener('dragleave',e=>{const d=e.target.closest&&e.target.closest('[data-drop]');if(d)d.classList.remove('over')});
+document.addEventListener('drop',e=>{
+  const d=e.target.closest&&e.target.closest('[data-drop]');if(!d)return;
+  e.preventDefault();d.classList.remove('over');
+  const f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];
+  if(f&&openCode!=null)addShotImage(openCode,+d.dataset.drop,f);
 });
 document.addEventListener('change',e=>{
   if(e.target.id==='bname'){const v=e.target.value.trim();if(v!==bName(curBoard())){if(isTe()){curBoard().te=curBoard().te||{};curBoard().te.name=v}else curBoard().name=v||('Board '+bid(active));persist()}renderTabs()}
-  if(e.target.id==='dcol2'){place(openCode,+e.target.value);persist();render()}
+  if(e.target.id==='dcol2'){if(place(openCode,+e.target.value)){persist();render()}else render()}
   if(e.target.classList.contains('cname')){const id=e.target.closest('.col').dataset.id;renameSeq(id,e.target.value)}
 });
 document.addEventListener('keydown',e=>{
@@ -1166,7 +1609,7 @@ document.addEventListener('keydown',e=>{
     if(openCode||openSeq){closeDrawer();return}
   }
   if(e.target.id==='ctxin'){if(e.key==='Enter'){const v=e.target.value,f=ctxFor;hideCtx();if(f){if(f.kind==='scene')renameScene(f.id,v);else renameSeq(f.id,v)}}return}
-  if(e.target.id==='edp'){if(e.key==='Enter'&&(e.metaKey||e.ctrlKey)){e.preventDefault();runEdit()}return}
+  if(e.target.classList&&e.target.classList.contains('edp')){if(e.key==='Enter'&&(e.metaKey||e.ctrlKey)){e.preventDefault();runEdit(e.target.dataset.k)}return}
   if((e.key==='Enter'||e.key===' ')&&e.target.classList&&e.target.classList.contains('card')){e.preventDefault();drawer(e.target.dataset.c)}
   if(e.key==='Enter'&&e.target.classList&&e.target.classList.contains('cname'))e.target.blur();
 });
