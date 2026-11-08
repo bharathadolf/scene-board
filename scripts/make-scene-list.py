@@ -1,0 +1,154 @@
+#!/usr/bin/env python3
+"""Build story/SCENE_LIST.md — every scene, as a table and then elaborated.
+
+Source of truth: data/scenes.json (+ data/sources.json for citations).
+Run: python3 scripts/make-scene-list.py
+"""
+import json
+import pathlib
+
+ROOT = pathlib.Path(__file__).resolve().parent.parent
+SCENES = json.loads((ROOT / "data" / "scenes.json").read_text(encoding="utf8"))
+SOURCES = json.loads((ROOT / "data" / "sources.json").read_text(encoding="utf8"))
+OUT = ROOT / "story" / "SCENE_LIST.md"
+
+# full event names, as REFERENCE.md gives them
+EVENT = {
+    1: ("E01", "Kṣīra Sāgara Manthanam — the churning of the Ocean of Milk"),
+    2: ("E02", "Bhūbhāram — the Earth's burden"),
+    3: ("E03", "Jarasandha's attacks on Mathurā"),
+    4: ("E04", "Dvārakā rises from the sea"),
+    5: ("E05", "Mucukunda and the man on foot"),
+    6: ("E06", "Rukmiṇī Kalyāṇam — the letter and the abduction"),
+    7: ("E07", "The final episode: together"),
+    8: ("E08", "The backstories"),
+}
+CAT = {"A": "action", "D": "drama"}
+
+lines = []
+w = lines.append
+
+
+def esc(s):
+    return s.replace("|", "\\|").replace("\n", " ").strip()
+
+
+# ---------- header ----------
+total_min = sum(s["mid"] for s in SCENES)
+n_act = sum(1 for s in SCENES if s["cat"] == "A")
+n_carrier = sum(1 for s in SCENES if s.get("carrier"))
+
+w(f"""# Every scene
+
+All {len(SCENES)} scenes of the master cut: first as one table, then elaborated
+one at a time. Generated from `data/scenes.json`, so this file and the board
+can never disagree — if a scene changes there, run
+`python3 scripts/make-scene-list.py` and this file follows.
+
+{len(SCENES)} scenes · ≈ {int(total_min)} min (about {int(total_min)//60} h {int(total_min)%60} min) ·
+{n_act} action, {len(SCENES)-n_act} drama · {n_carrier} carrier scenes
+
+## The eight events
+
+| event | name | scenes | min | numbers |
+| --- | --- | --- | --- | --- |""")
+
+i = 0
+start = {}
+for ev in sorted(EVENT):
+    rows = [s for s in SCENES if s["ev"] == ev]
+    code, name = EVENT[ev]
+    a = sum(1 for s in rows if s["cat"] == "A")
+    mn = sum(s["mid"] for s in rows)
+    start[ev] = i + 1
+    w(f"| **{code}** | {name} | {len(rows)} ({a}A · {len(rows)-a}D) | "
+      f"≈ {mn:g} | {i+1}–{i+len(rows)} |")
+    i += len(rows)
+
+w("")
+w("""## How to read the entries
+
+Each elaborated entry carries one field line:
+
+`minutes · action or drama · CG tier 1–5 · how Krishna appears · rasa · POV · place`
+
+**How Krishna appears** is the law of this film: before `E06-18` he may only be
+*Not present*, *Spoken of*, *Shadow or sound*, *Hands*, *Effect* or a
+*Reflection in the witness's face*. **CG tier** runs 1 (nothing) to 5 (a full
+visual-effects scene). **Rasa** is the register the scene is played in: *Vīra*
+heroic, *Bhayānaka* fear, *Raudra* fury, *Adbhuta* wonder, *Karuṇa* grief,
+*Śānta* stillness, *Śṛṅgāra* love, *Hāsya* comedy. A **carrier** scene is one
+of the ordinary people — the water-carrier, the potter, the ferryman — who feel
+the result and never learn the cause.
+
+---
+
+# 1 · The whole list
+
+Scene numbers run in story-event order, which is **not** the order of any cut.
+For the orders, see `COMMERCIAL_CUT.md` and `DRAFT_SCREENPLAY.md`.
+
+| scene | scene info | story event |
+| --- | --- | --- |""")
+
+for n, s in enumerate(SCENES, 1):
+    code, name = EVENT[s["ev"]]
+    tag = " · *carrier*" if s.get("carrier") else ""
+    w(f"| **{n}** · `{s['src']}` | **{esc(s['t'])}** — {esc(s['sum'])}"
+      f" <br>*{s['mins']} min · {CAT[s['cat']]} · tier {s['tier']} · "
+      f"Krishna: {esc(s['k'])}{tag}* | {code} · {esc(s['evn'])} |")
+
+w("")
+w("---")
+w("")
+w("# 2 · The scenes, elaborated")
+
+for ev in sorted(EVENT):
+    code, name = EVENT[ev]
+    rows = [s for s in SCENES if s["ev"] == ev]
+    mn = sum(s["mid"] for s in rows)
+    w("")
+    w(f"## {code} — {name}")
+    w("")
+    w(f"*{len(rows)} scenes · ≈ {mn:g} min · scenes {start[ev]}–"
+      f"{start[ev]+len(rows)-1} in the list above*")
+    n = start[ev]
+    for s in rows:
+        w("")
+        w(f"### {n} · `{s['src']}` · {s['t']}")
+        meta = (f"`{s['mins']} min` · **{CAT[s['cat']]}** · CG tier {s['tier']}"
+                f" · Krishna: *{s['k']}* · rasa *{s['rasa']}*")
+        if s.get("carrier"):
+            meta += " · **carrier scene**"
+        w(meta + "  ")
+        w(f"**POV** {s['pov']} · **Place** {s['pl']} · "
+          f"**Genre** {', '.join(s.get('gen') or [])}")
+        w("")
+        w(f"**What happens.** {s['sum']}")
+        w("")
+        w(f"**Why it is in the film.** {s['why']}")
+        w("")
+        w(f"**The turn.** {s['turn']}")
+        w("")
+        w(f"**How it plays.** {s['story']}")
+        r = SOURCES.get(s["c"])
+        if r:
+            cite = f"[{r['c']}]({r['u']})" if r.get("u") else r["c"]
+            note = f" — {r['n']}" if r.get("n") else ""
+            w("")
+            w(f"**Source.** {cite}{note}")
+        n += 1
+
+w("")
+w("---")
+w("")
+w("""*Generated by `scripts/make-scene-list.py` from `data/scenes.json`.
+`REFERENCE.md` names the people and places · `EVENTS.md` tells the eight events
+as continuous narrative · `ACTION.md` elaborates the action scenes with staging
+and tags · `COMMERCIAL_CUT.md` and `DRAFT_SCREENPLAY.md` are two orders of this
+same material.*""")
+
+OUT.write_text("\n".join(lines) + "\n", encoding="utf8")
+kb = len(OUT.read_bytes()) // 1024
+print(f"built {OUT.relative_to(ROOT)} — {kb} KB, {len(SCENES)} scenes, "
+      f"{len(EVENT)} events, {int(total_min)} min")
