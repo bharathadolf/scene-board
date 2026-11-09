@@ -38,14 +38,23 @@ module.exports = async ({ browser, check }) => {
 
   // ---- rewriting a scene ----
   const before = await at(() => document.querySelector('#drawer h1').textContent);
-  await page.fill('.edp[data-k^="s:"]', 'sharpen the turn');
+  check('the scene page asks for no prompt', await at(() => !document.querySelector('#drawer .edp')));
+  const menu = async c => { await at(cc => { const el = document.querySelector('.card[data-c="' + cc + '"]'); const r = el.getBoundingClientRect();
+    el.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, clientX: r.left + 20, clientY: r.top + 10 })); }, c);
+    await page.waitForTimeout(150); };
+  await at(() => closeDrawer());
+  await menu(code);
+  check('the menu offers the instruction instead', await at(() => !!document.querySelector('#ctx [data-cx="ask"]')));
+  await at(() => document.querySelector('#ctx [data-cx="ask"]').click());
+  await page.waitForTimeout(150);
+  await page.fill('#ctxin', 'sharpen the turn');
   await page.reply({ t: 'The leap into fire', sum: 'They jump from the burning peak and vanish into the smoke below.',
     why: 'A false victory for the antagonist.', turn: 'He sees no bodies and calls it a win.',
     story: 'The camera follows one silhouette against the flames.', mins: '2', tier: 4, rasa: 'Adbhuta',
     pov: 'Jarasandha', pl: 'The burning peak', k: 'Effect', carrier: false, cat: 'A', gen: ['Thriller'],
     te: { t: 'మంటల్లోకి దూకడం', sum: 'వాళ్లు దూకుతారు.', why: 'తప్పుడు విజయం.', turn: 'శరీరాలు కనబడవు.', story: 'సిల్హౌట్.' } });
-  await page.click('[data-go^="s:"]');
-  await page.waitForTimeout(450);
+  await page.click('#ctx [data-cx="asksave"]');
+  await page.waitForTimeout(600);
   check('the scene is rewritten', (await at(() => document.querySelector('#drawer h1').textContent)) === 'The leap into fire');
   check('it is marked as edited', await at(() => !!document.querySelector('.sbar .edflag')));
   check('the new runtime shows', /2 min/.test(await at(() => [...document.querySelectorAll('#drawer .kv dd')].map(d => d.textContent).join(' '))));
@@ -63,12 +72,16 @@ module.exports = async ({ browser, check }) => {
   check('the restore is itself a version', (await at(() => { histOpen = true; reopen(); return document.querySelectorAll('#drawer .vrows .vrow').length; })) >= 2);
 
   // ---- a bad answer from Claude ----
-  await page.fill('.edp[data-k^="s:"]', 'break it');
+  await at(() => closeDrawer());
+  await menu(code);
+  await at(() => document.querySelector('#ctx [data-cx="ask"]').click());
+  await page.waitForTimeout(150);
+  await page.fill('#ctxin', 'break it');
   await at(() => { window.__reply = 'not json'; });
-  await page.click('[data-go^="s:"]');
-  await page.waitForTimeout(400);
+  await page.click('#ctx [data-cx="asksave"]');
+  await page.waitForTimeout(600);
   check('a failure is reported', !!(await at(() => { const e = document.querySelector('#drawer .err'); return e && e.textContent; })));
-  check('the instruction is kept', (await at(() => document.querySelector('.edp[data-k^="s:"]').value)) === 'break it');
+  check('the scene is left as it was', (await at(() => document.querySelector('#drawer h1').textContent)) === before);
   await at(() => closeDrawer());
 
   // ---- the menus are ways in, not a second copy of the page ----

@@ -582,9 +582,9 @@ function applySeqEdit(col,prompt,r){
   col.lastp=String(prompt).slice(0,400);
   persist();
 }
-async function runEdit(key){
+async function runEdit(key,auto){
   if(!key||asking)return;
-  const txt=(draft[key]||'').trim();
+  const txt=(auto||draft[key]||'').trim();
   edErr={};
   if(!txt){edErr[key]='Type what you want changed first.';reopen();return}
   if(!samp){edErr[key]='Claude is not available in this view, so prompt editing is off.';reopen();return}
@@ -1144,25 +1144,33 @@ function aeSeqSection(id){
 function shotsSection(code){
   const s=BY[code],shots=s.shots||[],frozen=shotLocked(code);
   const ap=shots.filter(x=>x.a).length,mj=shots.filter(x=>x.mj).length,imgs=shots.reduce((n,x)=>n+((x.imgs||[]).length),0);
+  const busyH=asking==='h:'+code,busyM=asking==='m:'+code;
   let h='<div class="sect" id="sect-shots"><h3>Shots, prompts and images</h3>'+
-    '<p class="sub">Each shot is one camera take. Approve a shot and it gets a Midjourney prompt: paste the prompt into Midjourney, bring the picture back here, and Claude will say which picture is the shot.</p>'+
-    '<div class="acts">'+(frozen?'':'<button class="btn" id="addshot" type="button">Add a shot</button>')+
-    '<span class="sub">'+(shots.length
+    '<p class="sub">Each shot is one camera take. Approve a shot and it gets a Midjourney prompt: paste the prompt into Midjourney, bring the picture back here, and Claude will say which picture is the shot.</p>';
+  if(frozen){
+    h+='<div class="lockmsg">'+LOCKED_BY_SCENE+' Until then the shots, their prompts and their images stay as they are.</div>';
+  }else{
+    h+='<div class="acts">';
+    if(samp)h+=busyH
+      ?'<span class="busy"><i></i><i></i><i></i></span><span class="sub">Claude is writing the shots…</span><button class="btn" type="button" data-stop="1">Stop</button>'
+      :'<button class="btn pri" type="button" data-mkshots="'+(shots.length?'again':'new')+'">'+(shots.length?'Write the shots again':'Create shots')+'</button>';
+    if(!busyH)h+='<button class="btn" id="addshot" type="button">Add one by hand</button>';
+    h+='<span class="sub">'+(shots.length
       ? shots.length+' '+(shots.length===1?'shot':'shots')+' · '+ap+' approved · '+mj+' with a prompt'+(imgs?' · '+imgs+' image'+(imgs===1?'':'s'):'')
       : 'No shots yet')+'</span>'+
-    (mj?'<span class="grow"></span><button class="btn" id="mjcopyall" type="button">Copy every prompt</button>':'')+'</div>';
-  if(frozen)h+='<div class="lockmsg">'+LOCKED_BY_SCENE+' Until then the shots, their prompts and their images stay as they are.</div>';
-  else if(samp)h+=edPanel('h:'+code,'Write or change the shots',
-    shots.length?'e.g. make shot 3 a close-up on her hands · add a shot of the door before the last one'
-      :'e.g. break this scene into 6 shots, open on the lamp and end on her face',
-    (ov[code]&&ov[code].shotp)||'');
+    (mj?'<span class="grow"></span><button class="btn" type="button" id="mjcopyall">Copy every prompt</button>':'')+'</div>';
+    if(!shots.length&&samp&&!busyH)h+='<p class="sub">Create shots reads the scene — what happens in it, where it is, how Krishna may appear — and writes the shots it needs. Right-click the scene on the board to steer it with an instruction instead.</p>';
+    if(edErr['h:'+code])h+='<div class="err">'+esc(edErr['h:'+code])+'</div>';
+    if((ov[code]&&ov[code].shotp))h+='<div class="hist">Last instruction: “'+esc(ov[code].shotp)+'”</div>';
+  }
   if(shots.length)h+='<div class="shotlist">'+shots.map((x,i)=>shotCard(code,x,i)).join('')+'</div>';
   if(shotEdit===-1)h+='<div class="shotcard"><div class="sform"><input id="sht" value="" maxlength="16" placeholder="WIDE" aria-label="Shot type">'+
     '<textarea id="shx" rows="3" placeholder="What the camera sees and does"></textarea>'+
     '<div class="acts"><button class="btn pri" type="button" data-shsave="-1">Add the shot</button><button class="btn" type="button" data-shcancel="1">Cancel</button></div></div></div>';
-  if(samp&&!frozen&&ap>mj)h+=edPanel('m:'+code,'Write the prompts for every approved shot',
-    'e.g. make them all night, add film grain · keep his face out of frame',
-    (ov[code]&&ov[code].mjp)||'');
+  if(samp&&!frozen&&ap>mj)h+='<div class="acts">'+(busyM
+    ?'<span class="busy"><i></i><i></i><i></i></span><span class="sub">Claude is writing the prompts…</span><button class="btn" type="button" data-stop="1">Stop</button>'
+    :'<button class="btn" type="button" data-mkprompts="1">Write the prompts for the '+(ap-mj)+' approved shot'+((ap-mj)===1?'':'s')+' without one</button>')+'</div>';
+  if(edErr['m:'+code])h+='<div class="err">'+esc(edErr['m:'+code])+'</div>';
   return h+'</div>';
 }
 function optionsSection(code){
@@ -1239,7 +1247,10 @@ function scenePanel(code,keep){
        '<div class="tags">'+s.gen.map(g=>'<span>'+esc(term('gen',g))+'</span>').join('')+'</div>'+
        srcHTML(code)+
      '</div></div>'+
-     (ap?'':(samp?edPanel('s:'+code,'Rewrite this scene','e.g. make the turn land harder and cut it to one minute · give her the last line · move it to night',s.lastp||''):''))+
+     (ap||!samp?'':(asking==='s:'+code
+       ?'<div class="acts"><span class="busy"><i></i><i></i><i></i></span><span class="sub">Claude is rewriting the scene…</span><button class="btn" type="button" data-stop="1">Stop</button></div>'
+       :(edErr['s:'+code]?'<div class="err">'+esc(edErr['s:'+code])+'</div>':'')+
+        (s.lastp?'<div class="hist">Last instruction: “'+esc(s.lastp)+'”</div>':'')))+
    '</div>'+
    shotsSection(code)+
    aeSection(code)+
@@ -1357,7 +1368,9 @@ function ctxScene(code,x,y){
   const h='<div class="ch">'+esc(sc(s,'t'))+'</div>'+
     '<button type="button" data-cx="open">Open this scene</button>'+
     '<button type="button" data-cx="shots">Go to its shots'+((s.shots||[]).length?' ('+s.shots.length+')':'')+'</button>'+
-    '<button type="button" data-cx="rename"'+(s.ap?' disabled':'')+'>Rename…</button><hr>'+
+    '<button type="button" data-cx="rename"'+(s.ap?' disabled':'')+'>Rename…</button>'+
+    (samp?'<button type="button" data-cx="ask"'+(s.ap?' disabled':'')+'>Rewrite it with an instruction…</button>'+
+      '<button type="button" data-cx="askshots"'+(shotLocked(code)?' disabled':'')+'>Change the shots with an instruction…</button>':'')+'<hr>'+
     '<button type="button" data-cx="approve">'+(s.ap?'Remove the approval':'Approve this scene')+'</button>';
   showCtx(x,y,h,'scene',code);
 }
@@ -1377,6 +1390,15 @@ function ctxRename(cur){
   c.innerHTML='<div class="ch">Rename</div><input id="ctxin" value="'+esc(cur)+'" maxlength="90"><div class="acts" style="padding:6px 4px 2px"><button class="btn pri" type="button" data-cx="rsave">Save</button><button class="btn" type="button" data-cx="rcancel">Cancel</button></div>';
   const i=$('ctxin');i.focus();i.select();
 }
+/* the prompt lives here instead of on the scene page */
+function ctxAsk(kind,ph){
+  const c=$('ctx');
+  c.innerHTML='<div class="ch">'+(kind==='ask'?'Rewrite the scene':'Change the shots')+'</div>'+
+    '<input id="ctxin" value="" maxlength="240" placeholder="'+esc(ph)+'">'+
+    '<div class="acts" style="padding:6px 4px 2px"><button class="btn pri" type="button" data-cx="asksave">Ask Claude</button><button class="btn" type="button" data-cx="rcancel">Cancel</button></div>';
+  ctxAskKind=kind;const i=$('ctxin');i.focus();
+}
+let ctxAskKind=null;
 
 /* ---------- hover preview ---------- */
 let peekT=null,peekFor=null,peekArm=null;
@@ -1424,6 +1446,12 @@ document.addEventListener('click',e=>{
       if(k==='scene'&&sceneAp(id)){hideCtx();toast(LOCKED_SCENE);return}
       if(k==='seq'&&seqApId(id)){hideCtx();toast(LOCKED_SEQ);return}
       ctxRename(k==='scene'?sc(BY[id],'t'):colName(state.cols.find(c=>c.id===id)||{name:''}));return}
+    if(a==='ask'){if(sceneAp(id)){hideCtx();toast(LOCKED_SCENE);return}
+      ctxAsk('ask','e.g. make the turn land harder · give her the last line · move it to night');return}
+    if(a==='askshots'){if(shotLocked(id)){hideCtx();toast(LOCKED_SCENE);return}
+      ctxAsk('askshots','e.g. six shots, open on the lamp and end on her face');return}
+    if(a==='asksave'){const v=$('ctxin').value.trim();const kk=ctxAskKind;hideCtx();
+      if(v&&k==='scene'){scenePanel(id);runEdit((kk==='ask'?'s:':'h:')+id,v)}return}
     if(a==='rcancel'){hideCtx();return}
     if(a==='rsave'){const v=$('ctxin').value;hideCtx();if(k==='scene')renameScene(id,v);else renameSeq(id,v);return}
     hideCtx();
@@ -1446,6 +1474,10 @@ document.addEventListener('click',e=>{
     if(b.dataset.go){runEdit(b.dataset.go);return}
     if(b.dataset.stop){if(ctl)ctl.abort();return}
     if(b.dataset.ae){aeExport(b.dataset.ae,b.dataset.ae==='seq'?openSeq:openCode);return}
+    if(b.dataset.mkshots){runEdit('h:'+openCode,b.dataset.mkshots==='again'
+      ?'Write the shot list for this scene again from scratch.'
+      :'Break this scene into the shots it needs, in order.');return}
+    if(b.dataset.mkprompts){runEdit('m:'+openCode,'Write a Midjourney prompt for every approved shot that has not got one.');return}
     if(b.dataset.sceneap){setSceneAp(openCode,!sceneAp(openCode));return}
     if(b.dataset.shcheck!=null){checkShotImages(openCode,+b.dataset.shcheck);return}
     if(b.dataset.mjgen!=null){const i=+b.dataset.mjgen;genShotPrompt(openCode,i,!!(BY[openCode].shots||[])[i].mj);return}
