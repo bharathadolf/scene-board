@@ -198,6 +198,73 @@ beside the old one rather than touching it, so two versions can be compared.
 
 ---
 
+## The slate, the burn-in, and why they render
+
+After Effects **does not render guide layers**. An earlier version of this
+export marked the slate and the subtitles as guide layers, which is correct for
+a working animatic and wrong for a render: everything textual disappeared from
+the output. They are now ordinary layers and come through a render, each with a
+black stroke so it stays legible over a bright frame. `--guides` puts them back
+to guide layers if you ever want a clean picture render, and inside the board
+the same switch is `CONF.guides` at the top of the generated script.
+
+Three text elements, all built from the board's own numbers:
+
+**The slate**, top-left, for the whole comp:
+
+```
+S-719  ·  The lone walk from the gate
+10 shots  ·  10 pictures used of 12 uploaded  ·  02:00.0  ·  24 fps
+Movement I · scene 1 of 14 · cut 1 of 115  ·  weighted by shot type  ·  2 dialogue lines
+```
+
+**The per-shot burn-in**, lower-left, replaced at every cut:
+
+```
+S-719  ·  The lone walk from the gate   ·   Movement I · scene 1 of 14 · cut 1 of 115
+03 · POV   00:26.4 – 00:39.6   (13.2s)
+shot 3 of 10   ·   checked: picture 1 of 2 kept   ·   move ×1.28
+```
+
+**The dialogue**, bottom-centre, on the shot it belongs to.
+
+The context line changes with what you built: a scene export names its sequence
+and its position in it, a sequence export numbers the scene within the sequence
+and gives its cut position on the board, a board export names the board, the
+sequence and the cut position. Timecodes are the comp's own, so the burn-in and
+the timeline agree.
+
+## Dialogue belongs to a shot
+
+The screenplay times its dialogue independently of the board's shot
+boundaries. Each line is now matched to the shot it **overlaps most**, and then
+takes that shot's in and out, so a line reads as that shot's line rather than
+floating across a cut. The line also goes into the shot's layer marker, and the
+slate counts how many shots carry dialogue. For S-719 that puts the guard's
+first line on shot 4 — the insert of the empty hands — and his last on shot 10,
+the close on his face at the shut gate, which is where they belong.
+
+Inside the board the same thing happens from a shot's own `dlg` field, when a
+shot has one.
+
+## How fast the moves are
+
+A fixed push looks wrong at both ends: on a fifteen-second wide it crawls, on a
+three-second insert it whips. The move is now scaled by a factor:
+
+```
+factor = clamp(shot duration / 8, 0.6, 1.6)
+       × 1.35  if the scene is an action scene
+       × 0.8   if its rasa is Śānta or Karuṇa
+```
+
+The factor spreads the shot type's start and end scale around their midpoint,
+so a long shot travels further and a short one barely moves, and the whole
+scene moves harder or softer depending on what kind of scene it is. The factor
+is printed in each burn-in (`move ×1.28`) and recorded in the manifest, so a
+cut that feels wrong can be traced to a number. Action scenes also cut harder:
+the dissolve drops from 0.5 s to 0.25 s.
+
 ## A note on the file extension
 
 The scripts ship as **`.js`**, not `.jsx`. After Effects accepts both — its

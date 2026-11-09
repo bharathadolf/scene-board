@@ -707,34 +707,66 @@ function aeImg(sh){
   if(ok.length&&ok[0].i<imgs.length)return{id:imgs[ok[0].i].id,why:'checked: picture '+(ok[0].i+1)+' passed'};
   return{id:imgs[0].id,why:imgs.length===1?'one picture, not checked':imgs.length+' pictures, not checked — the first is used'};
 }
+/* 00:12.4 — for slates and burn-ins */
+function aeTc(sec){
+  sec=Math.round(Math.max(0,sec)*10)/10;
+  let h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),x=Math.round(sec%60*10)/10;
+  if(x>=59.95){x=0;m++;if(m===60){m=0;h++}}
+  const xs=(x<10?'0':'')+x.toFixed(1);
+  return h?h+':'+ae2(m)+':'+xs:ae2(m)+':'+xs;
+}
+/* how far a move travels: a long shot can carry a bigger push and still read
+   as slow, a short one needs less; action scenes move more, still ones less */
+function aeSpeed(kind,dur,cat,rasa){
+  let f=Math.min(1.6,Math.max(.6,dur/8));
+  if(cat==='A')f*=1.35;
+  if(rasa==='Śānta'||rasa==='Karuṇa')f*=.8;
+  const mv=AE_MV[kind]||[107,113,0,0],mid=(mv[0]+mv[1])/2;
+  return [Math.round((mid+(mv[0]-mid)*f)*100)/100,Math.round((mid+(mv[1]-mid)*f)*100)/100,
+          Math.round(mv[2]*f),Math.round(mv[3]*f),Math.round(f*1000)/1000];
+}
 /* the approved shots of a scene, laid out across its runtime */
-function aeShots(code){
+function aeShots(code,ctx){
   const s=BY[code];if(!s)return [];
   const got=(s.shots||[]).filter(x=>x.a);
   if(!got.length)return [];
   const total=(s.mid||1.5)*60,ws=got.map(x=>AE_W[aeKind(x.t)]||1),sum=ws.reduce((a,b)=>a+b,0)||1;
+  const cat=catOf(code),rasa=s.rasa||'',title=sc(s,'t');
   let at=0;
   return got.map((x,i)=>{
-    const dur=total*ws[i]/sum,g=aeImg(x),k=aeKind(x.t),mv=AE_MV[k]||[107,113,0,0],row={
-      n:i+1,label:ae2(i+1)+' · '+(x.t||'SHOT'),text:x.x||'',mj:x.mj||'',
-      id:g?g.id:'',why:g?g.why:'no picture the check kept',
+    const dur=total*ws[i]/sum,g=aeImg(x),k=aeKind(x.t),sp=aeSpeed(k,dur,cat,rasa),
+      label=ae2(i+1)+' · '+(x.t||'SHOT'),why=g?g.why:'no picture the check kept',
+      row={n:i+1,label:label,text:x.x||'',mj:x.mj||'',dlg:x.dlg||'',
+      id:g?g.id:'',why:why,imgs:(x.imgs||[]).length,
       file:g?ae2(i+1)+'_'+(k||'SHOT')+'_'+g.id.slice(0,8)+'.png':'',
-      at:ae3(at),dur:ae3(dur),z0:mv[0],z1:mv[1],dx:mv[2],dy:mv[3]};
+      at:ae3(at),dur:ae3(dur),tcIn:aeTc(at),tcOut:aeTc(at+dur),
+      z0:sp[0],z1:sp[1],dx:sp[2],dy:sp[3],mf:sp[4],
+      burn:code+'  ·  '+title+(ctx?'   ·   '+ctx:'')+'\r'+
+        label+'   '+aeTc(at)+' – '+aeTc(at+dur)+'   ('+(Math.round(dur*10)/10)+'s)\r'+
+        'shot '+(i+1)+' of '+got.length+'   ·   '+why+'   ·   move ×'+sp[4]};
     at+=dur;return row;
   });
 }
 function aeReady(code){return aeShots(code).some(x=>x.file)}
 function aeCount(ids){return ids.filter(aeReady).length}
 /* the ExtendScript for one scene */
-function aeScript(code,rows){
-  const s=BY[code],name=code+' · '+sc(s,'t'),dur=rows.reduce((a,x)=>a+x.dur,0);
+function aeScript(code,rows,ctx){
+  const s=BY[code],name=code+' · '+sc(s,'t'),dur=rows.reduce((a,x)=>a+x.dur,0),
+    used=rows.filter(x=>x.file).length,up=rows.reduce((a,x)=>a+x.imgs,0),
+    dlg=rows.filter(x=>x.dlg).length,cat=catOf(code);
   const conf={name:name,imageDir:'images',width:AE_WIDTH,height:AE_HEIGHT,fps:AE_FPS,
-    duration:ae3(dur),dissolve:AE_DIS,fadeOut:AE_FADE,
-    slateText:code+'  ·  '+sc(s,'t')+'\n'+rows.length+' shots  ·  '+Math.round(dur)+'s  ·  weighted by shot type'};
+    duration:ae3(dur),dissolve:cat==='A'?.25:AE_DIS,fadeOut:AE_FADE,
+    burnIn:true,slate:true,guides:false,
+    slateText:code+'  ·  '+sc(s,'t')+'\r'+
+      rows.length+' shots  ·  '+used+' picture'+(used===1?'':'s')+' used of '+up+' uploaded  ·  '+
+      aeTc(dur)+'  ·  '+AE_FPS+' fps\r'+
+      (ctx?ctx+'  ·  ':'')+'weighted by shot type'+(dlg?'  ·  '+dlg+' shot'+(dlg===1?'':'s')+' with dialogue':'')};
   return ['/* '+name,
 ' * Built by the Scene Board from approved shots and checked pictures.',
 ' * Images are found next to this file, so this folder can be copied anywhere.',
 ' * After Effects: File > Scripts > Run Script File... and choose this file.',
+' * The slate, the per-shot burn-in and the dialogue are real layers, so they',
+' * render. Set CONF.guides to true to turn them into guide layers instead.',
 ' */',
 '#target aftereffects','',
 '(function () {',
@@ -743,10 +775,23 @@ function aeScript(code,rows){
 '  var HERE = (new File($.fileName)).parent;',
 '  var IMG = new Folder(HERE.fsName + "/" + CONF.imageDir);',
 '  if (!IMG.exists) { alert("Image folder not found next to this script:\\n" + IMG.fsName); return; }','',
+'  function txt(comp, s, size, col, pos, just, lead) {',
+'    var t = comp.layers.addText(s), d = t.property("Source Text").value;',
+'    d.resetCharStyle();',
+'    d.fontSize = size; d.fillColor = col; d.applyFill = true;',
+'    d.strokeColor = [0, 0, 0]; d.strokeWidth = Math.max(2, Math.round(CONF.height * 0.003));',
+'    d.strokeOverFill = false; d.applyStroke = true;',
+'    if (lead) d.leading = lead;',
+'    d.justification = just;',
+'    t.property("Source Text").setValue(d);',
+'    t.property("Transform").property("Position").setValue(pos);',
+'    t.guideLayer = CONF.guides;',
+'    return t;',
+'  }','',
 '  app.beginUndoGroup("Build " + CONF.name);',
 '  var comp = app.project.items.addComp(CONF.name, CONF.width, CONF.height, 1.0, Math.max(CONF.duration, 1), CONF.fps);',
 '  comp.bgColor = [0, 0, 0];',
-'  var folder = app.project.items.addFolder(CONF.name + " · footage");',
+'  var folder = app.project.items.addFolder(CONF.name + " \u00b7 footage");',
 '  var missing = [];',
 '  function ease(p, a, b) { try { var e = new KeyframeEase(0, 55);',
 '    p.setTemporalEaseAtKey(a, [e], [e]); p.setTemporalEaseAtKey(b, [e], [e]); } catch (err) {} }','',
@@ -758,7 +803,7 @@ function aeScript(code,rows){
 '      lay = comp.layers.add(item);',
 '    } else {',
 '      missing.push(s.label + (s.file ? " (" + s.file + ")" : " (no picture)"));',
-'      lay = comp.layers.addSolid([0.18, 0.05, 0.05], s.label + " — NO PICTURE", CONF.width, CONF.height, 1.0);',
+'      lay = comp.layers.addSolid([0.18, 0.05, 0.05], s.label + " \u2014 NO PICTURE", CONF.width, CONF.height, 1.0);',
 '    }',
 '    lay.startTime = s.at; lay.inPoint = s.at; lay.outPoint = s.at + s.dur; lay.label = (i % 15) + 1;',
 '    var w = lay.source ? lay.source.width : CONF.width, h = lay.source ? lay.source.height : CONF.height;',
@@ -779,19 +824,32 @@ function aeScript(code,rows){
 '      op.setValueAtTime(s.at + s.dur - CONF.fadeOut, 100); op.setValueAtTime(s.at + s.dur, 0);',
 '    }',
 '    var mk = new MarkerValue(s.label);',
-'    mk.comment = s.text + (s.mj ? "\\n\\nPROMPT: " + s.mj : "") + (s.why ? "\\n\\nPICTURE: " + s.why : "");',
-'    lay.property("Marker").setValueAtTime(s.at + Math.min(0.2, s.dur / 4), mk);',
+'    mk.comment = s.text + (s.dlg ? "\\n\\nDIALOGUE: " + s.dlg : "")',
+'      + (s.mj ? "\\n\\nPROMPT: " + s.mj : "") + (s.why ? "\\n\\nPICTURE: " + s.why : "");',
+'    lay.property("Marker").setValueAtTime(s.at + Math.min(0.2, s.dur / 4), mk);','',
+'    if (CONF.burnIn) {',
+'      var bi = txt(comp, s.burn, Math.round(CONF.height * 0.026), [1, 0.88, 0.45],',
+'        [Math.round(CONF.width * 0.030), CONF.height - Math.round(CONF.height * 0.185)],',
+'        ParagraphJustification.LEFT_JUSTIFY, Math.round(CONF.height * 0.034));',
+'      bi.name = "BURN " + s.label; bi.inPoint = s.at; bi.outPoint = s.at + s.dur; bi.label = 5;',
+'    }',
+'    if (s.dlg) {',
+'      var dl = txt(comp, s.dlg, Math.round(CONF.height * 0.040), [1, 1, 1],',
+'        [CONF.width / 2, CONF.height - Math.round(CONF.height * 0.085)],',
+'        ParagraphJustification.CENTER_JUSTIFY, 0);',
+'      dl.name = "DLG " + s.label; dl.inPoint = s.at; dl.outPoint = s.at + s.dur; dl.label = 11;',
+'    }',
 '  }','',
-'  var sl = comp.layers.addText(CONF.slateText);',
-'  var sd = sl.property("Source Text").value; sd.resetCharStyle();',
-'  sd.fontSize = Math.round(CONF.height * 0.03); sd.fillColor = [1, 0.85, 0.3]; sd.applyFill = true;',
-'  sl.property("Source Text").setValue(sd);',
-'  sl.property("Transform").property("Position").setValue([Math.round(CONF.width * 0.035), Math.round(CONF.height * 0.1)]);',
-'  sl.name = "SLATE"; sl.guideLayer = true; sl.moveToBeginning();','',
+'  if (CONF.slate) {',
+'    var sl = txt(comp, CONF.slateText, Math.round(CONF.height * 0.029), [1, 1, 1],',
+'      [Math.round(CONF.width * 0.030), Math.round(CONF.height * 0.085)],',
+'      ParagraphJustification.LEFT_JUSTIFY, Math.round(CONF.height * 0.038));',
+'    sl.name = "SLATE"; sl.moveToBeginning(); sl.label = 14;',
+'  }','',
 '  var adj = comp.layers.addSolid([1, 1, 1], "GRADE (add effects here)", CONF.width, CONF.height, 1.0);',
 '  adj.adjustmentLayer = true; adj.enabled = false; adj.moveToBeginning();','',
 '  comp.openInViewer(); app.endUndoGroup();',
-'  var msg = CONF.name + "\\n" + SHOTS.length + " shots · " + Math.round(CONF.duration) + "s · " + CONF.fps + " fps";',
+'  var msg = CONF.name + "\\n" + SHOTS.length + " shots \u00b7 " + Math.round(CONF.duration) + "s \u00b7 " + CONF.fps + " fps";',
 '  if (missing.length) msg += "\\n\\nNo picture for:\\n" + missing.join("\\n");',
 '  alert(msg);',
 '})();',''].join('\n');
@@ -861,8 +919,13 @@ async function aeExport(kind,id){
   try{
     const many=use.length>1,files=[],comps=[],lines=[];
     let shots=0,missing=0,secs=0;
+    const board=flat(),bn=board.length;
     for(const code of use){
-      const rows=aeShots(code),dir=many?code+'/':'';
+      const w=where(code),cut=board.indexOf(code);
+      const ctx=kind==='scene'?(w?colName(state.cols[w.ci])+' · scene '+(w.i+1)+' of '+state.cols[w.ci].ids.length:'in the bin')
+        :kind==='seq'?(title+' · scene '+(use.indexOf(code)+1)+' of '+use.length+(cut>=0?' · cut '+(cut+1)+' of '+bn:''))
+        :(bName(curBoard())+(w?' · '+colName(state.cols[w.ci]):'')+(cut>=0?' · cut '+(cut+1)+' of '+bn:''));
+      const rows=aeShots(code,ctx),dir=many?code+'/':'';
       for(const r of rows){
         if(!r.id){missing++;continue}
         const b=await blobOf(r.id);
@@ -871,7 +934,7 @@ async function aeExport(kind,id){
       }
       const nm=code+' · '+sc(BY[code],'t');
       comps.push(nm);shots+=rows.length;secs+=rows.reduce((a,x)=>a+x.dur,0);
-      files.push({name:dir+code+'.js',data:aeScript(code,rows)});
+      files.push({name:dir+code+'.js',data:aeScript(code,rows,ctx)});
       lines.push(code+'  '+sc(BY[code],'t')+'  —  '+rows.length+' shots, '+Math.round(rows.reduce((a,x)=>a+x.dur,0))+'s');
     }
     if(many)files.push({name:aeSafe(title)+'_master.js',data:aeMaster(title,comps)});
@@ -1062,7 +1125,8 @@ function aeSection(code){
   else{
     h+='<p class="sub">Builds a comp from the approved shots of this scene: one layer per shot, fit to frame, a move chosen from the shot type, cross-dissolves and a marker on each layer carrying the shot and its prompt. The zip holds the script and its pictures.</p>'+
       '<div class="acts"><button class="btn pri" type="button" data-ae="scene">Build this scene</button>'+
-      '<span class="sub">'+ready+' of '+rows.length+' shots have a picture · '+Math.round(rows.reduce((a,x)=>a+x.dur,0))+'s at '+AE_FPS+' fps</span></div>';
+      '<span class="sub">'+ready+' of '+rows.length+' shots have a picture · '+aeTc(rows.reduce((a,x)=>a+x.dur,0))+' at '+AE_FPS+' fps</span></div>'+
+      '<p class="sub">The slate and a per-shot burn-in — code, title, sequence and cut position, shot number and type, its in and out timecode, which picture the check kept and how far the move travels — are real layers, so they come through a render. Any dialogue on a shot is burned in under it.</p>';
     if(gaps)h+='<p class="sub">'+gaps+' approved shot'+(gaps===1?'':'s')+' without a kept picture will come through as a red card, so the hole is visible in the timeline.</p>';
   }
   return h+'</div>';

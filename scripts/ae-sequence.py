@@ -101,6 +101,35 @@ def tc_to_sec(tc):
     return nums[0] * 3600 + nums[1] * 60 + nums[2]
 
 
+def tc(sec):
+    """seconds -> 00:12 or 1:02:03, for burn-ins and slates."""
+    sec = round(max(0.0, float(sec)), 1)
+    h, m, x = int(sec // 3600), int(sec % 3600 // 60), round(sec % 60, 1)
+    if x >= 59.95:            # rounding must not produce 01:60.0
+        x, m = 0.0, m + 1
+        if m == 60:
+            m, h = 0, h + 1
+    return (f"{h}:{m:02d}:{x:04.1f}" if h else f"{m:02d}:{x:04.1f}")
+
+
+def speed_for(kind, dur, cat, rasa):
+    """How far the move travels, given the shot and the scene it is in.
+
+    A long shot can carry a bigger push and still read as slow; a short one
+    needs a small one or it whips. Action scenes move more and cut harder,
+    still scenes move less.
+    """
+    f = min(1.6, max(0.6, dur / 8.0))
+    if cat == "A":
+        f *= 1.35
+    if (rasa or "") in ("Śānta", "Santa", "Karuṇa", "Karuna"):
+        f *= 0.8
+    z0, z1, dx, dy = MOVE.get(kind, DEFAULT_MOVE)
+    mid = (z0 + z1) / 2.0
+    return (round(mid + (z0 - mid) * f, 2), round(mid + (z1 - mid) * f, 2),
+            round(dx * f), round(dy * f), round(f, 3))
+
+
 def pick_image(shot):
     """The image this shot should use: the one the check chose, else the only one.
 
@@ -294,44 +323,81 @@ JSX = r"""/* %(title)s
     comp.markerProperty.setValueAtTime(Math.min(CUES[c].at, comp.duration - 0.04), cm);
   }
 
-  if (CONF.subtitles && LINES.length) {
+  // ---- dialogue, on the shot it belongs to --------------------------------
+  if (CONF.subtitles) {
     for (var l = 0; l < LINES.length; l++) {
       var t = comp.layers.addText(LINES[l].text);
       var td = t.property("Source Text").value;
       td.resetCharStyle();
-      td.fontSize = Math.round(CONF.height * 0.038);
+      td.fontSize = Math.round(CONF.height * 0.040);
       td.fillColor = [1, 1, 1];
       td.applyFill = true;
-      td.applyStroke = false;
+      td.strokeColor = [0, 0, 0];
+      td.strokeWidth = Math.max(2, Math.round(CONF.height * 0.004));
+      td.strokeOverFill = false;
+      td.applyStroke = true;
       td.justification = ParagraphJustification.CENTER_JUSTIFY;
       t.property("Source Text").setValue(td);
       t.property("Transform").property("Position").setValue(
-        [CONF.width / 2, CONF.height - Math.round(CONF.height * 0.09)]);
-      t.name = "DLG · " + LINES[l].who;
+        [CONF.width / 2, CONF.height - Math.round(CONF.height * 0.085)]);
+      t.name = "DLG " + (LINES[l].shotLabel || "") + " \u00b7 " + LINES[l].who;
       t.inPoint = LINES[l].at;
       t.outPoint = LINES[l].at + LINES[l].dur;
-      t.guideLayer = true;
+      t.guideLayer = CONF.guides;
       t.label = 11;
     }
   }
 
-  // ---- slate -------------------------------------------------------------
+  // ---- the burn-in: one per shot, carrying its own timecodes --------------
+  if (CONF.burnIn) {
+    for (var b = 0; b < SHOTS.length; b++) {
+      var sb = SHOTS[b];
+      var bi = comp.layers.addText(sb.burn);
+      var bd = bi.property("Source Text").value;
+      bd.resetCharStyle();
+      bd.fontSize = Math.round(CONF.height * 0.026);
+      bd.fillColor = [1, 0.88, 0.45];
+      bd.applyFill = true;
+      bd.strokeColor = [0, 0, 0];
+      bd.strokeWidth = Math.max(2, Math.round(CONF.height * 0.003));
+      bd.strokeOverFill = false;
+      bd.applyStroke = true;
+      bd.leading = Math.round(CONF.height * 0.034);
+      bd.justification = ParagraphJustification.LEFT_JUSTIFY;
+      bi.property("Source Text").setValue(bd);
+      bi.property("Transform").property("Position").setValue(
+        [Math.round(CONF.width * 0.030), CONF.height - Math.round(CONF.height * 0.185)]);
+      bi.name = "BURN " + sb.label;
+      bi.inPoint = sb.at;
+      bi.outPoint = sb.at + sb.dur;
+      bi.guideLayer = CONF.guides;
+      bi.label = 5;
+    }
+  }
+
+  // ---- the slate, for the whole comp --------------------------------------
   if (CONF.slate) {
     var sl = comp.layers.addText(CONF.slateText);
     var sd = sl.property("Source Text").value;
     sd.resetCharStyle();
-    sd.fontSize = Math.round(CONF.height * 0.03);
-    sd.fillColor = [1, 0.85, 0.3];
+    sd.fontSize = Math.round(CONF.height * 0.029);
+    sd.fillColor = [1, 1, 1];
     sd.applyFill = true;
+    sd.strokeColor = [0, 0, 0];
+    sd.strokeWidth = Math.max(2, Math.round(CONF.height * 0.003));
+    sd.strokeOverFill = false;
+    sd.applyStroke = true;
+    sd.leading = Math.round(CONF.height * 0.038);
     sd.justification = ParagraphJustification.LEFT_JUSTIFY;
     sl.property("Source Text").setValue(sd);
     sl.property("Transform").property("Position").setValue(
-      [Math.round(CONF.width * 0.035), Math.round(CONF.height * 0.1)]);
+      [Math.round(CONF.width * 0.030), Math.round(CONF.height * 0.085)]);
     sl.name = "SLATE";
-    sl.guideLayer = true;
+    sl.guideLayer = CONF.guides;
     sl.moveToBeginning();
     sl.label = 14;
   }
+
 
   // ---- a grade slot, left empty on purpose --------------------------------
   var adj = comp.layers.addSolid([1, 1, 1], "GRADE (add effects here)",
@@ -427,13 +493,20 @@ def build_scene(cfg):
     times, how = layout(keep, total, sp_shots)
 
     src = pathlib.Path(cfg["images"])
+    cat = (meta.get("cat") or cfg.get("cat") or "")
+    rasa = (meta.get("rasa") or cfg.get("rasa") or "")
+    ctx = cfg.get("context") or ""        # "scene 4 of 14 · cut 27 of 115"
+    n_imgs = sum(len(x.get("imgs") or []) for x in keep)
+
     jshots, man_shots = [], []
-    for n, (s, (at, dur)) in enumerate(zip(keep, times), 1):
-        kind = shot_kind(s.get("t"))
-        aid, why = pick_image(s)
+    for n, (s_, (at, dur)) in enumerate(zip(keep, times), 1):
+        kind = shot_kind(s_.get("t"))
+        aid, why = pick_image(s_)
         fname = ""
         if aid:
-            found = sorted(src.glob(aid + "*"))
+            # the raw download (<asset id>.png) or an earlier export's
+            # ordered copy (NN_TYPE_<first 8>.png) — so re-runs are idempotent
+            found = sorted(src.glob(aid + "*")) or sorted(src.glob("*_" + aid[:8] + ".*"))
             if found:
                 ext = found[0].suffix or ".png"
                 fname = f"{n:02d}_{(kind or 'SHOT')}_{aid[:8]}{ext}"
@@ -442,18 +515,27 @@ def build_scene(cfg):
                     shutil.copy2(found[0], tgt)
             else:
                 why += " — file not downloaded"
-        z0, z1, dx, dy = MOVE.get(kind, DEFAULT_MOVE)
-        label = f"{n:02d} · {s.get('t') or 'SHOT'}"
+        z0, z1, dx, dy, f = speed_for(kind, dur, cat, rasa)
+        label = f"{n:02d} · {s_.get('t') or 'SHOT'}"
+        nimg = len(s_.get("imgs") or [])
+        burn = (f"{code}  ·  {title}" + (f"   ·   {ctx}" if ctx else "") + "\r"
+                f"{label}   {tc(at)} – {tc(at + dur)}   ({dur:.1f}s)\r"
+                f"shot {n} of {len(keep)}" 
+                + (f"   ·   {why}" if why else "")
+                + f"   ·   move ×{f:g}")
         jshots.append({"label": label, "file": fname, "at": round(at, 3),
                        "dur": round(dur, 3), "z0": z0, "z1": z1, "dx": dx, "dy": dy,
-                       "text": (s.get("x") or "").strip(),
-                       "mj": (s.get("mj") or "").strip(), "why": why})
-        man_shots.append({"n": n, "type": s.get("t"), "kind": kind,
+                       "tcIn": tc(at), "tcOut": tc(at + dur), "burn": burn,
+                       "text": (s_.get("x") or "").strip(),
+                       "mj": (s_.get("mj") or "").strip(), "why": why})
+        man_shots.append({"n": n, "type": s_.get("t"), "kind": kind,
                           "at": round(at, 3), "dur": round(dur, 3),
+                          "tc_in": tc(at), "tc_out": tc(at + dur),
+                          "move_factor": f, "images_on_shot": nimg,
                           "image_asset": aid, "image_file": fname, "image_choice": why,
-                          "text": (s.get("x") or "").strip(),
-                          "approved": bool(s.get("a")),
-                          "prompt_approved": bool(s.get("ma"))})
+                          "text": (s_.get("x") or "").strip(),
+                          "approved": bool(s_.get("a")),
+                          "prompt_approved": bool(s_.get("ma"))})
 
     # audio cues and dialogue keep the screenplay's own clock
     cues, lines = [], []
@@ -485,18 +567,50 @@ def build_scene(cfg):
             lines.append({"at": round(i * span, 3), "dur": round(min(span, 4.0), 3),
                           "who": d["who"], "text": d["text"]})
 
+    # Each line belongs to a shot: the one it overlaps most. The subtitle then
+    # takes that shot's in and out, so the line reads as the shot's line.
+    for ln in lines:
+        a0, b0 = ln["at"], ln["at"] + ln["dur"]
+        best_i, best_ov = None, 0.0
+        for k, sh in enumerate(jshots):
+            ov = min(b0, sh["at"] + sh["dur"]) - max(a0, sh["at"])
+            if ov > best_ov:
+                best_i, best_ov = k, ov
+        if best_i is None:
+            for k, sh in enumerate(jshots):
+                if sh["at"] <= a0 < sh["at"] + sh["dur"]:
+                    best_i = k
+                    break
+        if best_i is not None:
+            sh = jshots[best_i]
+            ln["shot"] = best_i + 1
+            ln["shotLabel"] = sh["label"]
+            ln["at"] = sh["at"]
+            ln["dur"] = sh["dur"]
+            sh["dlg"] = (sh.get("dlg", "") + ("  /  " if sh.get("dlg") else "") +
+                         ln["text"])[:400]
+
     name = f"{code} · {title}"
+    dur_total = sum(s_["dur"] for s_ in jshots)
+    used_imgs = sum(1 for s_ in jshots if s_["file"])
+    slate = (f"{code}  ·  {title}\r"
+             f"{len(jshots)} shots  ·  {used_imgs} pictures used of {n_imgs} uploaded  ·  "
+             f"{tc(dur_total)}  ·  {float(cfg.get('fps') or 24):g} fps\r"
+             + (f"{ctx}  ·  " if ctx else "")
+             + f"{how}" + (f"  ·  {len(lines)} dialogue line" + ("" if len(lines) == 1 else "s")
+                           if lines else ""))
     conf = {
         "name": name, "imageDir": "images",
         "width": int(cfg.get("width") or 1680), "height": int(cfg.get("height") or 720),
         "fps": float(cfg.get("fps") or 24),
-        "duration": round(sum(s["dur"] for s in jshots), 3),
-        "dissolve": float(cfg.get("dissolve") or 0.5),
+        "duration": round(dur_total, 3),
+        "dissolve": float(cfg.get("dissolve") or (0.25 if cat == "A" else 0.5)),
         "fadeOut": float(cfg.get("fade_out") or 1.0),
         "subtitles": not cfg.get("no_subtitles"),
         "slate": not cfg.get("no_slate"),
-        "slateText": f"{code}  ·  {title}\n{meta.get('movement') or ''}\n"
-                     f"{len(jshots)} shots  ·  {how}",
+        "burnIn": not cfg.get("no_burn_in"),
+        "guides": bool(cfg.get("guides")),
+        "slateText": slate,
         "quiet": bool(cfg.get("quiet")),
     }
     jsx = JSX % {"title": name, "conf": json.dumps(conf, ensure_ascii=False, indent=2),
@@ -516,6 +630,9 @@ def build_scene(cfg):
            "runtime_seconds": conf["duration"], "fps": conf["fps"],
            "frame": [conf["width"], conf["height"]],
            "timing": how, "shots_total": len(shots_all), "shots_used": len(jshots),
+           "images_uploaded": n_imgs, "images_used": used_imgs,
+           "renders_text": not cfg.get("guides"), "context": ctx,
+           "dissolve": conf["dissolve"], "scene_category": cat, "scene_rasa": rasa,
            "shots_skipped": skipped, "sluglines": sp_slugs,
            "dialogue": lines, "cues": cues, "shots": man_shots,
            "images_from": str(src), "script": f"{code}.js"}
@@ -570,6 +687,13 @@ def main():
     p.add_argument("--fade-out", type=float, default=1.0)
     p.add_argument("--no-subtitles", action="store_true")
     p.add_argument("--no-slate", action="store_true")
+    p.add_argument("--no-burn-in", action="store_true",
+                   help="leave out the per-shot timecode burn-in")
+    p.add_argument("--guides", action="store_true",
+                   help="make the slate, burn-in and subtitles guide layers, which do NOT render")
+    p.add_argument("--cat", help="scene category A or D, for the move speed")
+    p.add_argument("--rasa", help="scene rasa, for the move speed")
+    p.add_argument("--context", help='slate context, e.g. "scene 4 of 14 · cut 27 of 115"')
     p.add_argument("--all-shots", action="store_true",
                    help="include shots that are not approved (default: approved only)")
     p.add_argument("--animatic", action="store_true", help="also render a reference mp4")
@@ -593,6 +717,8 @@ def main():
         man = build_scene(cfg)
         if a.animatic:
             man["animatic"] = animatic(man, cfg["out"])
+            (pathlib.Path(cfg["out"]) / "manifest.json").write_text(
+                json.dumps(man, ensure_ascii=False, indent=1), encoding="utf8")
         mans.append(man)
         print(f"{man['scene']}: {man['shots_used']}/{man['shots_total']} shots · "
               f"{man['runtime_seconds']:g}s · {man['timing']} · "

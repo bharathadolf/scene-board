@@ -77,8 +77,24 @@ module.exports = async ({ browser, check }) => {
   check('it builds a comp', /items\.addComp/.test(jsx));
   check('it carries both shots', (jsx.match(/"label":/g) || []).length === 2);
   check('it finds its pictures beside itself', /new File\(\$\.fileName\)\)\.parent/.test(jsx));
+  const shotsJson = t => { const a = t.indexOf('var SHOTS = ') + 12; return JSON.parse(t.slice(a, t.indexOf('\n];', a) + 2)); };
+  const rows = shotsJson(jsx);
   check('a wide pushes in and an insert pulls back',
-    /"z0": 106[\s\S]*"z1": 113/.test(jsx) && /"z0": 112[\s\S]*"z1": 106/.test(jsx));
+    rows[0].z1 > rows[0].z0 && rows[1].z1 < rows[1].z0, rows.map(r => [r.label, r.z0, r.z1]));
+  check('the move is scaled to the shot and the scene', rows.every(r => r.mf >= 0.6 && r.mf <= 2.2));
+  check('the longer shot travels further',
+    Math.abs(rows[0].z1 - rows[0].z0) > Math.abs(rows[1].z1 - rows[1].z0));
+  check('each shot carries its own timecodes', /^\d\d:\d\d\.\d$/.test(rows[0].tcIn) && rows[1].tcIn === rows[0].tcOut,
+    [rows[0].tcIn, rows[0].tcOut, rows[1].tcIn]);
+  check('the slate, burn-in and dialogue render', /"guides": false/.test(jsx) && /"burnIn": true/.test(jsx) && /"slate": true/.test(jsx));
+  check('the burn-in names the shot, its timecodes and the picture',
+    /01 · WIDE/.test(rows[0].burn) && rows[0].burn.indexOf(rows[0].tcOut) > 0 && /shot 1 of 2/.test(rows[0].burn), rows[0].burn);
+  check('the slate counts the shots, the pictures and the runtime',
+    /2 shots/.test(jsx) && /pictures used of 2 uploaded/.test(jsx) && /24 fps/.test(jsx));
+  const colName0 = await at(i => colName(state.cols.find(c => c.id === i)), seqId);
+  check('the slate says where the scene sits',
+    jsx.indexOf(colName0) > 0 && /scene 1 of 3/.test(jsx), colName0);
+  check('text layers are built so they render', /t\.guideLayer = CONF\.guides/.test(jsx));
   check('each layer gets the shot text', /the gate at night/.test(jsx) && /one footprint/.test(jsx));
   check('the readme says only approved shots are in it',
     /Only approved shots are here/.test(entry(saved.b64, 'README.txt')));
@@ -119,6 +135,20 @@ module.exports = async ({ browser, check }) => {
   check('the readme counts the hole', /1 shot had no picture the check kept/.test(entry(saved.b64, 'README.txt')));
   check('the scene page warns about it too',
     /1 approved shot without a kept picture/.test(await at(() => document.querySelector('#sect-ae').textContent)));
+
+  // ---------- dialogue rides on its shot ----------
+  await at(c => { BY[c].shots[0].dlg = 'My Lord! Where are the war chariots?'; reopen(); }, code);
+  await page.waitForTimeout(300);
+  await at(() => { window.__saved = null; });
+  await page.click('[data-ae="scene"]');
+  await page.waitForTimeout(900);
+  saved = await at(() => window.__saved);
+  const dj = entry(saved.b64, code + '.js');
+  check('a shot with dialogue gets a subtitle layer', /"DLG " \+ s\.label/.test(dj) && /Where are the war chariots/.test(dj));
+  check('the dialogue is on that shot only', /"dlg": "My Lord! Where are the war chariots\?"/.test(dj));
+  check('the slate counts the dialogue', /1 shot with dialogue/.test(dj));
+  check('the marker carries it too', /DIALOGUE: " \+ s\.dlg/.test(dj));
+  await at(c => { delete BY[c].shots[0].dlg; }, code);
 
   // ---------- the sequence ----------
   await at(() => closeDrawer());
