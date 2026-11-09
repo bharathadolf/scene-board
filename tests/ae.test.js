@@ -82,6 +82,48 @@ module.exports = async ({ browser, check }) => {
   check('the pictures do not move', /"move": false/.test(jsx) && /if \(LOOK\.move\)/.test(jsx));
   check('and the cut is hard by default', /"dissolve": 0/.test(jsx) && /"fadeOut": 0/.test(jsx));
   check('text is placed by its drawn bounds, not its anchor', /sourceRectAtTime/.test(jsx) && /function put\(/.test(jsx));
+
+  /* run the placement maths against a stand-in for an After Effects text
+     layer: whatever its bounds and anchor, the point it is given must end up
+     where it was asked for, or the production text lands off the canvas. */
+  const placed = await at(src => {
+    const body = src.slice(src.indexOf('function put('), src.indexOf('function style('));
+    const put = new Function('return ' + body.trim())();
+    const make = (left, top, w, h, anchor) => {
+      let pos = [960, 540];                       // where AE drops a new text layer
+      return {
+        inPoint: 0,
+        sourceRectAtTime: () => ({ left, top, width: w, height: h }),
+        property: n => n === 'Transform' ? { property: k => k === 'Anchor Point'
+          ? { value: anchor }
+          : { value: pos, setValue: v => { pos = v; } } } : null,
+        box: () => { const p = pos;
+          return { l: p[0] + left - anchor[0], t: p[1] + top - anchor[1], w: w, h: h }; },
+      };
+    };
+    const out = [];
+    // a point-text layer: bounds sit above the baseline, anchor at the origin
+    let L = make(0, -22, 300, 28, [0, 0]);
+    put(L, 60, 40, 0, 0);  out.push(['top-left', L.box().l, L.box().t]);
+    L = make(0, -22, 300, 28, [0, 0]);
+    put(L, 1860, 1040, 1, 1); const b = L.box();
+    out.push(['bottom-right', b.l + b.w, b.t + b.h]);
+    // a box-text layer: three wrapped lines, anchor offset into the box
+    L = make(-400, 0, 800, 120, [-400, 0]);
+    put(L, 960, 700, 0.5, 0); const c = L.box();
+    out.push(['centred below', c.l + c.w / 2, c.t]);
+    L = make(-400, 0, 800, 120, [-400, 0]);
+    put(L, 960, 820, 0.5, 1); const d = L.box();
+    out.push(['sitting on a line', d.l + d.w / 2, d.t + d.h]);
+    return out;
+  }, jsx);
+  const near = (a, b) => Math.abs(a - b) < 0.51;
+  check('a corner lands on its exact margin', near(placed[0][1], 60) && near(placed[0][2], 40), placed[0]);
+  check('the opposite corner lands on its margin too', near(placed[1][1], 1860) && near(placed[1][2], 1040), placed[1]);
+  check('a wrapped brief hangs from the point it is given',
+    near(placed[2][1], 960) && near(placed[2][2], 700), placed[2]);
+  check('a wrapped line sits on the point it is given',
+    near(placed[3][1], 960) && near(placed[3][2], 820), placed[3]);
   check('the brief is placed below the picture', /put\(bf, PX, PB \+ Math\.round\(H \* LOOK\.gapBrief\), 0\.5, 0\)/.test(jsx));
   check('the dialogue is placed inside the picture', /put\(dl, PX, PB - Math\.round\(H \* LOOK\.dialogueUp\), 0\.5, 1\)/.test(jsx));
   check('the comp is set up for production',

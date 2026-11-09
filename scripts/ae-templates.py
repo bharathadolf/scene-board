@@ -50,9 +50,10 @@ HEAD = '''/* %(name)s — template: %(tpl)s
      0.5 for centre, 1 for right/bottom. */
   function put(t, x, y, ax, ay) {
     var r = t.sourceRectAtTime(Math.max(t.inPoint, 0) + 0.001, false);
-    var p = t.property("Transform").property("Position").value;
+    var a = t.property("Transform").property("Anchor Point").value;
+    /* a layer point L lands at position + (L - anchor), so solve for position */
     t.property("Transform").property("Position").setValue(
-      [p[0] + x - (r.left + r.width * ax), p[1] + y - (r.top + r.height * ay)]);
+      [x - (r.left + r.width * ax - a[0]), y - (r.top + r.height * ay - a[1])]);
     return t;
   }
   function style(d, size, colour, stroked) {
