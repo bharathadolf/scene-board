@@ -6,7 +6,10 @@ const SHOTS = { shots: [
   { type: 'AERIAL', text: 'The hill from above, smoke across the ridge.', te: 'పైనుంచి కొండ.' },
   { type: 'TRACKING', text: 'Running feet through burning grass.', te: 'పొగలో పరుగు.' },
   { type: 'CLOSE', text: 'The leap, held one beat.', te: 'దూకడం.' } ] };
-const P1 = 'burning hillside from above at dusk, smoke across a wooded ridge, wide aerial, long lens, photoreal cinematic film still, ancient India --ar 21:9 --style raw --v 7';
+/* Claude is told never to name a version; if one slips through it is stripped,
+   because Midjourney uses its newest model when none is named. */
+const P1_RAW = 'burning hillside from above at dusk, smoke across a wooded ridge, wide aerial, long lens, photoreal cinematic film still, ancient India --ar 21:9 --style raw --v 7';
+const P1 = 'burning hillside from above at dusk, smoke across a wooded ridge, wide aerial, long lens, photoreal cinematic film still, ancient India --ar 21:9 --style raw';
 
 module.exports = async ({ browser, check }) => {
   const page = await openPage(browser, { seed: boards(['b5']) });
@@ -42,10 +45,12 @@ module.exports = async ({ browser, check }) => {
   check('and it says how many shots it will write for', /without one/.test(await at(() => document.querySelector('[data-mkprompts]').textContent)));
 
   // ---- generating it ----
-  await page.reply({ text: P1 });
+  await page.reply({ text: P1_RAW });
   await page.click('[data-mjgen="0"]');
   await page.waitForTimeout(450);
-  check('the prompt is revealed', (await at(() => BY[openCode].shots[0].mj)) === P1);
+  check('the prompt is revealed, with the version flag stripped', (await at(() => BY[openCode].shots[0].mj)) === P1,
+    await at(() => BY[openCode].shots[0].mj));
+  check('the instruction forbids a version flag', /no --v or --version flag/.test(await at(() => window.__calls[window.__calls.length - 1])));
   check('it is shown on the card', /--ar 21:9/.test(await at(() => document.querySelector('.shotcard[data-shot="0"] .mjbox').textContent)));
   check('with a copy button', await at(() => !!document.querySelector('.shotcard[data-shot="0"] [data-mjcopy="0"]')));
   check('and a place for the picture', await at(() => !!document.querySelector('.shotcard[data-shot="0"] .shotimg')));
@@ -80,7 +85,7 @@ module.exports = async ({ browser, check }) => {
   check('a good batch leaves the prompt alone', (await at(() => BY[openCode].shots[0].mj)) === P1);
 
   // ---- when none of them will do, the prompt changes ----
-  const P2 = 'burning ridge seen from high above at dusk, thin smoke, extreme wide aerial, photoreal cinematic film still --ar 21:9 --style raw --v 7';
+  const P2 = 'burning ridge seen from high above at dusk, thin smoke, extreme wide aerial, photoreal cinematic film still --ar 21:9 --style raw';
   await page.reply({ best: 0, note: 'None of them is an aerial.', images: [{ n: 1, ok: false, note: 'too close' }], prompt: P2 });
   await page.click('[data-shcheck="0"]');
   await page.waitForTimeout(800);
@@ -119,6 +124,8 @@ module.exports = async ({ browser, check }) => {
   await page.click('[data-mkprompts]');
   await page.waitForTimeout(500);
   check('the bulk writer fills an approved shot', /running feet/.test(await at(() => BY[openCode].shots[1].mj || '')));
+  check('and strips a version flag there too', !/--v /.test(await at(() => BY[openCode].shots[1].mj || '')),
+    await at(() => BY[openCode].shots[1].mj));
   check('it leaves an approved prompt alone', (await at(() => BY[openCode].shots[0].mj)) === P2);
   check('it skips shots that are not approved', !(await at(() => BY[openCode].shots[2].mj)));
 

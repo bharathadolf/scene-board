@@ -528,7 +528,7 @@ async function askPrompts(code,prompt){
   const p=PREM+'\n\nYou are writing MIDJOURNEY image prompts, one for each shot, so that the shot list can be looked at as a storyboard.\n\n'+
    'The scene and its shots:\n'+JSON.stringify(cur,null,1)+
    '\n\nThe writer\'s instruction:\n+prompt+\n\n'+
-   'Write one prompt per shot, in the same order, for every shot in the list. A prompt is a single line of comma-separated visual clauses in this order: what is in frame and what it is doing, where it is, the time of day and the light, the shot size and lens, the mood, then the look ('+MJ_STYLE+' unless the instruction says otherwise), and it ends with Midjourney parameters, by default --ar 21:9 --style raw --v 7. Describe only what a still image can show: no camera moves, no cuts, no sound, no words or captions in the image, no named real people. Krishna may never be shown more than this scene shows him — if his presence is "Not present", "Spoken of", "Shadow or sound", "Hands" or "Effect", his face must not appear in the prompt. Keep each prompt under 60 words.\n\n'+
+   'Write one prompt per shot, in the same order, for every shot in the list. A prompt is a single line of comma-separated visual clauses in this order: what is in frame and what it is doing, where it is, the time of day and the light, the shot size and lens, the mood, then the look ('+MJ_STYLE+' unless the instruction says otherwise), and it ends with Midjourney parameters, by default --ar 21:9 --style raw. Never write a --v or --version flag: Midjourney uses its newest model when no version is named, and naming an old one costs more to render. Describe only what a still image can show: no camera moves, no cuts, no sound, no words or captions in the image, no named real people. Krishna may never be shown more than this scene shows him — if his presence is "Not present", "Spoken of", "Shadow or sound", "Hands" or "Effect", his face must not appear in the prompt. Keep each prompt under 60 words.\n\n'+
    'A shot marked "approved": true must be returned with its existing prompt word for word.\n\n'+
    'Reply with only a JSON object: {"prompts":[{"n":1,"text":"…"}]} with one entry for every shot, numbered from 1.';
   return await samp.json(p,{signal:ctl.signal,cache:false,modelTier:'default'});
@@ -548,7 +548,7 @@ function applyPromptsEdit(code,prompt,r){
     if(!old[i])return;
     if(!old[i].a)return;                     /* only approved shots have prompts */
     if(old[i].ma)return;                     /* approved prompt: left alone */
-    old[i]=Object.assign({},old[i],{mj:txt.slice(0,1400)});
+    old[i]=Object.assign({},old[i],{mj:mjClean(txt).slice(0,1400)});
     used++;
   });
   if(!used)throw new Error('nothing usable came back');
@@ -694,6 +694,14 @@ async function blobOf(id){
 const AE_W={EWS:1.5,WIDE:1.4,WS:1.4,ESTABLISHING:1.5,POV:1.2,TRACKING:1.2,DOLLY:1.2,CRANE:1.3,AERIAL:1.4,OVER:1.1,OTS:1.1,MS:1,MEDIUM:1,CLOSE:1,CU:1,MCU:1,ECU:.9,INSERT:.7,MACRO:.7,DETAIL:.7,CUTAWAY:.8};
 const AE_MV={EWS:[106,113,0,0],WIDE:[106,113,0,0],WS:[106,113,0,0],POV:[104,112,0,0],AERIAL:[108,100,0,0],TRACKING:[112,112,-70,0],DOLLY:[105,115,0,0],OVER:[108,112,26,0],OTS:[108,112,26,0],CLOSE:[110,116,0,-10],CU:[110,116,0,-10],MCU:[109,115,0,-8],ECU:[112,118,0,0],MS:[107,113,0,0],INSERT:[112,106,18,8],MACRO:[112,106,18,8],DETAIL:[112,106,18,8]};
 const AE_FPS=24,AE_WIDTH=1680,AE_HEIGHT=720,AE_DIS=.5,AE_FADE=1;
+/* Midjourney takes its newest model when no version is named, and an old
+   --v costs more to render, so no prompt in this tool carries one. */
+function mjClean(t){
+  return String(t||'')
+    .replace(/\s--(?:v|version)\s+[\d.]+\b/gi,'')
+    .replace(/\s--niji\s+[\d.]+\b/gi,' --niji')
+    .replace(/\s{2,}/g,' ').trim();
+}
 function aeKind(t){const ws=String(t||'').toUpperCase().split(/[^A-Z-]+/).filter(Boolean);for(const w of ws)if(AE_W[w]||AE_MV[w])return w;return ws[0]||''}
 function ae2(n){return (n<10?'0':'')+n}
 function ae3(n){return Math.round(n*1000)/1000}
@@ -981,7 +989,7 @@ async function checkShotImages(code,i){
     const chk={best:best>=0&&best<(sh.imgs||[]).length?best:-1,note:String((r&&r.note)||''),fix:'',at:new Date().toISOString(),per:per};
     const better=String((r&&r.prompt)||'').trim();
     const patch={chk:chk};
-    if(chk.best<0&&better&&!sh.ma)patch.mj=better.slice(0,1400);
+    if(chk.best<0&&better&&!sh.ma)patch.mj=mjClean(better).slice(0,1400);
     if(chk.best>=0)shotSel[code+':'+i]=chk.best;
     busyShot=null;
     shotPatch(code,i,patch,chk.best>=0?('Image '+(chk.best+1)+' is the one that fits'):(patch.mj?'None of them fit — the prompt has been rewritten':'None of them fit'));
@@ -1003,13 +1011,13 @@ async function genShotPrompt(code,i,again){
       'Place: '+s.pl+'. Krishna in this scene: '+s.k+'.\n'+
       'The shot ('+sh.t+'): '+sh.x+'\n'+
       (again?'The prompt that failed: '+(sh.mj||'(none)')+'\nWhat was wrong with the pictures it made: '+((sh.chk&&sh.chk.note)||'they did not match')+'\n':'')+
-      '\nThe prompt is a single line of comma-separated visual clauses, in this order: what is in frame and what it is doing, where it is, the time of day and the light, the shot size and lens, the mood, then the look ('+MJ_STYLE+'), and it ends with the Midjourney parameters --ar 21:9 --style raw --v 7. Describe only what a still image can show: no camera moves, no cuts, no sound, no words in the image. Never show more of Krishna than the scene shows. Keep it under 60 words.\n\n'+
+      '\nThe prompt is a single line of comma-separated visual clauses, in this order: what is in frame and what it is doing, where it is, the time of day and the light, the shot size and lens, the mood, then the look ('+MJ_STYLE+'), and it ends with the Midjourney parameters --ar 21:9 --style raw, and with no --v or --version flag at all: Midjourney uses its newest model when no version is named, and naming an old one costs more to render. Describe only what a still image can show: no camera moves, no cuts, no sound, no words in the image. Never show more of Krishna than the scene shows. Keep it under 60 words.\n\n'+
       'Reply with only a JSON object: {"text": "the prompt"}';
     const r=await samp.json(q,{cache:false,modelTier:'default'});
     const txt=String((r&&(r.text||r.prompt))||'').trim();
     if(!txt)throw new Error('nothing came back');
     busyShot=null;
-    shotPatch(code,i,{mj:txt.slice(0,1400),chk:undefined},again?'Prompt rewritten — try it in Midjourney again':'Prompt written');
+    shotPatch(code,i,{mj:mjClean(txt).slice(0,1400),chk:undefined},again?'Prompt rewritten — try it in Midjourney again':'Prompt written');
   }catch(e){busyShot=null;toast(msgFor(e));reopen()}
 }
 const fixShotPrompt=(code,i)=>genShotPrompt(code,i,true);
@@ -1098,7 +1106,7 @@ function shotCard(code,x,i){
       (mjEdit===i
         ? '<div class="sform"><textarea id="mjx" rows="5" placeholder="The prompt you would paste into Midjourney">'+esc(x.mj||'')+'</textarea>'+
           '<div class="acts"><button class="btn pri" type="button" data-mjsave="'+i+'">Save the prompt</button><button class="btn" type="button" data-mjcancel="1">Cancel</button></div></div>'
-        : '<div class="mjbox">'+esc(x.mj)+'</div>'+
+        : '<div class="mjbox">'+esc(mjClean(x.mj))+'</div>'+
           '<div class="acts"><button class="btn" type="button" data-mjcopy="'+i+'">Copy</button>'+
           (plock||frozen?'':'<button class="btn" type="button" data-mjed="'+i+'">Edit</button>'+
             '<button class="btn" type="button" data-mjgen="'+i+'">Write it again</button>')+
@@ -1344,7 +1352,7 @@ function readThrough(keep){
         (s.turn?'<p class="rcg"><b>'+T('hTurn')+'</b> — '+esc(sc(s,'turn'))+'</p>':'')+
         ((s.shots&&s.shots.length)?'<ul class="rshots">'+s.shots.map((x,k)=>'<li><b>'+(k+1)+' · '+esc(x.t)+'</b>'+(x.a?' <span class="apchip">approved</span>':'')+' — '+esc(shotText(x))+
           (x.img?'<div class="rimg"><img src="/_blob/'+esc(x.img)+'" alt="" loading="lazy"></div>':'')+
-          (rdMj&&x.mj?'<div class="mjbox">'+esc(x.mj)+'</div>':'')+'</li>').join('')+'</ul>':'')+
+          (rdMj&&x.mj?'<div class="mjbox">'+esc(mjClean(x.mj))+'</div>':'')+'</li>').join('')+'</ul>':'')+
         '</div>';
     });
   });
@@ -1515,14 +1523,14 @@ document.addEventListener('click',e=>{
     if(b.dataset.shap!=null){const i=+b.dataset.shap,x=(BY[openCode].shots||[])[i];if(x)setShotAp(openCode,i,'a',!x.a);return}
     if(b.dataset.mjap!=null){const i=+b.dataset.mjap,x=(BY[openCode].shots||[])[i];if(x)setShotAp(openCode,i,'ma',!x.ma);return}
     if(b.dataset.mjcopy!=null){const x=(BY[openCode].shots||[])[+b.dataset.mjcopy];
-      if(x&&x.mj&&navigator.clipboard)navigator.clipboard.writeText(x.mj).then(()=>toast('Prompt copied'),()=>toast('Could not copy'));return}
-    if(b.id==='mjcopyall'){const s=BY[openCode],txt=(s.shots||[]).map((x,i)=>x.mj?((i+1)+'. '+x.mj):null).filter(Boolean).join('\n\n');
+      if(x&&x.mj&&navigator.clipboard)navigator.clipboard.writeText(mjClean(x.mj)).then(()=>toast('Prompt copied'),()=>toast('Could not copy'));return}
+    if(b.id==='mjcopyall'){const s=BY[openCode],txt=(s.shots||[]).map((x,i)=>x.mj?((i+1)+'. '+mjClean(x.mj)):null).filter(Boolean).join('\n\n');
       if(txt&&navigator.clipboard)navigator.clipboard.writeText(sc(s,'t')+'\n\n'+txt).then(()=>toast('All the prompts copied'),()=>toast('Could not copy'));return}
     if(b.dataset.mjed!=null){mjEdit=+b.dataset.mjed;shotEdit=null;reopen();const x=$('mjx');if(x)x.focus();return}
     if(b.dataset.mjcancel){mjEdit=null;reopen();return}
     if(b.dataset.mjsave!=null){const i=+b.dataset.mjsave,v=$('mjx').value.trim();
       const a=(BY[openCode].shots||[]).slice();if(!a[i])return;
-      a[i]=Object.assign({},a[i]);if(v)a[i].mj=v;else delete a[i].mj;
+      a[i]=Object.assign({},a[i]);if(v)a[i].mj=mjClean(v);else delete a[i].mj;
       mjEdit=null;setShots(openCode,a,v?'Prompt saved':'Prompt cleared');return}
     if(b.dataset.copycode){if(navigator.clipboard)navigator.clipboard.writeText(openCode).then(()=>toast('Copied '+openCode),()=>{});return}
     if(b.dataset.opensrc){const r=SRC[openCode];if(r&&r.u)window.open(r.u,'_blank','noopener');return}
