@@ -75,12 +75,23 @@ module.exports = async ({ browser, check }) => {
 
   const jsx = script(saved.b64, code);
   check('the script targets After Effects', /#target aftereffects/.test(jsx));
+  check('the script parses', (await at(src => {
+    try { new Function(src.replace('#target aftereffects', '')); return 'ok'; }
+    catch (e) { return e.message; } }, jsx)) === 'ok',
+    await at(src => { try { new Function(src.replace('#target aftereffects', '')); return ''; } catch (e) { return e.message; } }, jsx));
+  check('the pictures do not move', /"move": false/.test(jsx) && /if \(LOOK\.move\)/.test(jsx));
+  check('and the cut is hard by default', /"dissolve": 0/.test(jsx) && /"fadeOut": 0/.test(jsx));
+  check('text is placed by its drawn bounds, not its anchor', /sourceRectAtTime/.test(jsx) && /function put\(/.test(jsx));
+  check('the brief is placed below the picture', /put\(bf, PX, PB \+ Math\.round\(H \* LOOK\.gapBrief\), 0\.5, 0\)/.test(jsx));
+  check('the dialogue is placed inside the picture', /put\(dl, PX, PB - Math\.round\(H \* LOOK\.dialogueUp\), 0\.5, 1\)/.test(jsx));
+  check('the comp is set up for production',
+    /motionBlur = false/.test(jsx) && /workAreaDuration/.test(jsx) && /LayerQuality\.BEST/.test(jsx) && /markerProperty/.test(jsx));
   check('it builds a comp', /items\.addComp/.test(jsx));
   check('it carries both shots', (jsx.match(/"label":/g) || []).length === 2);
   check('it finds its pictures beside itself', /new File\(\$\.fileName\)\)\.parent/.test(jsx));
   const shotsJson = t => { const a = t.indexOf('var SHOTS = ') + 12; return JSON.parse(t.slice(a, t.indexOf('\n];', a) + 2)); };
   const rows = shotsJson(jsx);
-  check('a wide pushes in and an insert pulls back',
+  check('a move is still worked out, for when it is switched on',
     rows[0].z1 > rows[0].z0 && rows[1].z1 < rows[1].z0, rows.map(r => [r.label, r.z0, r.z1]));
   check('the move is scaled to the shot and the scene', rows.every(r => r.mf >= 0.6 && r.mf <= 2.2));
   check('the longer shot travels further',

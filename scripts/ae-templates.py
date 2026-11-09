@@ -45,63 +45,66 @@ HEAD = '''/* %(name)s — template: %(tpl)s
   var IMG  = new Folder(HERE.fsName + "/" + CONF.imageDir);
   if (!IMG.exists) { alert("Picture folder not found next to this script:\\n" + IMG.fsName); return; }
 
-  function text(comp, body, size, colour, pos, just, lead) {
+  /* Text is placed by its real drawn bounds, not by its anchor, so every
+     element lands exactly where the layout says: ax/ay are 0 for left/top,
+     0.5 for centre, 1 for right/bottom. */
+  function put(t, x, y, ax, ay) {
+    var r = t.sourceRectAtTime(Math.max(t.inPoint, 0) + 0.001, false);
+    var p = t.property("Transform").property("Position").value;
+    t.property("Transform").property("Position").setValue(
+      [p[0] + x - (r.left + r.width * ax), p[1] + y - (r.top + r.height * ay)]);
+    return t;
+  }
+  function style(d, size, colour, stroked) {
+    d.resetCharStyle(); d.fontSize = size; d.fillColor = colour; d.applyFill = true;
+    if (stroked) { d.strokeColor = LOOK.strokeColour;
+      d.strokeWidth = Math.max(1, Math.round(size * 0.14));
+      d.strokeOverFill = false; d.applyStroke = true; } else { d.applyStroke = false; }
+    d.leading = Math.round(size * 1.35);
+    return d;
+  }
+  function line(comp, body, size, colour, just) {
     var t = comp.layers.addText(body), d = t.property("Source Text").value;
-    d.resetCharStyle();
-    d.fontSize = size;
-    d.fillColor = colour; d.applyFill = true;
-    if (LOOK.stroke) {
-      d.strokeColor = LOOK.strokeColour;
-      d.strokeWidth = Math.max(1, Math.round(CONF.height * 0.0028));
-      d.strokeOverFill = false; d.applyStroke = true;
-    } else { d.applyStroke = false; }
-    if (lead) d.leading = lead;
+    style(d, size, colour, LOOK.stroke);
     d.justification = just;
     t.property("Source Text").setValue(d);
-    t.property("Transform").property("Position").setValue(pos);
-    t.guideLayer = LOOK.guides;
+    t.guideLayer = LOOK.guides; t.quality = LayerQuality.BEST;
     return t;
   }
-  /* wrapped, centred text in a box of its own width */
-  function box(comp, body, w, size, colour, pos, stroked) {
-    var t = comp.layers.addBoxText([w, Math.max(size * 4, 60)]);
+  function box(comp, body, w, size, colour, stroked) {
+    var t = comp.layers.addBoxText([w, Math.max(size * 6, 80)]);
     var d = t.property("Source Text").value;
-    d.resetCharStyle();
+    style(d, size, colour, stroked);
     d.text = body;
-    d.fontSize = size;
-    d.fillColor = colour; d.applyFill = true;
-    if (stroked) {
-      d.strokeColor = LOOK.strokeColour;
-      d.strokeWidth = Math.max(1, Math.round(size * 0.14));
-      d.strokeOverFill = false; d.applyStroke = true;
-    } else { d.applyStroke = false; }
-    d.leading = Math.round(size * 1.35);
     d.justification = ParagraphJustification.CENTER_JUSTIFY;
     t.property("Source Text").setValue(d);
-    t.property("Transform").property("Position").setValue(pos);
-    t.guideLayer = LOOK.guides;
+    t.guideLayer = LOOK.guides; t.quality = LayerQuality.BEST;
     return t;
-  }
-  function ease(p, a, b) {
-    try { var e = new KeyframeEase(0, 55);
-      p.setTemporalEaseAtKey(a, [e], [e]); p.setTemporalEaseAtKey(b, [e], [e]); } catch (err) {}
   }
 
   app.beginUndoGroup("Build " + CONF.name);
+  app.project.timeDisplayType = TimeDisplayType.TIMECODE;
 
   var W = LOOK.width || CONF.width, H = LOOK.height || CONF.height;
+  var comps = app.project.items.addFolder("01 comps");
+  var folder = app.project.items.addFolder("02 pictures · " + CONF.name);
   var comp = app.project.items.addComp(CONF.name + LOOK.suffix, W, H, 1.0,
                                        Math.max(CONF.duration, 1), CONF.fps);
+  comp.parentFolder = comps;
   comp.bgColor = LOOK.bg;
+  comp.motionBlur = false;
+  comp.displayStartTime = 0;
+  comp.workAreaStart = 0;
+  comp.workAreaDuration = comp.duration;
   var bg = comp.layers.addSolid(LOOK.bg, "BACKGROUND", W, H, 1.0);
-  bg.moveToEnd();
-  var folder = app.project.items.addFolder(CONF.name + " \\u00b7 pictures");
+  bg.moveToEnd(); bg.locked = true;
   var missing = [];
 
-  /* the rectangle the pictures live in */
   var PW = Math.round(W * LOOK.pictureWidth);
-  var PH = Math.round(PW * (CONF.width / CONF.height) > 0 ? PW * CONF.height / CONF.width : 0);
+  var PH = Math.round(PW * CONF.height / CONF.width);
   var PX = Math.round(W / 2), PY = Math.round(H * LOOK.pictureY);
+  var PT = PY - Math.round(PH / 2), PB = PY + Math.round(PH / 2);
+  var PAD = Math.round(Math.min(W, H) * LOOK.pad);
 
   for (var i = 0; i < SHOTS.length; i++) {
     var s = SHOTS[i], lay, f = new File(IMG.fsName + "/" + s.file);
@@ -111,68 +114,62 @@ HEAD = '''/* %(name)s — template: %(tpl)s
       lay = comp.layers.add(item);
     } else {
       missing.push(s.label + (s.file ? " (" + s.file + ")" : " (no picture)"));
-      lay = comp.layers.addSolid([0.18, 0.05, 0.05], s.label + " \\u2014 NO PICTURE", PW, PH, 1.0);
+      lay = comp.layers.addSolid([0.18, 0.05, 0.05], s.label + " — NO PICTURE", PW, PH, 1.0);
     }
     lay.startTime = s.at; lay.inPoint = s.at; lay.outPoint = s.at + s.dur;
     lay.label = (i %% 15) + 1;
+    lay.quality = LayerQuality.BEST;
 
     var w = lay.source ? lay.source.width : PW, h = lay.source ? lay.source.height : PH;
     var fit = (LOOK.fill ? Math.max(PW / w, PH / h) : Math.min(PW / w, PH / h)) * 100;
     var sc = lay.property("Transform").property("Scale");
     var ps = lay.property("Transform").property("Position");
-    sc.setValueAtTime(s.at, [fit * s.z0 / 100, fit * s.z0 / 100]);
-    sc.setValueAtTime(s.at + s.dur, [fit * s.z1 / 100, fit * s.z1 / 100]);
-    ease(sc, 1, 2);
-    if (s.dx || s.dy) {
-      ps.setValueAtTime(s.at, [PX - s.dx / 2, PY - s.dy / 2]);
-      ps.setValueAtTime(s.at + s.dur, [PX + s.dx / 2, PY + s.dy / 2]);
-      ease(ps, 1, 2);
-    } else { ps.setValue([PX, PY]); }
-
-    var op = lay.property("Transform").property("Opacity");
-    op.setValueAtTime(s.at, 0); op.setValueAtTime(s.at + CONF.dissolve, 100);
-    if (i === SHOTS.length - 1 && CONF.fadeOut > 0) {
-      op.setValueAtTime(s.at + s.dur - CONF.fadeOut, 100);
-      op.setValueAtTime(s.at + s.dur, 0);
+    if (LOOK.move) {                        /* off by default: a still board */
+      sc.setValueAtTime(s.at, [fit * s.z0 / 100, fit * s.z0 / 100]);
+      sc.setValueAtTime(s.at + s.dur, [fit * s.z1 / 100, fit * s.z1 / 100]);
+      try { var e = new KeyframeEase(0, 55);
+        sc.setTemporalEaseAtKey(1, [e], [e]); sc.setTemporalEaseAtKey(2, [e], [e]); } catch (err) {}
+      if (s.dx || s.dy) {
+        ps.setValueAtTime(s.at, [PX - s.dx / 2, PY - s.dy / 2]);
+        ps.setValueAtTime(s.at + s.dur, [PX + s.dx / 2, PY + s.dy / 2]);
+      } else { ps.setValue([PX, PY]); }
+    } else {
+      sc.setValue([fit, fit]);
+      ps.setValue([PX, PY]);
     }
-    if (LOOK.mask) {                       /* keep a move inside the picture box */
+    if (LOOK.mask && LOOK.fill) {
       var m = lay.property("ADBE Mask Parade").addProperty("ADBE Mask Atom");
-      var sh = new Shape(); sh.closed = true;
-      var hx = PW / 2, hy = PH / 2;
-      sh.vertices = [[PX - hx, PY - hy], [PX + hx, PY - hy], [PX + hx, PY + hy], [PX - hx, PY + hy]];
-      m.property("ADBE Mask Shape").setValue(sh);
-      m.maskMode = MaskMode.ADD;
-      m.property("ADBE Mask Shape").expression = "";
+      var shp = new Shape(); shp.closed = true;
+      shp.vertices = [[PX - PW / 2, PT], [PX + PW / 2, PT], [PX + PW / 2, PB], [PX - PW / 2, PB]];
+      m.property("ADBE Mask Shape").setValue(shp); m.maskMode = MaskMode.ADD;
+    }
+    if (CONF.dissolve > 0) {
+      var op = lay.property("Transform").property("Opacity");
+      op.setValueAtTime(s.at, 0); op.setValueAtTime(s.at + CONF.dissolve, 100);
+    }
+    if (i === SHOTS.length - 1 && CONF.fadeOut > 0) {
+      var op2 = lay.property("Transform").property("Opacity");
+      op2.setValueAtTime(s.at + s.dur - CONF.fadeOut, 100);
+      op2.setValueAtTime(s.at + s.dur, 0);
     }
 
     var mk = new MarkerValue(s.label);
     mk.comment = s.text + (s.dlg ? "\\n\\nDIALOGUE: " + s.dlg : "")
       + (s.mj ? "\\n\\nPROMPT: " + s.mj : "") + (s.why ? "\\n\\nPICTURE: " + s.why : "");
     lay.property("Marker").setValueAtTime(s.at + Math.min(0.2, s.dur / 4), mk);
+    comp.markerProperty.setValueAtTime(s.at, new MarkerValue(s.label));
 
-    /* the dialogue of this shot, inside the picture */
     if (s.dlg) {
-      var dw = Math.round(PW * 0.86);
-      /* the block grows downwards from its position, so lift it by its own
-         height and it always sits just above the bottom edge of the picture */
-      var perLine = Math.max(12, Math.round(dw / (LOOK.dlg * 0.52)));
-      var lines = Math.max(1, Math.ceil(s.dlg.length / perLine));
-      var dy = PY + PH / 2 - Math.round(H * LOOK.dialogueUp)
-             - (lines - 1) * Math.round(LOOK.dlg * 1.35);
-      var dl = box(comp, s.dlg, dw, LOOK.dlg, LOOK.dlgInk, [PX - dw / 2, dy], true);
-      dl.name = "DLG " + s.label;
-      dl.inPoint = s.at; dl.outPoint = s.at + s.dur; dl.label = 11;
+      var dl = box(comp, s.dlg, Math.round(PW * 0.86), LOOK.dlg, LOOK.dlgInk, true);
+      dl.name = "DLG " + s.label; dl.inPoint = s.at; dl.outPoint = s.at + s.dur; dl.label = 11;
+      put(dl, PX, PB - Math.round(H * LOOK.dialogueUp), 0.5, 1);
     }
-
-    /* what this shot is, under the picture */
     if (LOOK.brief && s.text) {
-      var bw = Math.round(PW * LOOK.briefWidth);
-      var by = LOOK.briefInside ? PY + PH / 2 - Math.round(H * 0.052)
-                                : PY + PH / 2 + Math.round(H * LOOK.briefGap);
-      var bf = box(comp, s.text, bw, LOOK.briefSize, LOOK.briefInk,
-                   [PX - bw / 2, by], LOOK.briefInside || LOOK.stroke);
-      bf.name = "BRIEF " + s.label;
-      bf.inPoint = s.at; bf.outPoint = s.at + s.dur; bf.label = 4;
+      var bf = box(comp, s.text, Math.round(PW * LOOK.briefWidth), LOOK.briefSize,
+                   LOOK.briefInk, LOOK.briefInside || LOOK.stroke);
+      bf.name = "BRIEF " + s.label; bf.inPoint = s.at; bf.outPoint = s.at + s.dur; bf.label = 4;
+      if (LOOK.briefInside) put(bf, PX, PB - Math.round(H * 0.030), 0.5, 1);
+      else put(bf, PX, PB + Math.round(H * LOOK.gapBrief), 0.5, 0);
     }
 
     %(pershot)s
@@ -193,57 +190,37 @@ HEAD = '''/* %(name)s — template: %(tpl)s
 '''
 
 CORNER_PERSHOT = '''
-    /* the two corners that change with the shot */
-    var tr = text(comp, s.cTopRight, LOOK.small, LOOK.ink,
-      [W - Math.round(W * LOOK.pad), Math.round(H * LOOK.pad) + LOOK.small],
-      ParagraphJustification.RIGHT_JUSTIFY, Math.round(LOOK.small * 1.35));
+    var tr = line(comp, s.cTopRight, LOOK.small, LOOK.ink, ParagraphJustification.RIGHT_JUSTIFY);
     tr.name = "TR " + s.label; tr.inPoint = s.at; tr.outPoint = s.at + s.dur; tr.label = 5;
-
-    var bl = text(comp, s.cBotLeft, LOOK.small, LOOK.ink,
-      [Math.round(W * LOOK.pad), H - Math.round(H * LOOK.pad)],
-      ParagraphJustification.LEFT_JUSTIFY, Math.round(LOOK.small * 1.35));
+    put(tr, W - PAD, PAD, 1, 0);
+    var bl = line(comp, s.cBotLeft, LOOK.small, LOOK.ink, ParagraphJustification.LEFT_JUSTIFY);
     bl.name = "BL " + s.label; bl.inPoint = s.at; bl.outPoint = s.at + s.dur; bl.label = 5;
-
+    put(bl, PAD, H - PAD, 0, 1);
 '''
 
 CORNER_STATIC = '''
-  /* the two corners that stay for the whole comp */
-  var tl = text(comp, CONF.cTopLeft, LOOK.small, LOOK.ink,
-    [Math.round(W * LOOK.pad), Math.round(H * LOOK.pad) + LOOK.small],
-    ParagraphJustification.LEFT_JUSTIFY, Math.round(LOOK.small * 1.35));
-  tl.name = "TL \\u00b7 scene"; tl.label = 14;
-
-  var br = text(comp, CONF.cBotRight, LOOK.small, LOOK.ink,
-    [W - Math.round(W * LOOK.pad), H - Math.round(H * LOOK.pad)],
-    ParagraphJustification.RIGHT_JUSTIFY, Math.round(LOOK.small * 1.35));
-  br.name = "BR \\u00b7 project"; br.label = 14;
+  var tl = line(comp, CONF.cTopLeft, LOOK.small, LOOK.ink, ParagraphJustification.LEFT_JUSTIFY);
+  tl.name = "TL · scene"; tl.label = 14; put(tl, PAD, PAD, 0, 0);
+  var br = line(comp, CONF.cBotRight, LOOK.small, LOOK.ink, ParagraphJustification.RIGHT_JUSTIFY);
+  br.name = "BR · totals"; br.label = 14; put(br, W - PAD, H - PAD, 1, 1);
 '''
 
 SLATE_PERSHOT = '''
-    /* the strip under the picture, replaced at every cut */
-    var st = text(comp, s.strip, LOOK.small, LOOK.ink,
-      [Math.round(W * LOOK.pad), Math.round(H * 0.845)],
-      ParagraphJustification.LEFT_JUSTIFY, Math.round(LOOK.small * 1.45));
+    var st = line(comp, s.strip, LOOK.small, LOOK.ink, ParagraphJustification.LEFT_JUSTIFY);
     st.name = "STRIP " + s.label; st.inPoint = s.at; st.outPoint = s.at + s.dur; st.label = 5;
-
+    put(st, PAD, PB + Math.round(H * LOOK.gapBrief) + Math.round(LOOK.briefSize * 3.2), 0, 0);
 '''
 
 SLATE_STATIC = '''
-  /* the rule above the strip, and the fixed half of it */
-  var rule = comp.layers.addSolid(LOOK.ink, "RULE", W - Math.round(W * LOOK.pad * 2),
-                                  Math.max(1, Math.round(H * 0.0018)), 1.0);
-  rule.property("Transform").property("Position").setValue([W / 2, Math.round(H * 0.805)]);
-  rule.property("Transform").property("Opacity").setValue(45);
-
-  var head = text(comp, CONF.cTopLeft, LOOK.small, LOOK.ink,
-    [Math.round(W * LOOK.pad), Math.round(H * 0.062)],
-    ParagraphJustification.LEFT_JUSTIFY, Math.round(LOOK.small * 1.4));
-  head.name = "HEAD"; head.label = 14;
-
-  var foot = text(comp, CONF.cBotRight, LOOK.small, LOOK.ink,
-    [W - Math.round(W * LOOK.pad), Math.round(H * 0.955)],
-    ParagraphJustification.RIGHT_JUSTIFY, Math.round(LOOK.small * 1.4));
-  foot.name = "FOOT"; foot.label = 14;
+  var ruleY = PB + Math.round(H * LOOK.gapBrief) + Math.round(LOOK.briefSize * 2.4);
+  var rule = comp.layers.addSolid(LOOK.ink, "RULE", W - PAD * 2, Math.max(1, Math.round(H * 0.0018)), 1.0);
+  rule.property("Transform").property("Position").setValue([W / 2, ruleY]);
+  rule.property("Transform").property("Opacity").setValue(40);
+  rule.locked = true;
+  var head = line(comp, CONF.cTopLeft, LOOK.small, LOOK.ink, ParagraphJustification.LEFT_JUSTIFY);
+  head.name = "HEAD"; head.label = 14; put(head, PAD, PAD, 0, 0);
+  var foot = line(comp, CONF.cBotRight, LOOK.small, LOOK.ink, ParagraphJustification.RIGHT_JUSTIFY);
+  foot.name = "FOOT"; foot.label = 14; put(foot, W - PAD, H - PAD, 1, 1);
 '''
 
 TPL = {
@@ -256,7 +233,7 @@ TPL = {
                  "strokeColour": [0, 0, 0], "guides": False,
                  "brief": True, "briefInside": True, "briefWidth": 0.78,
                  "briefSize": 19, "briefInk": [0.88, 0.90, 0.93], "briefGap": 0.0,
-                 "dialogueUp": 0.115},
+                 "dialogueUp": 0.115, "move": False, "gapBrief": 0.030},
         "pershot": "", "static": "",
     },
     "corners": {
@@ -268,7 +245,7 @@ TPL = {
                  "strokeColour": [0, 0, 0], "guides": False,
                  "brief": True, "briefInside": False, "briefWidth": 0.82,
                  "briefSize": 22, "briefInk": [0.74, 0.77, 0.82], "briefGap": 0.040,
-                 "dialogueUp": 0.075},
+                 "dialogueUp": 0.075, "move": False, "gapBrief": 0.030},
         "pershot": CORNER_PERSHOT, "static": CORNER_STATIC,
     },
     "paper": {
@@ -280,7 +257,7 @@ TPL = {
                  "strokeColour": [1, 1, 1], "guides": False,
                  "brief": True, "briefInside": False, "briefWidth": 0.82,
                  "briefSize": 22, "briefInk": [0.25, 0.27, 0.31], "briefGap": 0.040,
-                 "dialogueUp": 0.075},
+                 "dialogueUp": 0.075, "move": False, "gapBrief": 0.030},
         "pershot": CORNER_PERSHOT, "static": CORNER_STATIC,
     },
     "slate": {
@@ -292,7 +269,7 @@ TPL = {
                  "strokeColour": [0, 0, 0], "guides": False,
                  "brief": True, "briefInside": False, "briefWidth": 0.84,
                  "briefSize": 23, "briefInk": [0.84, 0.86, 0.90], "briefGap": 0.035,
-                 "dialogueUp": 0.070},
+                 "dialogueUp": 0.070, "move": False, "gapBrief": 0.028},
         "pershot": SLATE_PERSHOT, "static": SLATE_STATIC,
     },
 }
@@ -308,7 +285,7 @@ def corner_text(man, shot, i):
           f"{(shot.get('image_choice') or '')}")
     strip = (f"{n:02d} · {shot['type'] or 'SHOT'}    {shot['tc_in']} – {shot['tc_out']}"
              f"    ({shot['dur']:.1f}s)    shot {n} of {tot}\r"
-             f"{(shot.get('image_choice') or '')}    ·    move ×{shot.get('move_factor', 1)}")
+             f"{(shot.get('image_choice') or '')}")
     return tr, bl, strip
 
 
@@ -359,7 +336,7 @@ def build(man_path, out, which=None, images_from=None):
         "name": man["comp"], "imageDir": "images",
         "width": man["frame"][0], "height": man["frame"][1],
         "fps": man["fps"], "duration": man["runtime_seconds"],
-        "dissolve": man.get("dissolve", 0.5), "fadeOut": 1.0,
+        "dissolve": 0, "fadeOut": 0,
         "cTopLeft": f"{man['scene']}  ·  {man['title']}\r{man.get('context') or ''}",
         "cBotRight": (f"{man['shots_used']} shots  ·  {used} pictures of "
                       f"{man.get('images_uploaded', used)}\r"
