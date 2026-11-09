@@ -283,6 +283,21 @@ function seedBoards(){
   state.cols=curBoard().cols;lastJSON='';
   return true;
 }
+/* Boards that ship with a new version of the page are added to an existing
+   store once each, and a board the person has deleted is never resurrected:
+   every seed id we have offered is remembered. */
+function addNewSeeds(){
+  let known=[];try{known=JSON.parse(localStorage.getItem('sceneboard.seeded')||'[]')||[]}catch(e){}
+  const ids=Object.keys(SEED||{}).sort();
+  if(!ids.length)return false;
+  const fresh=ids.filter(id=>!boardsData[id]&&known.indexOf(id)<0);
+  const remember=()=>{try{localStorage.setItem('sceneboard.seeded',JSON.stringify(ids.filter(id=>boardsData[id]||known.indexOf(id)>=0)))}catch(e){}};
+  if(!fresh.length){remember();return false}
+  fresh.forEach(id=>{boardsData[id]=readBoard(SEED[id],id)});
+  remember();persist();
+  toast(fresh.length===1?'New board in this version: “'+bName(boardsData[fresh[0]])+'”':'Added '+fresh.length+' new boards from this version');
+  return true;
+}
 function renderTabs(){
   $('boards').innerHTML=boardIds().map(id=>'<button type="button" data-board="'+id+'" aria-pressed="'+(id===active)+'" title="'+esc(bName(boardsData[id]))+'">'+esc(bName(boardsData[id]))+'</button>').join('')+'<button type="button" class="plus" id="dupboard" title="'+esc(T('copyTip'))+'">'+esc(T('copyBoard'))+'</button>';
   const bn=$('bname');if(document.activeElement!==bn)bn.value=bName(curBoard());
@@ -299,7 +314,7 @@ async function boot(){
     let saved=false;
     try{const r=JSON.parse(localStorage.getItem('sceneboard.v2')||'null');
       if(r&&r.boards&&Object.keys(r.boards).length){saved=true;boardsData={};Object.keys(r.boards).forEach(k=>boardsData[k]=readBoard(r.boards[k],k));state.cat=clean({cols:[],cat:r.cat}).cat;active=boardsData[r.active]?r.active:(boardIds()[0]||'b1');state.cols=curBoard().cols}}catch(e){}
-    if(!saved)seedBoards();
+    if(!saved)seedBoards();else addNewSeeds();
     try{const o=JSON.parse(localStorage.getItem('sceneboard.ov')||'null');if(o&&typeof o==='object'){ov=o;applyOv()}}catch(e){}
     setStatus('local');render();return;
   }
