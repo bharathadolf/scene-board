@@ -58,7 +58,7 @@ never writes back to it.
 
 ### Image paths
 
-The `.jsx` finds its images **relative to its own location**:
+The `.js` finds its images **relative to its own location**:
 
 ```js
 var HERE = (new File($.fileName)).parent;
@@ -67,7 +67,7 @@ var IMG  = new Folder(HERE.fsName + "/" + CONF.imageDir);
 
 So the whole folder — script, `images/`, manifest — can be copied to any
 machine, any drive, any path, and still import. Nothing is hard-coded. Move the
-`.jsx` out of its folder and it will say so instead of importing nothing.
+`.js` out of its folder and it will say so instead of importing nothing.
 
 Images are renamed on export to `NN_TYPE_asset.png` (`03_POV_c157adc0.png`), so
 the folder reads in cut order while keeping the first eight characters of the
@@ -98,7 +98,7 @@ python3 scripts/ae-sequence.py --scene S-719 \
 ```
 
 Then in After Effects: **File → Scripts → Run Script File…** and choose
-`S-719.jsx`. The comp is built, opened, and the undo group is one step, so one
+`S-719.js`. The comp is built, opened, and the undo group is one step, so one
 `Ctrl+Z` removes the whole thing if you want to re-run.
 
 Useful switches: `--fps`, `--width/--height` (default 1680×720, the native size
@@ -128,7 +128,7 @@ python3 scripts/ae-sequence.py --batch movement-I.json \
 ```
 
 That writes one folder and one comp per scene, plus
-`Movement_I_master.jsx`, which nests the scene comps end to end in batch order
+`Movement_I_master.js`, which nests the scene comps end to end in batch order
 and drops a comp marker at each scene boundary. Run the scene scripts first,
 then the master: it looks the comps up by name and tells you if one is missing.
 
@@ -192,5 +192,39 @@ the dissolve lengths, the grade layer, the subtitle type.
 
 Re-export instead of hand-editing: anything that came from the board — a new
 image, a changed prompt, a shot added or re-approved, a different runtime. The
-`.jsx` is generated and says so at the top; re-running it builds a fresh comp
+`.js` is generated and says so at the top; re-running it builds a fresh comp
 beside the old one rather than touching it, so two versions can be compared.
+
+
+---
+
+## A note on the file extension
+
+The scripts ship as **`.js`**, not `.jsx`. After Effects accepts both — its
+Run Script File… dialog lists `*.jsx;*.jsxbin;*.js` — but `.jsx` is also the
+extension for React, so anything that previews a file by its extension tries to
+compile `#target aftereffects` as JavaScript XML and fails on line 8. Rename to
+`.jsx` locally if you prefer the convention; After Effects does not care.
+
+---
+
+## The same thing inside the board
+
+`scripts/ae-sequence.py` is the version with the screenplay in it — dialogue,
+sound cues and VFX notes on the screenplay's own clock. The board itself now
+does the rest without any local setup:
+
+- **A scene** — open it; under *Shots, prompts and images* there is an
+  **After Effects** section with *Build this scene*. It appears as soon as one
+  approved shot has a picture its check kept, and says how many of the scene's
+  shots are ready.
+- **A sequence** — open the sequence; the same section offers *Build this
+  sequence*, which writes one folder and one comp per ready scene, plus a
+  master comp that nests them in order.
+- **The whole board** — the **After Effects** button in the header does every
+  ready scene on the board, with a board-level master comp.
+
+Each download is a zip holding the script, its `images/` folder and a README.
+The in-board version uses the scene's own runtime and shot text; the screenplay
+dialogue and sound cues come only from the Python exporter, because the
+Fountain files live on your machine rather than in the board.

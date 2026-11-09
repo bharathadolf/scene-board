@@ -687,6 +687,214 @@ async function addShotImage(code,i,file,replaceAt){
 async function blobOf(id){
   try{const r=await fetch('/_blob/'+id);if(!r.ok)return null;const b=await r.blob();return b.size?b:null}catch(e){return null}
 }
+/* ---------- After Effects export ----------
+   Approved shots plus the picture each shot's check kept, written out as an
+   ExtendScript that builds the comp, with the images beside it in a zip.
+   Works at three levels: one scene, one sequence, the whole board. */
+const AE_W={EWS:1.5,WIDE:1.4,WS:1.4,ESTABLISHING:1.5,POV:1.2,TRACKING:1.2,DOLLY:1.2,CRANE:1.3,AERIAL:1.4,OVER:1.1,OTS:1.1,MS:1,MEDIUM:1,CLOSE:1,CU:1,MCU:1,ECU:.9,INSERT:.7,MACRO:.7,DETAIL:.7,CUTAWAY:.8};
+const AE_MV={EWS:[106,113,0,0],WIDE:[106,113,0,0],WS:[106,113,0,0],POV:[104,112,0,0],AERIAL:[108,100,0,0],TRACKING:[112,112,-70,0],DOLLY:[105,115,0,0],OVER:[108,112,26,0],OTS:[108,112,26,0],CLOSE:[110,116,0,-10],CU:[110,116,0,-10],MCU:[109,115,0,-8],ECU:[112,118,0,0],MS:[107,113,0,0],INSERT:[112,106,18,8],MACRO:[112,106,18,8],DETAIL:[112,106,18,8]};
+const AE_FPS=24,AE_WIDTH=1680,AE_HEIGHT=720,AE_DIS=.5,AE_FADE=1;
+function aeKind(t){const ws=String(t||'').toUpperCase().split(/[^A-Z-]+/).filter(Boolean);for(const w of ws)if(AE_W[w]||AE_MV[w])return w;return ws[0]||''}
+function ae2(n){return (n<10?'0':'')+n}
+function ae3(n){return Math.round(n*1000)/1000}
+/* which picture is this shot's picture: the one the check kept */
+function aeImg(sh){
+  const imgs=sh.imgs||[];if(!imgs.length)return null;
+  const chk=sh.chk||{},b=chk.best;
+  if(typeof b==='number'&&b>=0&&b<imgs.length)return{id:imgs[b].id,why:'checked: picture '+(b+1)+' of '+imgs.length+' kept'};
+  if(typeof b==='number'&&b<0)return null;      /* the check said none of them is the shot */
+  const ok=(chk.per||[]).filter(p=>p&&p.ok&&typeof p.i==='number');
+  if(ok.length&&ok[0].i<imgs.length)return{id:imgs[ok[0].i].id,why:'checked: picture '+(ok[0].i+1)+' passed'};
+  return{id:imgs[0].id,why:imgs.length===1?'one picture, not checked':imgs.length+' pictures, not checked — the first is used'};
+}
+/* the approved shots of a scene, laid out across its runtime */
+function aeShots(code){
+  const s=BY[code];if(!s)return [];
+  const got=(s.shots||[]).filter(x=>x.a);
+  if(!got.length)return [];
+  const total=(s.mid||1.5)*60,ws=got.map(x=>AE_W[aeKind(x.t)]||1),sum=ws.reduce((a,b)=>a+b,0)||1;
+  let at=0;
+  return got.map((x,i)=>{
+    const dur=total*ws[i]/sum,g=aeImg(x),k=aeKind(x.t),mv=AE_MV[k]||[107,113,0,0],row={
+      n:i+1,label:ae2(i+1)+' · '+(x.t||'SHOT'),text:x.x||'',mj:x.mj||'',
+      id:g?g.id:'',why:g?g.why:'no picture the check kept',
+      file:g?ae2(i+1)+'_'+(k||'SHOT')+'_'+g.id.slice(0,8)+'.png':'',
+      at:ae3(at),dur:ae3(dur),z0:mv[0],z1:mv[1],dx:mv[2],dy:mv[3]};
+    at+=dur;return row;
+  });
+}
+function aeReady(code){return aeShots(code).some(x=>x.file)}
+function aeCount(ids){return ids.filter(aeReady).length}
+/* the ExtendScript for one scene */
+function aeScript(code,rows){
+  const s=BY[code],name=code+' · '+sc(s,'t'),dur=rows.reduce((a,x)=>a+x.dur,0);
+  const conf={name:name,imageDir:'images',width:AE_WIDTH,height:AE_HEIGHT,fps:AE_FPS,
+    duration:ae3(dur),dissolve:AE_DIS,fadeOut:AE_FADE,
+    slateText:code+'  ·  '+sc(s,'t')+'\n'+rows.length+' shots  ·  '+Math.round(dur)+'s  ·  weighted by shot type'};
+  return ['/* '+name,
+' * Built by the Scene Board from approved shots and checked pictures.',
+' * Images are found next to this file, so this folder can be copied anywhere.',
+' * After Effects: File > Scripts > Run Script File... and choose this file.',
+' */',
+'#target aftereffects','',
+'(function () {',
+'  var CONF = '+JSON.stringify(conf,null,2)+';',
+'  var SHOTS = '+JSON.stringify(rows,null,2)+';','',
+'  var HERE = (new File($.fileName)).parent;',
+'  var IMG = new Folder(HERE.fsName + "/" + CONF.imageDir);',
+'  if (!IMG.exists) { alert("Image folder not found next to this script:\\n" + IMG.fsName); return; }','',
+'  app.beginUndoGroup("Build " + CONF.name);',
+'  var comp = app.project.items.addComp(CONF.name, CONF.width, CONF.height, 1.0, Math.max(CONF.duration, 1), CONF.fps);',
+'  comp.bgColor = [0, 0, 0];',
+'  var folder = app.project.items.addFolder(CONF.name + " · footage");',
+'  var missing = [];',
+'  function ease(p, a, b) { try { var e = new KeyframeEase(0, 55);',
+'    p.setTemporalEaseAtKey(a, [e], [e]); p.setTemporalEaseAtKey(b, [e], [e]); } catch (err) {} }','',
+'  for (var i = 0; i < SHOTS.length; i++) {',
+'    var s = SHOTS[i], lay, f = new File(IMG.fsName + "/" + s.file);',
+'    if (s.file && f.exists) {',
+'      var item = app.project.importFile(new ImportOptions(f));',
+'      item.parentFolder = folder; item.name = s.label;',
+'      lay = comp.layers.add(item);',
+'    } else {',
+'      missing.push(s.label + (s.file ? " (" + s.file + ")" : " (no picture)"));',
+'      lay = comp.layers.addSolid([0.18, 0.05, 0.05], s.label + " — NO PICTURE", CONF.width, CONF.height, 1.0);',
+'    }',
+'    lay.startTime = s.at; lay.inPoint = s.at; lay.outPoint = s.at + s.dur; lay.label = (i % 15) + 1;',
+'    var w = lay.source ? lay.source.width : CONF.width, h = lay.source ? lay.source.height : CONF.height;',
+'    var fit = Math.max(CONF.width / w, CONF.height / h) * 100;',
+'    var sc2 = lay.property("Transform").property("Scale"), ps = lay.property("Transform").property("Position");',
+'    var cx = CONF.width / 2, cy = CONF.height / 2;',
+'    sc2.setValueAtTime(s.at, [fit * s.z0 / 100, fit * s.z0 / 100]);',
+'    sc2.setValueAtTime(s.at + s.dur, [fit * s.z1 / 100, fit * s.z1 / 100]);',
+'    ease(sc2, 1, 2);',
+'    if (s.dx || s.dy) {',
+'      ps.setValueAtTime(s.at, [cx - s.dx / 2, cy - s.dy / 2]);',
+'      ps.setValueAtTime(s.at + s.dur, [cx + s.dx / 2, cy + s.dy / 2]);',
+'      ease(ps, 1, 2);',
+'    } else { ps.setValue([cx, cy]); }',
+'    var op = lay.property("Transform").property("Opacity");',
+'    op.setValueAtTime(s.at, 0); op.setValueAtTime(s.at + CONF.dissolve, 100);',
+'    if (i === SHOTS.length - 1 && CONF.fadeOut > 0) {',
+'      op.setValueAtTime(s.at + s.dur - CONF.fadeOut, 100); op.setValueAtTime(s.at + s.dur, 0);',
+'    }',
+'    var mk = new MarkerValue(s.label);',
+'    mk.comment = s.text + (s.mj ? "\\n\\nPROMPT: " + s.mj : "") + (s.why ? "\\n\\nPICTURE: " + s.why : "");',
+'    lay.property("Marker").setValueAtTime(s.at + Math.min(0.2, s.dur / 4), mk);',
+'  }','',
+'  var sl = comp.layers.addText(CONF.slateText);',
+'  var sd = sl.property("Source Text").value; sd.resetCharStyle();',
+'  sd.fontSize = Math.round(CONF.height * 0.03); sd.fillColor = [1, 0.85, 0.3]; sd.applyFill = true;',
+'  sl.property("Source Text").setValue(sd);',
+'  sl.property("Transform").property("Position").setValue([Math.round(CONF.width * 0.035), Math.round(CONF.height * 0.1)]);',
+'  sl.name = "SLATE"; sl.guideLayer = true; sl.moveToBeginning();','',
+'  var adj = comp.layers.addSolid([1, 1, 1], "GRADE (add effects here)", CONF.width, CONF.height, 1.0);',
+'  adj.adjustmentLayer = true; adj.enabled = false; adj.moveToBeginning();','',
+'  comp.openInViewer(); app.endUndoGroup();',
+'  var msg = CONF.name + "\\n" + SHOTS.length + " shots · " + Math.round(CONF.duration) + "s · " + CONF.fps + " fps";',
+'  if (missing.length) msg += "\\n\\nNo picture for:\\n" + missing.join("\\n");',
+'  alert(msg);',
+'})();',''].join('\n');
+}
+/* the master script: nests the scene comps in board order */
+function aeMaster(title,names){
+  return ['/* '+title+' — master comp',' * Run the scene scripts first, then this one.',' */',
+'#target aftereffects','',
+'(function () {',
+'  var NAMES = '+JSON.stringify(names,null,2)+';',
+'  var MASTER = '+JSON.stringify(title)+';',
+'  function find(n) { for (var i = 1; i <= app.project.numItems; i++) {',
+'    var it = app.project.item(i); if (it instanceof CompItem && it.name === n) return it; } return null; }',
+'  var got = [], total = 0, w = 0, h = 0, fps = 24;',
+'  for (var i = 0; i < NAMES.length; i++) {',
+'    var c = find(NAMES[i]);',
+'    if (!c) { alert("Run the scene scripts first — missing comp:\\n" + NAMES[i]); return; }',
+'    got.push(c); total += c.duration; w = c.width; h = c.height; fps = 1 / c.frameDuration;',
+'  }',
+'  app.beginUndoGroup("Build " + MASTER);',
+'  var m = app.project.items.addComp(MASTER, w, h, 1.0, Math.max(total, 1), fps), at = 0;',
+'  for (var j = 0; j < got.length; j++) {',
+'    var l = m.layers.add(got[j]); l.startTime = at; l.inPoint = at; l.outPoint = at + got[j].duration;',
+'    m.markerProperty.setValueAtTime(at + 0.001, new MarkerValue(got[j].name));',
+'    at += got[j].duration;',
+'  }',
+'  m.openInViewer(); app.endUndoGroup();',
+'  alert(MASTER + "\\n" + got.length + " scenes · " + Math.round(total) + "s");',
+'})();',''].join('\n');
+}
+/* a store-only zip, so the script and its pictures travel together */
+let aeCrcT=null;
+function aeCrc(u8){
+  if(!aeCrcT){aeCrcT=new Int32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;aeCrcT[n]=c}}
+  let c=-1;for(let i=0;i<u8.length;i++)c=aeCrcT[(c^u8[i])&255]^(c>>>8);return (c^-1)>>>0;
+}
+function aeZip(files){
+  const enc=new TextEncoder(),parts=[],cen=[];let off=0;
+  const u16=n=>[n&255,(n>>8)&255],u32=n=>[n&255,(n>>8)&255,(n>>16)&255,(n>>24)&255];
+  files.forEach(f=>{
+    const nm=enc.encode(f.name),data=f.data instanceof Uint8Array?f.data:enc.encode(String(f.data));
+    const crc=aeCrc(data);
+    const h=new Uint8Array([...u32(0x04034b50),...u16(20),...u16(0),...u16(0),...u16(0),...u16(0),
+      ...u32(crc),...u32(data.length),...u32(data.length),...u16(nm.length),...u16(0)]);
+    parts.push(h,nm,data);
+    cen.push(new Uint8Array([...u32(0x02014b50),...u16(20),...u16(20),...u16(0),...u16(0),...u16(0),...u16(0),
+      ...u32(crc),...u32(data.length),...u32(data.length),...u16(nm.length),...u16(0),...u16(0),...u16(0),...u16(0),
+      ...u32(0),...u32(off)]),nm);
+    off+=h.length+nm.length+data.length;
+  });
+  const cstart=off;let clen=0;cen.forEach(c=>clen+=c.length);
+  const end=new Uint8Array([...u32(0x06054b50),...u16(0),...u16(0),...u16(files.length),...u16(files.length),
+    ...u32(clen),...u32(cstart),...u16(0)]);
+  return new Blob([...parts,...cen,end],{type:'application/zip'});
+}
+function aeSafe(s){return String(s||'board').replace(/[^A-Za-z0-9]+/g,'_').replace(/^_|_$/g,'').slice(0,40)||'board'}
+let aeBusy=false;
+async function aeExport(kind,id){
+  if(aeBusy)return;
+  let ids=[],title='';
+  if(kind==='scene'){ids=[id];title=id+' · '+sc(BY[id],'t')}
+  else if(kind==='seq'){const c=state.cols.find(x=>x.id===id);if(!c)return;ids=c.ids.slice();title=colName(c)}
+  else {ids=flat();title=bName(curBoard())}
+  const use=ids.filter(aeReady);
+  if(!use.length){toast('Nothing to build yet — a shot needs an approved status and a picture its check kept');return}
+  aeBusy=true;toast('Collecting '+use.length+' scene'+(use.length===1?'':'s')+'…');
+  try{
+    const many=use.length>1,files=[],comps=[],lines=[];
+    let shots=0,missing=0,secs=0;
+    for(const code of use){
+      const rows=aeShots(code),dir=many?code+'/':'';
+      for(const r of rows){
+        if(!r.id){missing++;continue}
+        const b=await blobOf(r.id);
+        if(!b){missing++;r.file='';continue}
+        files.push({name:dir+'images/'+r.file,data:new Uint8Array(await b.arrayBuffer())});
+      }
+      const nm=code+' · '+sc(BY[code],'t');
+      comps.push(nm);shots+=rows.length;secs+=rows.reduce((a,x)=>a+x.dur,0);
+      files.push({name:dir+code+'.js',data:aeScript(code,rows)});
+      lines.push(code+'  '+sc(BY[code],'t')+'  —  '+rows.length+' shots, '+Math.round(rows.reduce((a,x)=>a+x.dur,0))+'s');
+    }
+    if(many)files.push({name:aeSafe(title)+'_master.js',data:aeMaster(title,comps)});
+    files.push({name:'README.txt',data:
+      title+'\n'+'='.repeat(title.length)+'\n\n'+
+      use.length+' scene'+(use.length===1?'':'s')+' · '+shots+' shots · '+Math.round(secs)+'s · '+AE_WIDTH+'x'+AE_HEIGHT+' at '+AE_FPS+' fps\n\n'+
+      'In After Effects: File > Scripts > Run Script File... and choose the .js file.\n'+
+      (many?'Run each scene\'s script first, then '+aeSafe(title)+'_master.js to nest them in order.\n':'')+
+      'Keep each .js beside its images folder — the script finds the pictures next to itself.\n\n'+
+      'Only approved shots are here, and each shot uses the picture its check kept.\n'+
+      (missing?'\n'+missing+' shot'+(missing===1?'':'s')+' had no picture the check kept; the comp marks '+(missing===1?'it':'them')+' in red.\n':'')+
+      '\n'+lines.join('\n')+'\n'});
+    const zip=aeZip(files);
+    const fn=aeSafe(kind==='scene'?id:title)+'_AE.zip';
+    const dl=await (window.claude&&window.claude.use?window.claude.use('downloads'):null);
+    if(!dl)throw {code:'unavailable'};
+    await dl.save({filename:fn,data:zip});
+    toast(use.length===1?'Built '+fn+' — '+shots+' shots':'Built '+fn+' — '+use.length+' scenes, '+shots+' shots');
+  }catch(e){
+    if(!(e&&e.code==='declined'))toast(e&&e.code==='unavailable'?'Downloads are not available in this view':'Could not build the package');
+  }
+  aeBusy=false;
+}
 /* show Claude every picture on the shot: which of them is the shot, and if
    none of them is, how the prompt should change */
 async function checkShotImages(code,i){
@@ -846,6 +1054,29 @@ function shotCard(code,x,i){
     '<p class="shtext">'+esc(shotText(x))+'</p>'+
     body+'</div>';
 }
+function aeSection(code){
+  const rows=aeShots(code),ready=rows.filter(x=>x.file).length,gaps=rows.length-ready;
+  if(!rows.length)return '';
+  let h='<div class="sect" id="sect-ae"><h3>After Effects</h3>';
+  if(!ready)h+='<p class="sub">Every approved shot still needs a picture its check keeps. Generate the prompt, bring the picture back, press Check, and this scene can be built.</p>';
+  else{
+    h+='<p class="sub">Builds a comp from the approved shots of this scene: one layer per shot, fit to frame, a move chosen from the shot type, cross-dissolves and a marker on each layer carrying the shot and its prompt. The zip holds the script and its pictures.</p>'+
+      '<div class="acts"><button class="btn pri" type="button" data-ae="scene">Build this scene</button>'+
+      '<span class="sub">'+ready+' of '+rows.length+' shots have a picture · '+Math.round(rows.reduce((a,x)=>a+x.dur,0))+'s at '+AE_FPS+' fps</span></div>';
+    if(gaps)h+='<p class="sub">'+gaps+' approved shot'+(gaps===1?'':'s')+' without a kept picture will come through as a red card, so the hole is visible in the timeline.</p>';
+  }
+  return h+'</div>';
+}
+function aeSeqSection(id){
+  const col=state.cols.find(c=>c.id===id);if(!col||!col.ids.length)return '';
+  const n=aeCount(col.ids);
+  let h='<div class="sect"><h3>After Effects</h3>';
+  if(!n)h+='<p class="sub">No scene in this sequence has an approved shot with a kept picture yet.</p>';
+  else h+='<p class="sub">Builds one comp per scene in this sequence, plus a master comp that nests them in order with a marker at every scene boundary.</p>'+
+    '<div class="acts"><button class="btn pri" type="button" data-ae="seq">Build this sequence</button>'+
+    '<span class="sub">'+n+' of '+col.ids.length+' scenes ready</span></div>';
+  return h+'</div>';
+}
 function shotsSection(code){
   const s=BY[code],shots=s.shots||[],frozen=shotLocked(code);
   const ap=shots.filter(x=>x.a).length,mj=shots.filter(x=>x.mj).length,imgs=shots.reduce((n,x)=>n+((x.imgs||[]).length),0);
@@ -947,6 +1178,7 @@ function scenePanel(code,keep){
      (ap?'':(samp?edPanel('s:'+code,'Rewrite this scene','e.g. make the turn land harder and cut it to one minute · give her the last line · move it to night',s.lastp||''):''))+
    '</div>'+
    shotsSection(code)+
+   aeSection(code)+
    optionsSection(code)+
    histSection(code)+
    '</div>';
@@ -978,6 +1210,7 @@ function seqPanel(id,keep){
      (col.ap?'':(samp?edPanel('q:'+id,'Rename it or change its context','e.g. call it “Ink and the letter” and say in two lines what it does in the story · put the night scenes last',col.lastp||''):''))+
    '</div>'+
    '<div class="sect"><h3>Scenes in order</h3>'+list+'</div>'+
+   aeSeqSection(id)+
    '<div class="sect"><h3>Options</h3><div class="orow"><span class="olab">This sequence</span>'+
      '<button class="btn" type="button" data-seqread="'+esc(id)+'">Read it through</button>'+
      '<button class="btn warn" type="button" data-seqdel="'+esc(id)+'"'+(col.ap?' disabled':'')+'>Delete it</button></div></div>'+
@@ -1148,6 +1381,7 @@ document.addEventListener('click',e=>{
     if(b.id==='dclose'){closeDrawer();return}
     if(b.dataset.go){runEdit(b.dataset.go);return}
     if(b.dataset.stop){if(ctl)ctl.abort();return}
+    if(b.dataset.ae){aeExport(b.dataset.ae,b.dataset.ae==='seq'?openSeq:openCode);return}
     if(b.dataset.sceneap){setSceneAp(openCode,!sceneAp(openCode));return}
     if(b.dataset.shcheck!=null){checkShotImages(openCode,+b.dataset.shcheck);return}
     if(b.dataset.mjgen!=null){const i=+b.dataset.mjgen;genShotPrompt(openCode,i,!!(BY[openCode].shots||[])[i].mj);return}
@@ -1304,6 +1538,7 @@ $('btn-reset').addEventListener('click',e=>{
   if(!resetArmed){resetArmed=true;b.textContent=T('clearConfirm');setTimeout(()=>{resetArmed=false;b.textContent=T('clear')},3000);return}
   resetArmed=false;b.textContent=T('clear');state.cols.forEach(c=>c.ids=[]);persist();render();toast('tAllBack');
 });
+$('btn-ae').addEventListener('click',()=>aeExport('board'));
 $('btn-export').addEventListener('click',async()=>{
   const order=flat();if(!order.length){toast('tPlaceFirst');return}
   const rows=['board,position,sequence,sequence_note,code,old_id,title,title_telugu,category,minutes,shots,edited,source,source_url'];let n=0;

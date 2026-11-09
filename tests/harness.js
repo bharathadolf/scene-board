@@ -78,6 +78,19 @@ function stubs({ seed }) {
         list: async () => ({ assets: [], usage: {} }),
         delete: async id => { window.__uploads = window.__uploads.filter(u => u.id !== id); return { deleted: true }; },
       };
+      if (n === 'downloads' && !window.__noDownloads) return {
+        save: async ({ filename, data }) => {
+          if (window.__declineSave) throw { code: 'declined', message: 'declined' };
+          const buf = data instanceof Blob ? await data.arrayBuffer()
+            : (typeof data === 'string' ? new TextEncoder().encode(data).buffer : data);
+          const u8 = new Uint8Array(buf);
+          let b64 = '';
+          for (let i = 0; i < u8.length; i += 0x8000)
+            b64 += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000));
+          window.__saved = { filename, bytes: u8.length, b64: btoa(b64) };
+          return { status: 'saved' };
+        },
+      };
       return null;
     },
   };

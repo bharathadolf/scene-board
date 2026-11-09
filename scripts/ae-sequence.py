@@ -20,14 +20,14 @@ What it does
   * reads the screenplay (Fountain) for dialogue and audio cues and places
     them by their own timecodes, so they stay right even when the screenplay
     breaks the scene into a different number of shots than the board does;
-  * writes an ExtendScript .jsx that builds the comp in After Effects:
+  * writes an ExtendScript .js that builds the comp in After Effects:
     one layer per shot, fit to frame, with a move chosen from the shot type,
     cross-dissolves, shot markers, audio-cue markers, dialogue as guide
     subtitles and an optional slate;
   * optionally renders a reference animatic here with ffmpeg, so the timing
     can be watched before After Effects is opened.
 
-Image paths: the .jsx resolves images relative to its own location, so the
+Image paths: the .js resolves images relative to its own location, so the
 folder it sits in can be copied or moved anywhere and still import. Nothing
 is hard-coded to this container.
 
@@ -503,7 +503,7 @@ def build_scene(cfg):
                  "shots": json.dumps(jshots, ensure_ascii=False, indent=2),
                  "cues": json.dumps(cues, ensure_ascii=False, indent=2),
                  "lines": json.dumps(lines, ensure_ascii=False, indent=2)}
-    (out / f"{code}.jsx").write_text(jsx, encoding="utf8")
+    (out / f"{code}.js").write_text(jsx, encoding="utf8")
 
     # if the download folder is the output folder, leave only the ordered copies
     if src.resolve() == imgdir.resolve():
@@ -518,7 +518,7 @@ def build_scene(cfg):
            "timing": how, "shots_total": len(shots_all), "shots_used": len(jshots),
            "shots_skipped": skipped, "sluglines": sp_slugs,
            "dialogue": lines, "cues": cues, "shots": man_shots,
-           "images_from": str(src), "jsx": f"{code}.jsx"}
+           "images_from": str(src), "script": f"{code}.js"}
     (out / "manifest.json").write_text(
         json.dumps(man, ensure_ascii=False, indent=1), encoding="utf8")
     return man
@@ -596,14 +596,14 @@ def main():
         mans.append(man)
         print(f"{man['scene']}: {man['shots_used']}/{man['shots_total']} shots · "
               f"{man['runtime_seconds']:g}s · {man['timing']} · "
-              f"{cfg['out']}/{man['jsx']}" + (f" · {man.get('animatic')}"
+              f"{cfg['out']}/{man['script']}" + (f" · {man.get('animatic')}"
                                               if man.get("animatic") else ""))
 
     if a.master and mans:
         jsx = MASTER_JSX % {"title": a.master,
                             "names": json.dumps([m["comp"] for m in mans], ensure_ascii=False),
                             "master": json.dumps(a.master, ensure_ascii=False)}
-        mp = base / (re.sub(r"[^A-Za-z0-9]+", "_", a.master).strip("_") + "_master.jsx")
+        mp = base / (re.sub(r"[^A-Za-z0-9]+", "_", a.master).strip("_") + "_master.js")
         mp.write_text(jsx, encoding="utf8")
         print(f"master: {mp} ({len(mans)} scenes, "
               f"{sum(m['runtime_seconds'] for m in mans):g}s)")
