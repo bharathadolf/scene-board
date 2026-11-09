@@ -1,8 +1,9 @@
 # Scene Board
 
-A tool for ordering the 115 scenes of **The Unseen Sun** (*Loka Kalyāṇam*), a
-feature film about Rukmini and Krishna told out of chronological order — and
-the story data the tool runs on.
+A tool for ordering the 115 scenes of **The Unseen Sun**, a feature film about
+Rukmini and Krishna told out of chronological order — and the story data the
+tool runs on. (*Loka Kalyāṇam*, "the welfare of the world", is the film's theme,
+not a Telugu translation of the English title; see `story/THE_STORY.md`.)
 
 The whole tool is one self-contained HTML page. There is no framework, no
 bundler and no build step beyond pasting data into a script: `npm run build`

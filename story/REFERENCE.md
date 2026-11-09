@@ -1,7 +1,9 @@
 # The Unseen Sun — reference
 
 Everyone who appears, everywhere it happens, and every event the film is built
-from. This is the naming authority for the project: when a scene, a shot or a
+from. (*Loka Kalyāṇam* is the film's theme — the welfare of the world — and not
+a Telugu translation of the English title; `THE_STORY.md` has the titling note
+and four Telugu alternatives.) This is the naming authority for the project: when a scene, a shot or a
 prompt names a person or a place, it is spelled the way it is spelled here.
 
 The Telugu column is the name as the board shows it when the language is
