@@ -66,13 +66,14 @@ module.exports = async ({ browser, check }) => {
   let saved = await at(() => window.__saved);
   check('a zip is offered to the viewer', !!saved && /_AE\.zip$/.test(saved.filename), saved && saved.filename);
   let inside = names(saved.b64);
-  check('it holds the script', inside.includes(code + '.js'), inside);
+  const script = (b64, c) => { const n = names(b64).find(x => x.indexOf(c) === 0 && /\.js$/.test(x)); return entry(b64, n); };
+  check('it holds the script, named for its layout', inside.includes(code + '_corners.js'), inside);
   check('it holds the pictures in cut order',
     inside.some(n => /^images\/01_WIDE_/.test(n)) && inside.some(n => /^images\/02_INSERT_/.test(n)), inside);
   check('it holds a readme', inside.includes('README.txt'));
   check('one scene needs no master comp', !inside.some(n => /_master\.js$/.test(n)));
 
-  const jsx = entry(saved.b64, code + '.js');
+  const jsx = script(saved.b64, code);
   check('the script targets After Effects', /#target aftereffects/.test(jsx));
   check('it builds a comp', /items\.addComp/.test(jsx));
   check('it carries both shots', (jsx.match(/"label":/g) || []).length === 2);
@@ -86,15 +87,16 @@ module.exports = async ({ browser, check }) => {
     Math.abs(rows[0].z1 - rows[0].z0) > Math.abs(rows[1].z1 - rows[1].z0));
   check('each shot carries its own timecodes', /^\d\d:\d\d\.\d$/.test(rows[0].tcIn) && rows[1].tcIn === rows[0].tcOut,
     [rows[0].tcIn, rows[0].tcOut, rows[1].tcIn]);
-  check('the slate, burn-in and dialogue render', /"guides": false/.test(jsx) && /"burnIn": true/.test(jsx) && /"slate": true/.test(jsx));
-  check('the burn-in names the shot, its timecodes and the picture',
-    /01 · WIDE/.test(rows[0].burn) && rows[0].burn.indexOf(rows[0].tcOut) > 0 && /shot 1 of 2/.test(rows[0].burn), rows[0].burn);
-  check('the slate counts the shots, the pictures and the runtime',
-    /2 shots/.test(jsx) && /pictures used of 2 uploaded/.test(jsx) && /24 fps/.test(jsx));
+  check('the production text renders', /"guides": false/.test(jsx));
+  check('the corners carry the shot and its timecodes',
+    rows[0].cTopRight.indexOf(rows[0].tcOut) > 0 && /01 · WIDE/.test(rows[0].cBotLeft) && /shot 1 of 2/.test(rows[0].cBotLeft));
+  check('the totals corner counts shots, pictures and runtime',
+    /2 shots/.test(jsx) && /pictures of 2/.test(jsx) && /24 fps/.test(jsx));
+  check('each shot gets its brief under the picture', /LOOK\.brief && s\.text/.test(jsx) && /the gate at night/.test(jsx));
   const colName0 = await at(i => colName(state.cols.find(c => c.id === i)), seqId);
-  check('the slate says where the scene sits',
+  check('the scene corner says where it sits',
     jsx.indexOf(colName0) > 0 && /scene 1 of 3/.test(jsx), colName0);
-  check('text layers are built so they render', /t\.guideLayer = CONF\.guides/.test(jsx));
+  check('text layers are built so they render', /t\.guideLayer = LOOK\.guides/.test(jsx));
   check('each layer gets the shot text', /the gate at night/.test(jsx) && /one footprint/.test(jsx));
   check('the readme says only approved shots are in it',
     /Only approved shots are here/.test(entry(saved.b64, 'README.txt')));
@@ -117,8 +119,8 @@ module.exports = async ({ browser, check }) => {
     inside.some(n => n.indexOf('images/01_WIDE_' + second.slice(0, 8)) === 0), inside.filter(n => /^images/.test(n)));
   check('and not the one it rejected', inside.filter(n => /^images\/01_/.test(n)).length === 1);
   check('the layer carries why that picture is on screen',
-    /"why": "checked: picture 2 of 2 kept"/.test(entry(saved.b64, code + '.js')) &&
-    /PICTURE: " \+ s\.why/.test(entry(saved.b64, code + '.js')));
+    /"why": "checked: picture 2 of 2 kept"/.test(script(saved.b64, code)) &&
+    /PICTURE: " \+ s\.why/.test(script(saved.b64, code)));
 
   // ---------- a shot the check turned down entirely ----------
   await at(() => { window.__saved = null; });
@@ -131,10 +133,31 @@ module.exports = async ({ browser, check }) => {
   await page.waitForTimeout(900);
   saved = await at(() => window.__saved);
   check('the rejected shot brings no picture', !names(saved.b64).some(n => /^images\/02_/.test(n)));
-  check('the comp marks the hole in red', /NO PICTURE/.test(entry(saved.b64, code + '.js')));
+  check('the comp marks the hole in red', /NO PICTURE/.test(script(saved.b64, code)));
   check('the readme counts the hole', /1 shot had no picture the check kept/.test(entry(saved.b64, 'README.txt')));
   check('the scene page warns about it too',
     /1 approved shot without a kept picture/.test(await at(() => document.querySelector('#sect-ae').textContent)));
+
+  // ---------- the layout is chosen per scene and remembered ----------
+  check('the scene offers every layout', (await at(() => document.querySelectorAll('[data-aetpl]').length)) === 4);
+  check('corners is the one it starts on', (await at(c => aeTplOf(c), code)) === 'corners');
+  check('the build button names the layout', /Build this scene as “Corners”/.test(await at(() => document.querySelector('#sect-ae').textContent)));
+  await page.click('[data-aetpl="slate"]');
+  await page.waitForTimeout(350);
+  check('the choice is taken', (await at(c => aeTplOf(c), code)) === 'slate');
+  check('and remembered on the scene', (await at(c => ov[c] && ov[c].ae, code)) === 'slate');
+  check('the button follows it', /Build this scene as “Slate”/.test(await at(() => document.querySelector('#sect-ae').textContent)));
+  await at(() => { window.__saved = null; });
+  await page.click('[data-ae="scene"]');
+  await page.waitForTimeout(900);
+  saved = await at(() => window.__saved);
+  check('the zip is built in that layout', names(saved.b64).includes(code + '_slate.js'), names(saved.b64));
+  const sl = script(saved.b64, code);
+  check('the script says which layout it is', /layout: Slate/.test(sl) && /"template": "slate"/.test(sl));
+  check('slate draws a strip, not corners', /LOOK\.strip/.test(sl) && /"strip": true/.test(sl) && /"corners": false/.test(sl));
+  check('the readme names the layout', /Layout: Slate/.test(entry(saved.b64, 'README.txt')));
+  await page.click('[data-aetpl="corners"]');
+  await page.waitForTimeout(350);
 
   // ---------- dialogue rides on its shot ----------
   await at(c => { BY[c].shots[0].dlg = 'My Lord! Where are the war chariots?'; reopen(); }, code);
@@ -143,10 +166,11 @@ module.exports = async ({ browser, check }) => {
   await page.click('[data-ae="scene"]');
   await page.waitForTimeout(900);
   saved = await at(() => window.__saved);
-  const dj = entry(saved.b64, code + '.js');
-  check('a shot with dialogue gets a subtitle layer', /"DLG " \+ s\.label/.test(dj) && /Where are the war chariots/.test(dj));
+  const dj = script(saved.b64, code);
+  check('a shot with dialogue gets a subtitle inside the picture',
+    /"DLG " \+ s\.label/.test(dj) && /Where are the war chariots/.test(dj) && /LOOK\.dialogueUp/.test(dj));
   check('the dialogue is on that shot only', /"dlg": "My Lord! Where are the war chariots\?"/.test(dj));
-  check('the slate counts the dialogue', /1 shot with dialogue/.test(dj));
+  check('the totals count the dialogue', /1 with dialogue/.test(dj));
   check('the marker carries it too', /DIALOGUE: " \+ s\.dlg/.test(dj));
   await at(c => { delete BY[c].shots[0].dlg; }, code);
 
@@ -170,13 +194,36 @@ module.exports = async ({ browser, check }) => {
   saved = await at(() => window.__saved);
   inside = names(saved.b64);
   check('every ready scene gets its own folder',
-    inside.includes(code + '/' + code + '.js') && inside.includes(codes[1] + '/' + codes[1] + '.js'), inside);
+    inside.some(n => n.indexOf(code + '/' + code) === 0) && inside.some(n => n.indexOf(codes[1] + '/' + codes[1]) === 0), inside);
   check('a master comp nests them', inside.some(n => /_master\.js$/.test(n)), inside);
   const master = entry(saved.b64, inside.find(n => /_master\.js$/.test(n)));
   check('the master names both comps in order',
     master.indexOf(code) > 0 && master.indexOf(code) < master.indexOf(codes[1]));
   check('the master marks each scene boundary', /markerProperty\.setValueAtTime/.test(master));
   check('the readme explains the order of running', /master\.js to nest them in order/.test(entry(saved.b64, 'README.txt')));
+
+  // each scene keeps its own layout inside a sequence build
+  await at(c => setAeTpl(c, 'paper'), codes[1]);
+  await page.waitForTimeout(350);
+  await at(i => seqPanel(i), seqId);
+  await page.waitForTimeout(300);
+  check('the sequence shows the mix', /Corners, Paper/.test(await at(() => document.getElementById('drawer').textContent)),
+    await at(() => document.querySelector('#drawer .sect:nth-of-type(3)').textContent.slice(0, 200)));
+  await at(() => { window.__saved = null; });
+  await page.click('[data-ae="seq"]');
+  await page.waitForTimeout(1200);
+  saved = await at(() => window.__saved);
+  inside = names(saved.b64);
+  check('each scene is built in its own layout',
+    inside.includes(code + '/' + code + '_corners.js') && inside.includes(codes[1] + '/' + codes[1] + '_paper.js'), inside);
+  check('the readme lists both layouts', /Layouts: Corners ×1, Paper ×1/.test(entry(saved.b64, 'README.txt')));
+
+  // one button sets them all
+  await at(() => { window.__saved = null; });
+  await page.click('[data-aetplall="clean"]');
+  await page.waitForTimeout(500);
+  check('a sequence can be set to one layout',
+    (await at(c => aeTplOf(c), code)) === 'clean' && (await at(c => aeTplOf(c), codes[1])) === 'clean');
 
   // ---------- the whole board ----------
   await at(() => closeDrawer());

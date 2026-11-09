@@ -1102,6 +1102,40 @@ function aeImg(sh){
   if(ok.length&&ok[0].i<imgs.length)return{id:imgs[ok[0].i].id,why:'checked: picture '+(ok[0].i+1)+' passed'};
   return{id:imgs[0].id,why:imgs.length===1?'one picture, not checked':imgs.length+' pictures, not checked — the first is used'};
 }
+/* the four After Effects layouts; the picture is the same cut in each */
+const AE_TPL={
+  clean:{label:'Clean',blurb:'The picture fills the frame. The shot brief and any dialogue sit inside the bottom of it, and nothing else is over it.',
+    look:{suffix:' · clean',width:1680,height:720,bg:[0,0,0],ink:[1,1,1],dlgInk:[1,1,1],
+      pictureWidth:1,pictureY:.5,fill:true,mask:false,corners:false,strip:false,
+      pad:.03,small:19,dlg:29,stroke:true,strokeColour:[0,0,0],guides:false,
+      brief:true,briefInside:true,briefWidth:.78,briefSize:19,briefInk:[.88,.9,.93],briefGap:0,dialogueUp:.115}},
+  corners:{label:'Corners',blurb:'A wider black canvas with the picture centred and the production data in the four corners.',
+    look:{suffix:' · corners',width:1920,height:1080,bg:[0,0,0],ink:[.78,.8,.84],dlgInk:[1,1,1],
+      pictureWidth:.8,pictureY:.47,fill:false,mask:true,corners:true,strip:false,
+      pad:.028,small:20,dlg:30,stroke:false,strokeColour:[0,0,0],guides:false,
+      brief:true,briefInside:false,briefWidth:.82,briefSize:22,briefInk:[.74,.77,.82],briefGap:.04,dialogueUp:.075}},
+  paper:{label:'Paper',blurb:'The corners layout on white with dark text, for review documents and printing.',
+    look:{suffix:' · paper',width:1920,height:1080,bg:[1,1,1],ink:[.13,.15,.18],dlgInk:[.08,.09,.11],
+      pictureWidth:.8,pictureY:.46,fill:false,mask:true,corners:true,strip:false,
+      pad:.03,small:20,dlg:29,stroke:false,strokeColour:[1,1,1],guides:false,
+      brief:true,briefInside:false,briefWidth:.82,briefSize:22,briefInk:[.25,.27,.31],briefGap:.04,dialogueUp:.075}},
+  slate:{label:'Slate',blurb:'The picture high on a black canvas with a wide margin and everything on a strip beneath it.',
+    look:{suffix:' · slate',width:1920,height:1080,bg:[.04,.04,.05],ink:[.93,.93,.95],dlgInk:[1,1,1],
+      pictureWidth:.86,pictureY:.4,fill:false,mask:true,corners:false,strip:true,
+      pad:.035,small:21,dlg:30,stroke:false,strokeColour:[0,0,0],guides:false,
+      brief:true,briefInside:false,briefWidth:.84,briefSize:23,briefInk:[.84,.86,.9],briefGap:.035,dialogueUp:.07}}
+};
+const AE_TPL_DEF='corners';
+function aeTplOf(code){const t=ov[code]&&ov[code].ae;return AE_TPL[t]?t:AE_TPL_DEF}
+function setAeTpl(code,name){
+  if(!AE_TPL[name]||aeTplOf(code)===name)return;
+  ov[code]=Object.assign({},ov[code]||{},{ae:name,updated:new Date().toISOString()});
+  saveOv(code);reopen();toast('This scene will build as “'+AE_TPL[name].label+'”');
+}
+function aeTplMix(ids){
+  const n={};ids.forEach(c=>{const t=aeTplOf(c);n[t]=(n[t]||0)+1});
+  return Object.keys(n).sort().map(k=>AE_TPL[k].label+(n[k]>1?' ×'+n[k]:'')).join(', ');
+}
 /* 00:12.4 — for slates and burn-ins */
 function aeTc(sec){
   sec=Math.round(Math.max(0,sec)*10)/10;
@@ -1136,6 +1170,10 @@ function aeShots(code,ctx){
       file:g?ae2(i+1)+'_'+(k||'SHOT')+'_'+g.id.slice(0,8)+'.png':'',
       at:ae3(at),dur:ae3(dur),tcIn:aeTc(at),tcOut:aeTc(at+dur),
       z0:sp[0],z1:sp[1],dx:sp[2],dy:sp[3],mf:sp[4],
+      cTopRight:aeTc(at)+' – '+aeTc(at+dur)+'\r'+(Math.round(dur*10)/10)+'s',
+      cBotLeft:label+'   shot '+(i+1)+' of '+got.length+'\r'+why,
+      strip:label+'    '+aeTc(at)+' – '+aeTc(at+dur)+'    ('+(Math.round(dur*10)/10)+'s)    shot '+(i+1)+' of '+got.length+'\r'+
+        why+'    ·    move ×'+sp[4],
       burn:code+'  ·  '+title+(ctx?'   ·   '+ctx:'')+'\r'+
         label+'   '+aeTc(at)+' – '+aeTc(at+dur)+'   ('+(Math.round(dur*10)/10)+'s)\r'+
         'shot '+(i+1)+' of '+got.length+'   ·   '+why+'   ·   move ×'+sp[4]};
@@ -1144,52 +1182,73 @@ function aeShots(code,ctx){
 }
 function aeReady(code){return aeShots(code).some(x=>x.file)}
 function aeCount(ids){return ids.filter(aeReady).length}
-/* the ExtendScript for one scene */
-function aeScript(code,rows,ctx){
+/* the ExtendScript for one scene, in the layout this scene is set to */
+function aeScript(code,rows,ctx,tpl){
   const s=BY[code],name=code+' · '+sc(s,'t'),dur=rows.reduce((a,x)=>a+x.dur,0),
     used=rows.filter(x=>x.file).length,up=rows.reduce((a,x)=>a+x.imgs,0),
     dlg=rows.filter(x=>x.dlg).length,cat=catOf(code);
-  const conf={name:name,imageDir:'images',width:AE_WIDTH,height:AE_HEIGHT,fps:AE_FPS,
+  const t=AE_TPL[tpl]?tpl:AE_TPL_DEF,look=AE_TPL[t].look;
+  const conf={name:name,imageDir:'images',template:t,
+    width:AE_WIDTH,height:AE_HEIGHT,fps:AE_FPS,
     duration:ae3(dur),dissolve:cat==='A'?.25:AE_DIS,fadeOut:AE_FADE,
-    burnIn:true,slate:true,guides:false,
-    slateText:code+'  ·  '+sc(s,'t')+'\r'+
-      rows.length+' shots  ·  '+used+' picture'+(used===1?'':'s')+' used of '+up+' uploaded  ·  '+
-      aeTc(dur)+'  ·  '+AE_FPS+' fps\r'+
-      (ctx?ctx+'  ·  ':'')+'weighted by shot type'+(dlg?'  ·  '+dlg+' shot'+(dlg===1?'':'s')+' with dialogue':'')};
-  return ['/* '+name,
+    cTopLeft:code+'  ·  '+sc(s,'t')+'\r'+(ctx||''),
+    cBotRight:rows.length+' shots  ·  '+used+' picture'+(used===1?'':'s')+' of '+up+'\r'+
+      aeTc(dur)+'  ·  '+AE_FPS+' fps  ·  weighted by shot type'+(dlg?'  ·  '+dlg+' with dialogue':'')};
+  return ['/* '+name+'  —  layout: '+AE_TPL[t].label,
+' * '+AE_TPL[t].blurb,
 ' * Built by the Scene Board from approved shots and checked pictures.',
-' * Images are found next to this file, so this folder can be copied anywhere.',
+' * Pictures are found next to this file, so this folder can be moved.',
 ' * After Effects: File > Scripts > Run Script File... and choose this file.',
-' * The slate, the per-shot burn-in and the dialogue are real layers, so they',
-' * render. Set CONF.guides to true to turn them into guide layers instead.',
+' * Edit LOOK, not the data; re-export instead of editing the data.',
 ' */',
 '#target aftereffects','',
 '(function () {',
-'  var CONF = '+JSON.stringify(conf,null,2)+';',
-'  var SHOTS = '+JSON.stringify(rows,null,2)+';','',
+'  var CONF  = '+JSON.stringify(conf,null,2)+';',
+'  var SHOTS = '+JSON.stringify(rows,null,2)+';',
+'  var LOOK  = '+JSON.stringify(look,null,2)+';','',
 '  var HERE = (new File($.fileName)).parent;',
 '  var IMG = new Folder(HERE.fsName + "/" + CONF.imageDir);',
-'  if (!IMG.exists) { alert("Image folder not found next to this script:\\n" + IMG.fsName); return; }','',
-'  function txt(comp, s, size, col, pos, just, lead) {',
-'    var t = comp.layers.addText(s), d = t.property("Source Text").value;',
-'    d.resetCharStyle();',
-'    d.fontSize = size; d.fillColor = col; d.applyFill = true;',
-'    d.strokeColor = [0, 0, 0]; d.strokeWidth = Math.max(2, Math.round(CONF.height * 0.003));',
-'    d.strokeOverFill = false; d.applyStroke = true;',
+'  if (!IMG.exists) { alert("Picture folder not found next to this script:\\\\n" + IMG.fsName); return; }','',
+'  function text(comp, body, size, colour, pos, just, lead) {',
+'    var t = comp.layers.addText(body), d = t.property("Source Text").value;',
+'    d.resetCharStyle(); d.fontSize = size; d.fillColor = colour; d.applyFill = true;',
+'    if (LOOK.stroke) { d.strokeColor = LOOK.strokeColour;',
+'      d.strokeWidth = Math.max(1, Math.round(size * 0.14));',
+'      d.strokeOverFill = false; d.applyStroke = true; } else { d.applyStroke = false; }',
 '    if (lead) d.leading = lead;',
 '    d.justification = just;',
 '    t.property("Source Text").setValue(d);',
 '    t.property("Transform").property("Position").setValue(pos);',
-'    t.guideLayer = CONF.guides;',
+'    t.guideLayer = LOOK.guides;',
 '    return t;',
-'  }','',
-'  app.beginUndoGroup("Build " + CONF.name);',
-'  var comp = app.project.items.addComp(CONF.name, CONF.width, CONF.height, 1.0, Math.max(CONF.duration, 1), CONF.fps);',
-'  comp.bgColor = [0, 0, 0];',
-'  var folder = app.project.items.addFolder(CONF.name + " \u00b7 footage");',
-'  var missing = [];',
+'  }',
+'  function box(comp, body, w, size, colour, pos, stroked) {',
+'    var t = comp.layers.addBoxText([w, Math.max(size * 4, 60)]);',
+'    var d = t.property("Source Text").value;',
+'    d.resetCharStyle(); d.text = body; d.fontSize = size;',
+'    d.fillColor = colour; d.applyFill = true;',
+'    if (stroked) { d.strokeColor = LOOK.strokeColour;',
+'      d.strokeWidth = Math.max(1, Math.round(size * 0.14));',
+'      d.strokeOverFill = false; d.applyStroke = true; } else { d.applyStroke = false; }',
+'    d.leading = Math.round(size * 1.35);',
+'    d.justification = ParagraphJustification.CENTER_JUSTIFY;',
+'    t.property("Source Text").setValue(d);',
+'    t.property("Transform").property("Position").setValue(pos);',
+'    t.guideLayer = LOOK.guides;',
+'    return t;',
+'  }',
 '  function ease(p, a, b) { try { var e = new KeyframeEase(0, 55);',
 '    p.setTemporalEaseAtKey(a, [e], [e]); p.setTemporalEaseAtKey(b, [e], [e]); } catch (err) {} }','',
+'  app.beginUndoGroup("Build " + CONF.name);',
+'  var W = LOOK.width, H = LOOK.height;',
+'  var comp = app.project.items.addComp(CONF.name + LOOK.suffix, W, H, 1.0, Math.max(CONF.duration, 1), CONF.fps);',
+'  comp.bgColor = LOOK.bg;',
+'  var bgl = comp.layers.addSolid(LOOK.bg, "BACKGROUND", W, H, 1.0); bgl.moveToEnd();',
+'  var folder = app.project.items.addFolder(CONF.name + " \\u00b7 pictures");',
+'  var missing = [];',
+'  var PW = Math.round(W * LOOK.pictureWidth);',
+'  var PH = Math.round(PW * CONF.height / CONF.width);',
+'  var PX = Math.round(W / 2), PY = Math.round(H * LOOK.pictureY);','',
 '  for (var i = 0; i < SHOTS.length; i++) {',
 '    var s = SHOTS[i], lay, f = new File(IMG.fsName + "/" + s.file);',
 '    if (s.file && f.exists) {',
@@ -1198,54 +1257,103 @@ function aeScript(code,rows,ctx){
 '      lay = comp.layers.add(item);',
 '    } else {',
 '      missing.push(s.label + (s.file ? " (" + s.file + ")" : " (no picture)"));',
-'      lay = comp.layers.addSolid([0.18, 0.05, 0.05], s.label + " \u2014 NO PICTURE", CONF.width, CONF.height, 1.0);',
+'      lay = comp.layers.addSolid([0.18, 0.05, 0.05], s.label + " \\u2014 NO PICTURE", PW, PH, 1.0);',
 '    }',
 '    lay.startTime = s.at; lay.inPoint = s.at; lay.outPoint = s.at + s.dur; lay.label = (i % 15) + 1;',
-'    var w = lay.source ? lay.source.width : CONF.width, h = lay.source ? lay.source.height : CONF.height;',
-'    var fit = Math.max(CONF.width / w, CONF.height / h) * 100;',
-'    var sc2 = lay.property("Transform").property("Scale"), ps = lay.property("Transform").property("Position");',
-'    var cx = CONF.width / 2, cy = CONF.height / 2;',
+'    var w = lay.source ? lay.source.width : PW, h = lay.source ? lay.source.height : PH;',
+'    var fit = (LOOK.fill ? Math.max(PW / w, PH / h) : Math.min(PW / w, PH / h)) * 100;',
+'    var sc2 = lay.property("Transform").property("Scale");',
+'    var ps = lay.property("Transform").property("Position");',
 '    sc2.setValueAtTime(s.at, [fit * s.z0 / 100, fit * s.z0 / 100]);',
 '    sc2.setValueAtTime(s.at + s.dur, [fit * s.z1 / 100, fit * s.z1 / 100]);',
 '    ease(sc2, 1, 2);',
 '    if (s.dx || s.dy) {',
-'      ps.setValueAtTime(s.at, [cx - s.dx / 2, cy - s.dy / 2]);',
-'      ps.setValueAtTime(s.at + s.dur, [cx + s.dx / 2, cy + s.dy / 2]);',
+'      ps.setValueAtTime(s.at, [PX - s.dx / 2, PY - s.dy / 2]);',
+'      ps.setValueAtTime(s.at + s.dur, [PX + s.dx / 2, PY + s.dy / 2]);',
 '      ease(ps, 1, 2);',
-'    } else { ps.setValue([cx, cy]); }',
+'    } else { ps.setValue([PX, PY]); }',
+'    if (LOOK.mask) {',
+'      var mk2 = lay.property("ADBE Mask Parade").addProperty("ADBE Mask Atom");',
+'      var shp = new Shape(); shp.closed = true;',
+'      var hx = PW / 2, hy = PH / 2;',
+'      shp.vertices = [[PX - hx, PY - hy], [PX + hx, PY - hy], [PX + hx, PY + hy], [PX - hx, PY + hy]];',
+'      mk2.property("ADBE Mask Shape").setValue(shp); mk2.maskMode = MaskMode.ADD;',
+'    }',
 '    var op = lay.property("Transform").property("Opacity");',
 '    op.setValueAtTime(s.at, 0); op.setValueAtTime(s.at + CONF.dissolve, 100);',
 '    if (i === SHOTS.length - 1 && CONF.fadeOut > 0) {',
 '      op.setValueAtTime(s.at + s.dur - CONF.fadeOut, 100); op.setValueAtTime(s.at + s.dur, 0);',
 '    }',
 '    var mk = new MarkerValue(s.label);',
-'    mk.comment = s.text + (s.dlg ? "\\n\\nDIALOGUE: " + s.dlg : "")',
-'      + (s.mj ? "\\n\\nPROMPT: " + s.mj : "") + (s.why ? "\\n\\nPICTURE: " + s.why : "");',
+'    mk.comment = s.text + (s.dlg ? "\\\\n\\\\nDIALOGUE: " + s.dlg : "")',
+'      + (s.mj ? "\\\\n\\\\nPROMPT: " + s.mj : "") + (s.why ? "\\\\n\\\\nPICTURE: " + s.why : "");',
 '    lay.property("Marker").setValueAtTime(s.at + Math.min(0.2, s.dur / 4), mk);','',
-'    if (CONF.burnIn) {',
-'      var bi = txt(comp, s.burn, Math.round(CONF.height * 0.026), [1, 0.88, 0.45],',
-'        [Math.round(CONF.width * 0.030), CONF.height - Math.round(CONF.height * 0.185)],',
-'        ParagraphJustification.LEFT_JUSTIFY, Math.round(CONF.height * 0.034));',
-'      bi.name = "BURN " + s.label; bi.inPoint = s.at; bi.outPoint = s.at + s.dur; bi.label = 5;',
-'    }',
 '    if (s.dlg) {',
-'      var dl = txt(comp, s.dlg, Math.round(CONF.height * 0.040), [1, 1, 1],',
-'        [CONF.width / 2, CONF.height - Math.round(CONF.height * 0.085)],',
-'        ParagraphJustification.CENTER_JUSTIFY, 0);',
+'      var dw = Math.round(PW * 0.86);',
+'      var perLine = Math.max(12, Math.round(dw / (LOOK.dlg * 0.52)));',
+'      var lines = Math.max(1, Math.ceil(s.dlg.length / perLine));',
+'      var dy = PY + PH / 2 - Math.round(H * LOOK.dialogueUp) - (lines - 1) * Math.round(LOOK.dlg * 1.35);',
+'      var dl = box(comp, s.dlg, dw, LOOK.dlg, LOOK.dlgInk, [PX - dw / 2, dy], true);',
 '      dl.name = "DLG " + s.label; dl.inPoint = s.at; dl.outPoint = s.at + s.dur; dl.label = 11;',
 '    }',
+'    if (LOOK.brief && s.text) {',
+'      var bw = Math.round(PW * LOOK.briefWidth);',
+'      var by = LOOK.briefInside ? PY + PH / 2 - Math.round(H * 0.052)',
+'                                : PY + PH / 2 + Math.round(H * LOOK.briefGap);',
+'      var bf = box(comp, s.text, bw, LOOK.briefSize, LOOK.briefInk, [PX - bw / 2, by], LOOK.briefInside || LOOK.stroke);',
+'      bf.name = "BRIEF " + s.label; bf.inPoint = s.at; bf.outPoint = s.at + s.dur; bf.label = 4;',
+'    }',
+'    if (LOOK.corners) {',
+'      var tr = text(comp, s.cTopRight, LOOK.small, LOOK.ink,',
+'        [W - Math.round(W * LOOK.pad), Math.round(H * LOOK.pad) + LOOK.small],',
+'        ParagraphJustification.RIGHT_JUSTIFY, Math.round(LOOK.small * 1.35));',
+'      tr.name = "TR " + s.label; tr.inPoint = s.at; tr.outPoint = s.at + s.dur; tr.label = 5;',
+'      var bl = text(comp, s.cBotLeft, LOOK.small, LOOK.ink,',
+'        [Math.round(W * LOOK.pad), H - Math.round(H * LOOK.pad)],',
+'        ParagraphJustification.LEFT_JUSTIFY, Math.round(LOOK.small * 1.35));',
+'      bl.name = "BL " + s.label; bl.inPoint = s.at; bl.outPoint = s.at + s.dur; bl.label = 5;',
+'    }',
+'    if (LOOK.strip) {',
+'      var st = text(comp, s.strip, LOOK.small, LOOK.ink,',
+'        [Math.round(W * LOOK.pad), Math.round(H * 0.845)],',
+'        ParagraphJustification.LEFT_JUSTIFY, Math.round(LOOK.small * 1.45));',
+'      st.name = "STRIP " + s.label; st.inPoint = s.at; st.outPoint = s.at + s.dur; st.label = 5;',
+'    }',
 '  }','',
-'  if (CONF.slate) {',
-'    var sl = txt(comp, CONF.slateText, Math.round(CONF.height * 0.029), [1, 1, 1],',
-'      [Math.round(CONF.width * 0.030), Math.round(CONF.height * 0.085)],',
-'      ParagraphJustification.LEFT_JUSTIFY, Math.round(CONF.height * 0.038));',
-'    sl.name = "SLATE"; sl.moveToBeginning(); sl.label = 14;',
+'  if (LOOK.corners) {',
+'    var tl = text(comp, CONF.cTopLeft, LOOK.small, LOOK.ink,',
+'      [Math.round(W * LOOK.pad), Math.round(H * LOOK.pad) + LOOK.small],',
+'      ParagraphJustification.LEFT_JUSTIFY, Math.round(LOOK.small * 1.35));',
+'    tl.name = "TL \\u00b7 scene"; tl.label = 14;',
+'    var br = text(comp, CONF.cBotRight, LOOK.small, LOOK.ink,',
+'      [W - Math.round(W * LOOK.pad), H - Math.round(H * LOOK.pad)],',
+'      ParagraphJustification.RIGHT_JUSTIFY, Math.round(LOOK.small * 1.35));',
+'    br.name = "BR \\u00b7 totals"; br.label = 14;',
+'  }',
+'  if (LOOK.strip) {',
+'    var rule = comp.layers.addSolid(LOOK.ink, "RULE", W - Math.round(W * LOOK.pad * 2), Math.max(1, Math.round(H * 0.0018)), 1.0);',
+'    rule.property("Transform").property("Position").setValue([W / 2, Math.round(H * 0.805)]);',
+'    rule.property("Transform").property("Opacity").setValue(45);',
+'    var head = text(comp, CONF.cTopLeft, LOOK.small, LOOK.ink,',
+'      [Math.round(W * LOOK.pad), Math.round(H * 0.062)],',
+'      ParagraphJustification.LEFT_JUSTIFY, Math.round(LOOK.small * 1.4));',
+'    head.name = "HEAD"; head.label = 14;',
+'    var foot = text(comp, CONF.cBotRight, LOOK.small, LOOK.ink,',
+'      [W - Math.round(W * LOOK.pad), Math.round(H * 0.955)],',
+'      ParagraphJustification.RIGHT_JUSTIFY, Math.round(LOOK.small * 1.4));',
+'    foot.name = "FOOT"; foot.label = 14;',
+'  }',
+'  if (!LOOK.corners && !LOOK.strip) {',
+'    var sl = text(comp, CONF.cTopLeft, LOOK.small, LOOK.ink,',
+'      [Math.round(W * LOOK.pad), Math.round(H * LOOK.pad) + LOOK.small],',
+'      ParagraphJustification.LEFT_JUSTIFY, Math.round(LOOK.small * 1.35));',
+'    sl.name = "SLATE"; sl.label = 14;',
 '  }','',
-'  var adj = comp.layers.addSolid([1, 1, 1], "GRADE (add effects here)", CONF.width, CONF.height, 1.0);',
+'  var adj = comp.layers.addSolid([1, 1, 1], "GRADE (add effects here)", W, H, 1.0);',
 '  adj.adjustmentLayer = true; adj.enabled = false; adj.moveToBeginning();','',
 '  comp.openInViewer(); app.endUndoGroup();',
-'  var msg = CONF.name + "\\n" + SHOTS.length + " shots \u00b7 " + Math.round(CONF.duration) + "s \u00b7 " + CONF.fps + " fps";',
-'  if (missing.length) msg += "\\n\\nNo picture for:\\n" + missing.join("\\n");',
+'  var msg = CONF.name + LOOK.suffix + "\\\\n" + SHOTS.length + " shots \\u00b7 " + Math.round(CONF.duration) + "s \\u00b7 " + W + "x" + H;',
+'  if (missing.length) msg += "\\\\n\\\\nNo picture for:\\\\n" + missing.join("\\\\n");',
 '  alert(msg);',
 '})();',''].join('\n');
 }
@@ -1312,7 +1420,7 @@ async function aeExport(kind,id){
   if(!use.length){toast('Nothing to build yet — a shot needs an approved status and a picture its check kept');return}
   aeBusy=true;toast('Collecting '+use.length+' scene'+(use.length===1?'':'s')+'…');
   try{
-    const many=use.length>1,files=[],comps=[],lines=[];
+    const many=use.length>1,files=[],comps=[],lines=[],tpls={};
     let shots=0,missing=0,secs=0;
     const board=flat(),bn=board.length;
     for(const code of use){
@@ -1327,15 +1435,18 @@ async function aeExport(kind,id){
         if(!b){missing++;r.file='';continue}
         files.push({name:dir+'images/'+r.file,data:new Uint8Array(await b.arrayBuffer())});
       }
-      const nm=code+' · '+sc(BY[code],'t');
+      const nm=code+' · '+sc(BY[code],'t')+AE_TPL[aeTplOf(code)].look.suffix;
       comps.push(nm);shots+=rows.length;secs+=rows.reduce((a,x)=>a+x.dur,0);
-      files.push({name:dir+code+'.js',data:aeScript(code,rows,ctx)});
-      lines.push(code+'  '+sc(BY[code],'t')+'  —  '+rows.length+' shots, '+Math.round(rows.reduce((a,x)=>a+x.dur,0))+'s');
+      const tpl=aeTplOf(code);
+      files.push({name:dir+code+'_'+tpl+'.js',data:aeScript(code,rows,ctx,tpl)});
+      tpls[tpl]=(tpls[tpl]||0)+1;
+      lines.push(code+'  '+sc(BY[code],'t')+'  —  '+rows.length+' shots, '+Math.round(rows.reduce((a,x)=>a+x.dur,0))+'s, '+AE_TPL[aeTplOf(code)].label);
     }
     if(many)files.push({name:aeSafe(title)+'_master.js',data:aeMaster(title,comps)});
     files.push({name:'README.txt',data:
       title+'\n'+'='.repeat(title.length)+'\n\n'+
       use.length+' scene'+(use.length===1?'':'s')+' · '+shots+' shots · '+Math.round(secs)+'s · '+AE_WIDTH+'x'+AE_HEIGHT+' at '+AE_FPS+' fps\n\n'+
+      'Layout'+(Object.keys(tpls).length>1?'s':'')+': '+Object.keys(tpls).sort().map(k=>AE_TPL[k].label+' ×'+tpls[k]).join(', ')+'\n\n'+
       'In After Effects: File > Scripts > Run Script File... and choose the .js file.\n'+
       (many?'Run each scene\'s script first, then '+aeSafe(title)+'_master.js to nest them in order.\n':'')+
       'Keep each .js beside its images folder — the script finds the pictures next to itself.\n\n'+
@@ -1512,28 +1623,38 @@ function shotCard(code,x,i){
     '<p class="shtext">'+esc(shotText(x))+'</p>'+
     body+'</div>';
 }
+function aeTplPicker(cur,attr){
+  return '<div class="seg" role="group" aria-label="Layout">'+
+    Object.keys(AE_TPL).map(k=>'<button type="button" '+attr+'="'+k+'" aria-pressed="'+(k===cur)+'" title="'+esc(AE_TPL[k].blurb)+'">'+AE_TPL[k].label+'</button>').join('')+
+    '</div>';
+}
 function aeSection(code){
   const rows=aeShots(code),ready=rows.filter(x=>x.file).length,gaps=rows.length-ready;
   if(!rows.length)return '';
+  const tpl=aeTplOf(code);
   let h='<div class="sect" id="sect-ae"><h3>After Effects</h3>';
   if(!ready)h+='<p class="sub">Every approved shot still needs a picture its check keeps. Generate the prompt, bring the picture back, press Check, and this scene can be built.</p>';
   else{
-    h+='<p class="sub">Builds a comp from the approved shots of this scene: one layer per shot, fit to frame, a move chosen from the shot type, cross-dissolves and a marker on each layer carrying the shot and its prompt. The zip holds the script and its pictures.</p>'+
-      '<div class="acts"><button class="btn pri" type="button" data-ae="scene">Build this scene</button>'+
+    h+='<p class="sub">Builds a comp from the approved shots of this scene: one layer per shot, a move chosen from the shot type, cross-dissolves, the shot brief under each picture and any dialogue inside it. The zip holds the script and its pictures.</p>'+
+      '<div class="orow"><span class="olab">Layout</span>'+aeTplPicker(tpl,'data-aetpl')+
+        '<span class="sub">'+esc(AE_TPL[tpl].blurb)+'</span></div>'+
+      '<div class="acts"><button class="btn pri" type="button" data-ae="scene">Build this scene as “'+esc(AE_TPL[tpl].label)+'”</button>'+
       '<span class="sub">'+ready+' of '+rows.length+' shots have a picture · '+aeTc(rows.reduce((a,x)=>a+x.dur,0))+' at '+AE_FPS+' fps</span></div>'+
-      '<p class="sub">The slate and a per-shot burn-in — code, title, sequence and cut position, shot number and type, its in and out timecode, which picture the check kept and how far the move travels — are real layers, so they come through a render. Any dialogue on a shot is burned in under it.</p>';
+      '<p class="sub">The layout is remembered on this scene, so building its sequence or the whole board uses the one chosen here.</p>';
     if(gaps)h+='<p class="sub">'+gaps+' approved shot'+(gaps===1?'':'s')+' without a kept picture will come through as a red card, so the hole is visible in the timeline.</p>';
   }
   return h+'</div>';
 }
 function aeSeqSection(id){
   const col=state.cols.find(c=>c.id===id);if(!col||!col.ids.length)return '';
-  const n=aeCount(col.ids);
+  const ready=col.ids.filter(aeReady);
   let h='<div class="sect"><h3>After Effects</h3>';
-  if(!n)h+='<p class="sub">No scene in this sequence has an approved shot with a kept picture yet.</p>';
-  else h+='<p class="sub">Builds one comp per scene in this sequence, plus a master comp that nests them in order with a marker at every scene boundary.</p>'+
+  if(!ready.length)h+='<p class="sub">No scene in this sequence has an approved shot with a kept picture yet.</p>';
+  else h+='<p class="sub">Builds one comp per scene in this sequence, each in the layout that scene is set to, plus a master comp that nests them in order with a marker at every scene boundary.</p>'+
     '<div class="acts"><button class="btn pri" type="button" data-ae="seq">Build this sequence</button>'+
-    '<span class="sub">'+n+' of '+col.ids.length+' scenes ready</span></div>';
+    '<span class="sub">'+ready.length+' of '+col.ids.length+' scenes ready · '+esc(aeTplMix(ready))+'</span></div>'+
+    '<div class="orow"><span class="olab">Set them all to</span>'+aeTplPicker('','data-aetplall')+
+      '<span class="sub">Changes the layout of every ready scene in this sequence.</span></div>';
   return h+'</div>';
 }
 function shotsSection(code){
@@ -1869,6 +1990,11 @@ document.addEventListener('click',e=>{
     if(b.dataset.go){runEdit(b.dataset.go);return}
     if(b.dataset.stop){if(ctl)ctl.abort();return}
     if(b.dataset.ae){aeExport(b.dataset.ae,b.dataset.ae==='seq'?openSeq:openCode);return}
+    if(b.dataset.aetpl){setAeTpl(openCode,b.dataset.aetpl);return}
+    if(b.dataset.aetplall){const col=state.cols.find(c=>c.id===openSeq);
+      if(col){col.ids.filter(aeReady).forEach(c=>setAeTpl(c,b.dataset.aetplall));
+        toast('Every ready scene in this sequence will build as “'+AE_TPL[b.dataset.aetplall].label+'”');reopen()}
+      return}
     if(b.dataset.mkshots){runEdit('h:'+openCode,b.dataset.mkshots==='again'
       ?'Write the shot list for this scene again from scratch.'
       :'Break this scene into the shots it needs, in order.');return}
