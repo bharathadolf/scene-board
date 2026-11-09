@@ -1,6 +1,7 @@
 # The story
 
-*A feature film. Working English title: **The Unseen Sun**.*
+*A feature film. Working English title: **The Unseen Sun**. Telugu version:
+`THE_STORY.te.md`.*
 
 **A note on the title.** *Loka Kalyāṇam* (లోక కళ్యాణం) means the welfare of the
 world, and it is this film's **theme**, not its title and not a Telugu
