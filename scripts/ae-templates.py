@@ -62,6 +62,26 @@ HEAD = '''/* %(name)s — template: %(tpl)s
     t.guideLayer = LOOK.guides;
     return t;
   }
+  /* wrapped, centred text in a box of its own width */
+  function box(comp, body, w, size, colour, pos, stroked) {
+    var t = comp.layers.addBoxText([w, Math.max(size * 4, 60)]);
+    var d = t.property("Source Text").value;
+    d.resetCharStyle();
+    d.text = body;
+    d.fontSize = size;
+    d.fillColor = colour; d.applyFill = true;
+    if (stroked) {
+      d.strokeColor = LOOK.strokeColour;
+      d.strokeWidth = Math.max(1, Math.round(size * 0.14));
+      d.strokeOverFill = false; d.applyStroke = true;
+    } else { d.applyStroke = false; }
+    d.leading = Math.round(size * 1.35);
+    d.justification = ParagraphJustification.CENTER_JUSTIFY;
+    t.property("Source Text").setValue(d);
+    t.property("Transform").property("Position").setValue(pos);
+    t.guideLayer = LOOK.guides;
+    return t;
+  }
   function ease(p, a, b) {
     try { var e = new KeyframeEase(0, 55);
       p.setTemporalEaseAtKey(a, [e], [e]); p.setTemporalEaseAtKey(b, [e], [e]); } catch (err) {}
@@ -130,6 +150,31 @@ HEAD = '''/* %(name)s — template: %(tpl)s
       + (s.mj ? "\\n\\nPROMPT: " + s.mj : "") + (s.why ? "\\n\\nPICTURE: " + s.why : "");
     lay.property("Marker").setValueAtTime(s.at + Math.min(0.2, s.dur / 4), mk);
 
+    /* the dialogue of this shot, inside the picture */
+    if (s.dlg) {
+      var dw = Math.round(PW * 0.86);
+      /* the block grows downwards from its position, so lift it by its own
+         height and it always sits just above the bottom edge of the picture */
+      var perLine = Math.max(12, Math.round(dw / (LOOK.dlg * 0.52)));
+      var lines = Math.max(1, Math.ceil(s.dlg.length / perLine));
+      var dy = PY + PH / 2 - Math.round(H * LOOK.dialogueUp)
+             - (lines - 1) * Math.round(LOOK.dlg * 1.35);
+      var dl = box(comp, s.dlg, dw, LOOK.dlg, LOOK.dlgInk, [PX - dw / 2, dy], true);
+      dl.name = "DLG " + s.label;
+      dl.inPoint = s.at; dl.outPoint = s.at + s.dur; dl.label = 11;
+    }
+
+    /* what this shot is, under the picture */
+    if (LOOK.brief && s.text) {
+      var bw = Math.round(PW * LOOK.briefWidth);
+      var by = LOOK.briefInside ? PY + PH / 2 - Math.round(H * 0.052)
+                                : PY + PH / 2 + Math.round(H * LOOK.briefGap);
+      var bf = box(comp, s.text, bw, LOOK.briefSize, LOOK.briefInk,
+                   [PX - bw / 2, by], LOOK.briefInside || LOOK.stroke);
+      bf.name = "BRIEF " + s.label;
+      bf.inPoint = s.at; bf.outPoint = s.at + s.dur; bf.label = 4;
+    }
+
     %(pershot)s
   }
 
@@ -159,12 +204,6 @@ CORNER_PERSHOT = '''
       ParagraphJustification.LEFT_JUSTIFY, Math.round(LOOK.small * 1.35));
     bl.name = "BL " + s.label; bl.inPoint = s.at; bl.outPoint = s.at + s.dur; bl.label = 5;
 
-    if (s.dlg) {
-      var dl = text(comp, s.dlg, LOOK.dlg, LOOK.dlgInk,
-        [PX, PY + PH / 2 + Math.round(H * 0.055)],
-        ParagraphJustification.CENTER_JUSTIFY, 0);
-      dl.name = "DLG " + s.label; dl.inPoint = s.at; dl.outPoint = s.at + s.dur; dl.label = 11;
-    }
 '''
 
 CORNER_STATIC = '''
@@ -187,12 +226,6 @@ SLATE_PERSHOT = '''
       ParagraphJustification.LEFT_JUSTIFY, Math.round(LOOK.small * 1.45));
     st.name = "STRIP " + s.label; st.inPoint = s.at; st.outPoint = s.at + s.dur; st.label = 5;
 
-    if (s.dlg) {
-      var dl = text(comp, s.dlg, LOOK.dlg, LOOK.dlgInk,
-        [PX, PY + PH / 2 + Math.round(H * 0.050)],
-        ParagraphJustification.CENTER_JUSTIFY, 0);
-      dl.name = "DLG " + s.label; dl.inPoint = s.at; dl.outPoint = s.at + s.dur; dl.label = 11;
-    }
 '''
 
 SLATE_STATIC = '''
@@ -220,7 +253,10 @@ TPL = {
                  "bg": [0, 0, 0], "ink": [1, 1, 1], "dlgInk": [1, 1, 1],
                  "pictureWidth": 1.0, "pictureY": 0.5, "fill": True, "mask": False,
                  "pad": 0.03, "small": 19, "dlg": 29, "stroke": True,
-                 "strokeColour": [0, 0, 0], "guides": False},
+                 "strokeColour": [0, 0, 0], "guides": False,
+                 "brief": True, "briefInside": True, "briefWidth": 0.78,
+                 "briefSize": 19, "briefInk": [0.88, 0.90, 0.93], "briefGap": 0.0,
+                 "dialogueUp": 0.115},
         "pershot": "", "static": "",
     },
     "corners": {
@@ -229,7 +265,10 @@ TPL = {
                  "bg": [0, 0, 0], "ink": [0.78, 0.80, 0.84], "dlgInk": [1, 1, 1],
                  "pictureWidth": 0.80, "pictureY": 0.47, "fill": False, "mask": True,
                  "pad": 0.028, "small": 20, "dlg": 30, "stroke": False,
-                 "strokeColour": [0, 0, 0], "guides": False},
+                 "strokeColour": [0, 0, 0], "guides": False,
+                 "brief": True, "briefInside": False, "briefWidth": 0.82,
+                 "briefSize": 22, "briefInk": [0.74, 0.77, 0.82], "briefGap": 0.040,
+                 "dialogueUp": 0.075},
         "pershot": CORNER_PERSHOT, "static": CORNER_STATIC,
     },
     "paper": {
@@ -238,7 +277,10 @@ TPL = {
                  "bg": [1, 1, 1], "ink": [0.13, 0.15, 0.18], "dlgInk": [0.08, 0.09, 0.11],
                  "pictureWidth": 0.80, "pictureY": 0.46, "fill": False, "mask": True,
                  "pad": 0.030, "small": 20, "dlg": 29, "stroke": False,
-                 "strokeColour": [1, 1, 1], "guides": False},
+                 "strokeColour": [1, 1, 1], "guides": False,
+                 "brief": True, "briefInside": False, "briefWidth": 0.82,
+                 "briefSize": 22, "briefInk": [0.25, 0.27, 0.31], "briefGap": 0.040,
+                 "dialogueUp": 0.075},
         "pershot": CORNER_PERSHOT, "static": CORNER_STATIC,
     },
     "slate": {
@@ -247,7 +289,10 @@ TPL = {
                  "bg": [0.04, 0.04, 0.05], "ink": [0.93, 0.93, 0.95], "dlgInk": [1, 1, 1],
                  "pictureWidth": 0.86, "pictureY": 0.40, "fill": False, "mask": True,
                  "pad": 0.035, "small": 21, "dlg": 30, "stroke": False,
-                 "strokeColour": [0, 0, 0], "guides": False},
+                 "strokeColour": [0, 0, 0], "guides": False,
+                 "brief": True, "briefInside": False, "briefWidth": 0.84,
+                 "briefSize": 23, "briefInk": [0.84, 0.86, 0.90], "briefGap": 0.035,
+                 "dialogueUp": 0.070},
         "pershot": SLATE_PERSHOT, "static": SLATE_STATIC,
     },
 }
@@ -353,8 +398,10 @@ PREVIEW = """<!doctype html><html><head><meta charset=utf8><style>
  .br{right:%(pad)spx;bottom:%(pad)spx;text-align:right}
  .strip{position:absolute;left:%(pad)spx;right:%(pad)spx;top:81.5%%;white-space:pre-line}
  .rule{position:absolute;left:%(pad)spx;right:%(pad)spx;top:80.5%%;height:1px;background:%(ink)s;opacity:.45}
- .dlg{position:absolute;left:50%%;transform:translateX(-50%%);top:%(dlgy)s%%;
-      font-size:%(dlg)spx;color:%(dlgink)s;text-align:center;max-width:70%%}
+ .dlg{position:absolute;left:50%%;transform:translateX(-50%%);
+      color:%(dlgink)s;text-align:center;max-width:76%%;
+      text-shadow:0 2px 6px rgba(0,0,0,.85),0 0 3px rgba(0,0,0,.9)}
+ .brief{position:absolute;left:50%%;transform:translateX(-50%%);text-align:center;line-height:1.35}
  .tag{position:absolute;right:0;bottom:0;background:#111;color:#fff;font:600 22px system-ui;
       padding:6px 14px;letter-spacing:.04em}
 </style></head><body><div class="f">
@@ -371,7 +418,8 @@ def preview(man, conf, shots, made, out):
     except Exception:
         return []
     out = pathlib.Path(out)
-    sh = next((s for s in shots if s["file"]), shots[0])
+    sh = next((s for s in shots if s["file"] and s.get("dlg")),
+              next((s for s in shots if s["file"]), shots[0]))
     pics = []
     with sync_playwright() as pw:
         b = pw.chromium.launch()
@@ -392,10 +440,20 @@ def preview(man, conf, shots, made, out):
                          f'<div class="c tl">{conf["cTopLeft"]}</div>'
                          f'<div class="strip">{sh["strip"]}</div>'
                          f'<div class="c br">{conf["cBotRight"]}</div>')
-            if sh.get("dlg") and name != "clean":
-                dy = lk["pictureY"] * 100 + (lk["pictureWidth"] * (conf["height"] / conf["width"])
-                                             * 100 / 2) + 5
-                parts += f'<div class="dlg" style="top:{dy:.1f}%">{sh["dlg"]}</div>'
+            picH = (W * lk["pictureWidth"]) * conf["height"] / conf["width"]
+            picBot = lk["pictureY"] * H + picH / 2
+            if sh.get("dlg"):
+                per = max(12, round(W * lk["pictureWidth"] * 0.86 / (lk["dlg"] * 0.52)))
+                nl = max(1, -(-len(sh["dlg"]) // per))
+                dy = (picBot - H * lk["dialogueUp"] - (nl - 1) * lk["dlg"] * 1.35) / H * 100
+                parts += (f'<div class="dlg" style="top:{dy:.1f}%;font-size:{lk["dlg"]}px">'
+                          f'{sh["dlg"]}</div>')
+            if lk.get("brief") and sh.get("text"):
+                by = ((picBot - H * 0.052) if lk["briefInside"]
+                      else (picBot + H * lk["briefGap"])) / H * 100
+                bink = "#%02x%02x%02x" % tuple(int(x * 255) for x in lk["briefInk"])
+                parts += (f'<div class="brief" style="top:{by:.1f}%;width:{int(W*lk["pictureWidth"]*lk["briefWidth"])}px;'
+                          f'font-size:{lk["briefSize"]}px;color:{bink}">{sh["text"]}</div>')
             html = PREVIEW % {
                 "W": W, "H": H, "bg": bg, "ink": ink, "dlgink": dink,
                 "small": lk["small"], "dlg": lk["dlg"],
