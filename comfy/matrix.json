@@ -1,0 +1,25 @@
+{
+ "note": "Edit models to the checkpoint filenames you actually have in ComfyUI/models/checkpoints. Two seeds per cell is the minimum that shows whether a look repeats.",
+ "workflow": "sdxl_txt2img.json",
+ "width": 1344,
+ "height": 768,
+ "models": [
+  "illustriousXL.safetensors",
+  "kreaXL.safetensors",
+  "sdxl_base_1.0.safetensors"
+ ],
+ "recipes": [
+  "anime-cel",
+  "ink-gouache",
+  "painterly-real"
+ ],
+ "shots": [
+  "face",
+  "chariot",
+  "cave"
+ ],
+ "seeds": [
+  101,
+  202
+ ]
+}

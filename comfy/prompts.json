@@ -1,0 +1,49 @@
+{
+ "note": "Three shots chosen because they are the three hardest things this film asks for: a face in close-up, a crowd in motion, and an empty landscape. The texts are the board's own shot briefs.",
+ "shots": [
+  {
+   "id": "face",
+   "from": "S-937 · a queen in close profile",
+   "text": "a dark-skinned queen in an ornate gold crown and jewelled headdress, close three-quarter profile, eyes lowered, heavy shadow across one side of the face, deep indigo and violet light with a warm gold rim, ancient India"
+  },
+  {
+   "id": "chariot",
+   "from": "S-851 · the procession on the road",
+   "text": "a chariot procession on a dust road at dusk seen from behind a horse, a column of riders and carts ahead, temple towers on the horizon, a wall of dust lit from the side, ancient India"
+  },
+  {
+   "id": "cave",
+   "from": "S-719 · the mouth of the cave",
+   "text": "a dark cave mouth in a dry rock gorge, one small distant figure walking into it, late afternoon sun on the stone, no people in the foreground, ancient India"
+  }
+ ],
+ "recipes": [
+  {
+   "id": "anime-cel",
+   "workflow": "sdxl_txt2img.json",
+   "steps": 30,
+   "cfg": 5.0,
+   "prefix": "anime key visual, cel shaded, bold ink outlines, flat colour blocks, dramatic rim lighting, ",
+   "suffix": ", cinematic composition, 16:9, high detail",
+   "negative": "photo, photorealistic, 3d render, western comic, muddy colours, text, watermark, extra fingers"
+  },
+  {
+   "id": "ink-gouache",
+   "workflow": "sdxl_txt2img.json",
+   "steps": 32,
+   "cfg": 4.5,
+   "prefix": "painted concept art, visible ink linework over gouache, limited palette, strong silhouettes, volumetric dust, ",
+   "suffix": ", widescreen film frame, painterly",
+   "negative": "photo, 3d render, anime face closeup, text, watermark, oversaturated"
+  },
+  {
+   "id": "painterly-real",
+   "workflow": "sdxl_txt2img.json",
+   "steps": 35,
+   "cfg": 4.0,
+   "prefix": "cinematic film still, photoreal, anamorphic, natural light, period accurate ancient India, ",
+   "suffix": ", shallow depth of field, 35mm",
+   "negative": "anime, cartoon, illustration, cel shading, text, watermark, greco-roman armour, roman helmet, european architecture"
+  }
+ ]
+}
