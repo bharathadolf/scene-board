@@ -1,8 +1,9 @@
 # Scene Board
 
-A tool for ordering the 115 scenes of **The Unseen Sun** (*Loka Kalyāṇam*), a
-feature film about Rukmini and Krishna told out of chronological order — and
-the story data the tool runs on.
+A tool for ordering the 115 scenes of **The Unseen Sun**, a feature film about
+Rukmini and Krishna told out of chronological order — and the story data the
+tool runs on. (*Loka Kalyāṇam*, "the welfare of the world", is the film's theme,
+not a Telugu translation of the English title; see `story/THE_STORY.md`.)
 
 The whole tool is one self-contained HTML page. There is no framework, no
 bundler and no build step beyond pasting data into a script: `npm run build`
@@ -42,10 +43,25 @@ npm run serve        # http://localhost:8080
 npm test             # 183 checks in headless Chromium
 ```
 
-Opened locally the page has no claude.ai runtime behind it, so it saves to
-browser storage (the status reads *Saved in this browser only*) and editing by
-prompt is hidden. Both come back when the page is published as an artifact —
-see [docs/DEPLOY.md](docs/DEPLOY.md).
+Opened locally the page has no claude.ai runtime behind it. It starts from the
+five board orders in `data/boards/`, which are built into the page, and saves
+what you change to browser storage — the status reads *Saved in this browser
+only*. Everything that does not need Claude works: the boards, dragging,
+sequences, shots by hand, the read-through, the CSV export, both languages and
+both layouts.
+
+Three things need the published artifact, and are simply hidden or refused
+locally: **editing by prompt** (scene, sequence, shots, image prompts),
+**uploading a picture to a shot**, and **the check** that compares a picture
+with its shot. See [docs/DEPLOY.md](docs/DEPLOY.md).
+
+| where the data lives | what is in it |
+| --- | --- |
+| `data/scenes.json`, `data/te/`, `data/sources.json` | the 115 scenes, their Telugu, and where each one comes from — built into the page |
+| `data/boards/b1…b5.json` | the five seeded orders — built into the page, and the starting point when nothing is saved yet |
+| browser storage (local) | your changes to the boards, and scene edits |
+| the artifact database (published) | the same, shared and kept — plus shots, image prompts and approvals |
+| the artifact asset store (published) | the pictures dropped onto shots |
 
 ## Layout
 
@@ -60,6 +76,8 @@ data/
   te/                 the Telugu of the scenes, the terms and the names
   boards/b1…b5.json   the five seeded orders
 story/
+  REFERENCE.md        the people, the places and the eight story events
+  COMMERCIAL_CUT.md   the same story as a 2h30 action film, scene by scene
   events/             the scene definitions the data is generated from
   docs/               the story documents (events, framework, guides)
 scripts/

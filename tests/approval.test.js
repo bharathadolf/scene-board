@@ -49,13 +49,13 @@ module.exports = async ({ browser, check }) => {
   // ---------- an approved scene holds its shots ----------
   check('its shots cannot be unapproved', await at(() => { const n = BY[openCode].shots.filter(x => x.a).length; setShotAp(openCode, 0, 'a', false); return BY[openCode].shots.filter(x => x.a).length === n; }));
   check('no shot buttons are offered', await at(() => !document.querySelector('[data-shed="0"]') && !document.querySelector('[data-shap="0"]')));
-  check('no shot prompt box', await at(() => !document.querySelector('.edp[data-k^="h:"]')));
+  check('no way to rewrite the shots', await at(() => !document.querySelector('[data-mkshots]') && !document.querySelector('[data-mkprompts]')));
   check('the shots section says why', /take that approval off first/i.test(await at(() => document.querySelector('#sect-shots').textContent)));
   const shotCount = await at(() => BY[openCode].shots.length);
   await at(() => setShots(openCode, [{ t: 'X', x: 'should not land' }]));
   await page.waitForTimeout(250);
   check('its shots cannot be replaced', (await at(() => BY[openCode].shots.length)) === shotCount);
-  check('the scene text is locked too', await at(() => !document.querySelector('.edp[data-k^="s:"]')));
+  check('the scene text is locked too', await at(() => !document.querySelector('#drawer .edp') && !document.querySelector('#addshot')));
   await at(() => closeDrawer());
 
   // ---------- a sequence is not ready until its scenes are ----------

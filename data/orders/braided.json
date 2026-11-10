@@ -1,0 +1,472 @@
+{
+  "name": "The braided order",
+  "note": "All 115 scenes in one non-linear order. Scenes from the earlier events (E01, E02, E08) are not parked in a block at the front; each one is placed immediately beside the present-tense scene it rhymes with, so the audience feels the pairing rather than being told about it. The two licensing doorways are E01-18, the painted wall at Ambika, and E01-19, the bard's recital on the wedding eve: once those exist, the film may cut to a panel or a verse at any time without explaining itself.",
+  "movements": [
+    {
+      "n": "I",
+      "name": "A man walks out",
+      "runs": "0-21.5",
+      "job": "Pose the question. A man leaves a defended city alone and unarmed; something enormous comes to kill him; the kill in the cave is not his. No proper name in the first six minutes.",
+      "scenes": [
+        {
+          "c": "E04-07"
+        },
+        {
+          "c": "E05-02"
+        },
+        {
+          "c": "E05-03"
+        },
+        {
+          "c": "E05-04"
+        },
+        {
+          "c": "E05-05"
+        },
+        {
+          "c": "E05-07"
+        },
+        {
+          "c": "E05-06"
+        },
+        {
+          "c": "E05-08"
+        },
+        {
+          "c": "E05-09"
+        },
+        {
+          "c": "E05-10"
+        },
+        {
+          "c": "E05-11"
+        },
+        {
+          "c": "E05-01",
+          "why": "The cause after the effect: only now does the audience learn who handed the killer the description, which turns the whole chase retrospectively into something arranged."
+        },
+        {
+          "c": "E05-13"
+        }
+      ],
+      "min": 21.5
+    },
+    {
+      "n": "II",
+      "name": "Seventeen",
+      "runs": "21.5-49",
+      "job": "The mystery that holds the first half: he wins and lets the enemy go, seventeen times, and will not say why.",
+      "scenes": [
+        {
+          "c": "E02-01"
+        },
+        {
+          "c": "E02-02",
+          "why": "A petition for relief."
+        },
+        {
+          "c": "E03-01",
+          "why": "A petition for revenge, cut straight against it. Two grievances go up in two scenes; one asks for less weight, the other for more."
+        },
+        {
+          "c": "E02-06"
+        },
+        {
+          "c": "E01-07",
+          "why": "The first thing the ocean gives up is poison, not nectar — placed immediately before the first thing his victory gives Mathura, which is seventeen years of siege."
+        },
+        {
+          "c": "E03-02"
+        },
+        {
+          "c": "E03-03"
+        },
+        {
+          "c": "E03-04"
+        },
+        {
+          "c": "E03-05"
+        },
+        {
+          "c": "E03-06"
+        },
+        {
+          "c": "E03-07"
+        },
+        {
+          "c": "E03-08"
+        },
+        {
+          "c": "E01-06",
+          "why": "Two sides who hate each other pulling the same rope for an age, hands splitting, neither letting go — against seventeen years of the same siege, counted in chalk."
+        },
+        {
+          "c": "E03-09"
+        },
+        {
+          "c": "E01-09",
+          "why": "Every claimant seizes a treasure and the jewel is taken by a hand nobody sees — against the man who hands the wealth of a battlefield to his king and keeps none of it."
+        },
+        {
+          "c": "E03-10"
+        }
+      ],
+      "min": 27.5
+    },
+    {
+      "n": "III",
+      "name": "The woman who is counting",
+      "runs": "49-77.5",
+      "job": "The protagonist takes the film over. She has been assembling this man out of evidence for years, and she is the only person asking the right question. Then she is sold.",
+      "scenes": [
+        {
+          "c": "E01-18",
+          "why": "Doorway one. From this scene on, the film may cut to any panel of the churning without explanation, because the audience has seen her standing in front of the wall."
+        },
+        {
+          "c": "E02-08"
+        },
+        {
+          "c": "E03-15"
+        },
+        {
+          "c": "E05-14"
+        },
+        {
+          "c": "E05-16"
+        },
+        {
+          "c": "E05-15"
+        },
+        {
+          "c": "E02-09"
+        },
+        {
+          "c": "E06-02"
+        },
+        {
+          "c": "E08-07"
+        },
+        {
+          "c": "E01-12",
+          "why": "The pot is seized and the ones who seized it are fighting each other inside a minute — placed against the scene where her brother sells her, so the audience watches taking and holding come apart twice in a row."
+        },
+        {
+          "c": "E06-03"
+        },
+        {
+          "c": "E03-14"
+        },
+        {
+          "c": "E08-01"
+        },
+        {
+          "c": "E08-02"
+        }
+      ],
+      "min": 28.5
+    },
+    {
+      "n": "IV",
+      "name": "The city in the sea",
+      "runs": "77.5-100",
+      "job": "He ends a seventeen-year war by moving the target, and is nearly killed on a burning hill for it. The leap off the burning peak is the interval: the enemy counts him dead, and the second half opens with her writing to a man the audience last saw jumping off a cliff.",
+      "scenes": [
+        {
+          "c": "E04-01"
+        },
+        {
+          "c": "E04-02"
+        },
+        {
+          "c": "E04-03"
+        },
+        {
+          "c": "E01-05",
+          "why": "The sea closes over a mountain and then hands it back on something alive — against the sea handing back a city. The same water, the same impossibility, two hours apart."
+        },
+        {
+          "c": "E04-04"
+        },
+        {
+          "c": "E04-05"
+        },
+        {
+          "c": "E04-06"
+        },
+        {
+          "c": "E04-08"
+        },
+        {
+          "c": "E04-09"
+        },
+        {
+          "c": "E04-10"
+        },
+        {
+          "c": "E05-12"
+        },
+        {
+          "c": "E03-11"
+        },
+        {
+          "c": "E03-12"
+        },
+        {
+          "c": "E03-13"
+        }
+      ],
+      "min": 22.5,
+      "interval": true
+    },
+    {
+      "n": "V",
+      "name": "She writes",
+      "runs": "100-114",
+      "job": "The decision, the road, and the turn of the chariot. The interval.",
+      "scenes": [
+        {
+          "c": "E01-03",
+          "why": "A voice tells the gods to do the work and promises that what they cannot hold will be held — placed immediately before a woman with no army and no vote decides to do the one piece of work available to her."
+        },
+        {
+          "c": "E06-04"
+        },
+        {
+          "c": "E06-05"
+        },
+        {
+          "c": "E02-04",
+          "why": "The answer was given before anyone asked for it. Cut against the letter being read, it says that the reply to her was already on the road."
+        },
+        {
+          "c": "E06-06"
+        },
+        {
+          "c": "E06-07"
+        }
+      ],
+      "min": 14
+    },
+    {
+      "n": "VI",
+      "name": "The board",
+      "runs": "114-139.5",
+      "job": "The ring closes around a wedding, and the myth is sung aloud to the men who are living inside it.",
+      "scenes": [
+        {
+          "c": "E06-08"
+        },
+        {
+          "c": "E06-09"
+        },
+        {
+          "c": "E02-05",
+          "why": "The elder brother is sent first, before anyone else is assigned anything — against Balarama marching an army to stop his brother from dying."
+        },
+        {
+          "c": "E06-10"
+        },
+        {
+          "c": "E02-03",
+          "why": "A shore, flat water, and a long wait for an answer that has not come yet — against a woman counting hours in a decorated room."
+        },
+        {
+          "c": "E06-11"
+        },
+        {
+          "c": "E06-12"
+        },
+        {
+          "c": "E06-13"
+        },
+        {
+          "c": "E06-14"
+        },
+        {
+          "c": "E01-19",
+          "why": "Doorway two. The bard recites the churning to a hall of kings who do not notice which figures in it are them, which licenses the three panels that follow and makes them the film's only moment of open irony."
+        },
+        {
+          "c": "E01-01",
+          "why": "Inside the recital: a small act of carelessness that becomes a catastrophe, heard by a father who gave way to his son out of love."
+        },
+        {
+          "c": "E01-02",
+          "why": "Inside the recital: what the curse actually cost — the colour going out of a court. The hall is listening to its own forecast."
+        },
+        {
+          "c": "E01-04",
+          "why": "Inside the recital: enemies who must cooperate, told to a room full of enemies cooperating."
+        },
+        {
+          "c": "E08-04",
+          "why": "Two gatekeepers offered seven births as devotees or three as enemies, who choose three — placed at the end of the recital, over the faces of men who have made the same choice."
+        }
+      ],
+      "min": 25.5
+    },
+    {
+      "n": "VII",
+      "name": "The temple",
+      "runs": "139.5-151",
+      "job": "She prays, walks out through a forecourt of kings, and sees him. The face.",
+      "scenes": [
+        {
+          "c": "E01-13",
+          "why": "The prize is handed out by the one person nobody suspected of deciding anything — against a bride walking out through a guard of men who each believe the day belongs to them."
+        },
+        {
+          "c": "E06-15"
+        },
+        {
+          "c": "E06-16"
+        },
+        {
+          "c": "E01-16",
+          "why": "Shiva pursues a form, is bewildered by it, and then recognises the power standing inside it — placed one scene before she recognises him, so the audience is taught what recognition looks like just before it happens."
+        },
+        {
+          "c": "E06-17"
+        },
+        {
+          "c": "E06-18"
+        }
+      ],
+      "min": 11.5
+    },
+    {
+      "n": "VIII",
+      "name": "The taking",
+      "runs": "151-164.5",
+      "job": "The abduction, which is her plan being carried out, and the pursuit it starts.",
+      "scenes": [
+        {
+          "c": "E01-10",
+          "why": "The goddess rises with a garland, passes every claimant who stepped forward, and garlands the one who did not. Cut directly into the lift, it says that the abduction is the same act as the choosing: the balance of the world restored by a woman deciding, not by a man taking."
+        },
+        {
+          "c": "E06-19"
+        },
+        {
+          "c": "E06-20"
+        },
+        {
+          "c": "E06-21"
+        },
+        {
+          "c": "E08-05"
+        },
+        {
+          "c": "E08-03",
+          "why": "The hundred offences were promised long before he had earned one. Placed the moment his hatred forms, the promise turns into a countdown."
+        },
+        {
+          "c": "E01-15",
+          "why": "The alliance of enemies collapses into open war the moment the prize is gone — against the kings arming behind a chariot."
+        },
+        {
+          "c": "E06-22"
+        }
+      ],
+      "min": 13.5
+    },
+    {
+      "n": "IX",
+      "name": "The duel",
+      "runs": "164.5-186",
+      "job": "Her brother breaks his own oath and loses, and the mercy she asks for costs more than a death would have.",
+      "scenes": [
+        {
+          "c": "E06-24"
+        },
+        {
+          "c": "E06-25"
+        },
+        {
+          "c": "E01-08",
+          "why": "Somebody walks into the poison and holds it in his throat so that the work can go on — placed on the scene where she goes down at his feet and takes her brother's shame into her own family for good."
+        },
+        {
+          "c": "E06-26"
+        },
+        {
+          "c": "E01-14",
+          "why": "The one who slipped into the line to take what was not his loses his head and lives with it — against a brother who is shaved instead of killed and has to live looking like that."
+        },
+        {
+          "c": "E06-27"
+        },
+        {
+          "c": "E08-06"
+        },
+        {
+          "c": "E06-28"
+        },
+        {
+          "c": "E06-29"
+        },
+        {
+          "c": "E01-11",
+          "why": "The side that lost the goddess is handed wine as a consolation and swallows it — against Jarasandha consoling the ruined bridegroom on a roadside with the idea that time will turn."
+        },
+        {
+          "c": "E06-23"
+        },
+        {
+          "c": "E06-30"
+        },
+        {
+          "c": "E06-31"
+        }
+      ],
+      "min": 21.5
+    },
+    {
+      "n": "X",
+      "name": "The sea",
+      "runs": "186-197.5",
+      "job": "She arrives at the city she had only imagined, every carrier gets a doorway, and the film stops.",
+      "scenes": [
+        {
+          "c": "E07-01"
+        },
+        {
+          "c": "E07-02"
+        },
+        {
+          "c": "E01-17",
+          "why": "A family on the shore lives through the churning of the ocean and never learns what happened or why their net came up full — placed against the doorways of Dvaraka, where the whole film's cast of carriers get a result they cannot explain."
+        },
+        {
+          "c": "E02-07",
+          "why": "The Earth's burden, lifted: a strip of ground that was trampled flat by armies, ploughing clean. The petition from movement II is answered here, two hours later, without a word."
+        },
+        {
+          "c": "E07-03"
+        },
+        {
+          "c": "E07-04"
+        },
+        {
+          "c": "E07-05"
+        },
+        {
+          "c": "E06-01",
+          "why": "The question that the current cut opens with — they say he stole her — is asked here instead, at the end, by someone who has just heard the story. It is answered by the next scene rather than by the bard."
+        },
+        {
+          "c": "E07-06"
+        },
+        {
+          "c": "E07-07"
+        },
+        {
+          "c": "E07-08"
+        }
+      ],
+      "min": 11.5
+    }
+  ],
+  "total": 197.5
+}

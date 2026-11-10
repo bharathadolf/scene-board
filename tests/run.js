@@ -2,7 +2,7 @@
    Run: npm test   (or: node tests/run.js board) */
 const { chromium, collector, closeServer } = require('./harness');
 
-const SUITES = ['language', 'board', 'shots', 'approval', 'mobile'];
+const SUITES = ['language', 'board', 'shots', 'approval', 'mobile', 'ae'];
 const only = process.argv.slice(2);
 
 (async () => {
