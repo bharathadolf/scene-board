@@ -1,5 +1,25 @@
 # The biggest challenge, and the task list that follows from it
 
+> **Where this stands.** Gates 0 and 1 and the first two integrations are built.
+>
+> | task | state |
+> | --- | --- |
+> | T0 back up / restore | **built** — toolbar, one zip with pictures; restore tested by wiping and comparing |
+> | T1 entity layer | **built** — 89 place strings → 17 sets, 76 characters, 26 props; four merges left for you in `docs/ENTITY_DECISIONS.md` |
+> | T2 shot schema v2 | **built** — set, cast, camera, continuity on every shot; lengths marked as guesses until set. *Not done:* importing the ~1,000 Fountain shots |
+> | T3 identity and provenance | **built** — a re-order changes no shot id, no fingerprint and no file name |
+> | T4 `shotspec` | **built** — After Effects now reads it |
+> | T5 `dcc-bridge` + authority rule | **built** — `docs/DCC_AUTHORITY.md` |
+> | T6 Blender blocking | **built**, run headless on S-719. *Not done:* a run inside your own Blender |
+> | T7 ComfyUI control bridge | **runner built**, tested against a stand-in server only — no GPU here |
+> | T8 Houdini · T9 Nuke · T10 Unreal | not built; the bridge refuses them by name |
+> | T11 readiness board · T12 frame preview | not built |
+>
+> One correction to the text below: the story-bearing props are the garlands,
+> the chalk marks, the letter and the two lamps. "The broken ring" was the ring
+> of kings, not an object, and the crown and sandals exist only in draft scene
+> `D-05`.
+
 ## 1 · The challenge, in one sentence
 
 **Scene Board does not know what is inside a shot.**

@@ -1,0 +1,19 @@
+{
+ "shots": [
+  {
+   "t": "WIDE",
+   "x": "Wide on Palace; women’s quarters",
+   "a": true
+  },
+  {
+   "t": "CLOSE",
+   "x": "Close on Rukmini",
+   "a": true
+  },
+  {
+   "t": "INSERT",
+   "x": "A detail",
+   "a": false
+  }
+ ]
+}

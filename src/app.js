@@ -3,6 +3,11 @@ const SCENES=__DATA__;
 const TE=__TE__;
 const UI=__UI__;
 const SRC=__SRC__;
+/* what each scene is built from: sets, cast and props (data/entities.json,
+   data/scene_entities.json), and the Blender blocking script the previz export
+   hands over beside the shotspec */
+const ENT=__ENT__;
+const BLOCKPY=__BLOCK__;
 /* The five seeded board orders, built into the page from data/boards/.
    They are the starting point when nothing has been saved yet: the whole tool
    works offline on them, with or without a claude.ai runtime behind it. */
@@ -115,9 +120,41 @@ function cleanShots(a){
     }
     if(x.a===true)o.a=true;          /* the shot is approved */
     if(x.ma===true)o.ma=true;        /* its image prompt is approved */
+    const sid=String(x.sid||'').replace(/[^a-z0-9]/g,'').slice(0,8);if(sid)o.sid=sid;
+    const dlg=String(x.dlg||'').trim();if(dlg)o.dlg=dlg.slice(0,600);
+    if(typeof x.set==='string'&&/^[a-z_]+\/[a-z_]+$/.test(x.set))o.set=x.set;
+    if(Array.isArray(x.cast)){const c=x.cast.filter(y=>typeof y==='string'&&ENT.e.characters[y]).slice(0,12);if(c.length)o.cast=c}
+    if(x.cam&&typeof x.cam==='object'){
+      const c={},L=Number(x.cam.lens),H=Number(x.cam.h),D=Number(x.cam.dur);
+      if(L>=8&&L<=400)c.lens=Math.round(L*10)/10;
+      if(H>0&&H<=200)c.h=Math.round(H*100)/100;
+      if(D>0&&D<=600)c.dur=Math.round(D*1000)/1000;
+      if(['eye','high','low','top'].indexOf(x.cam.ang)>=0)c.ang=x.cam.ang;
+      if(['static','push','track','crane','drift'].indexOf(x.cam.mv)>=0)c.mv=x.cam.mv;
+      if(Object.keys(c).length)o.cam=c;
+    }
+    if(x.cont&&typeof x.cont==='object'){
+      const c={};
+      if(['L2R','R2L'].indexOf(x.cont.dir)>=0)c.dir=x.cont.dir;
+      if(['day','night','dawn','dusk'].indexOf(x.cont.tod)>=0)c.tod=x.cont.tod;
+      if(Object.keys(c).length)o.cont=c;
+    }
+    /* what each application last said it made of this shot */
+    if(x.pv&&typeof x.pv==='object'){
+      const pv={};
+      ShotSpec.APPS.forEach(a=>{const r=x.pv[a];if(!r||typeof r!=='object')return;
+        const q={st:String(r.st||'').slice(0,12),v:Math.max(1,Math.round(Number(r.v)||1)),at:String(r.at||'').slice(0,40)};
+        if(r.rev)q.rev=String(r.rev).slice(0,12);
+        if(r.img)q.img=String(r.img).slice(0,64);
+        if(r.f)q.f=String(r.f).slice(0,200);
+        if(r.note)q.note=String(r.note).slice(0,200);
+        pv[a]=q});
+      if(Object.keys(pv).length)o.pv=pv;
+    }
     out.push(o);
   });
-  return out.slice(0,60);
+  /* every shot carries an id of its own that never changes with its place */
+  return ShotSpec.stamp(out.slice(0,60));
 }
 
 /* ---------- scene overrides, shots and history ---------- */
@@ -691,7 +728,7 @@ async function blobOf(id){
    Approved shots plus the picture each shot's check kept, written out as an
    ExtendScript that builds the comp, with the images beside it in a zip.
    Works at three levels: one scene, one sequence, the whole board. */
-const AE_W={EWS:1.5,WIDE:1.4,WS:1.4,ESTABLISHING:1.5,POV:1.2,TRACKING:1.2,DOLLY:1.2,CRANE:1.3,AERIAL:1.4,OVER:1.1,OTS:1.1,MS:1,MEDIUM:1,CLOSE:1,CU:1,MCU:1,ECU:.9,INSERT:.7,MACRO:.7,DETAIL:.7,CUTAWAY:.8};
+const AE_W=ShotSpec.W;      /* how a scene's time is shared between kinds of shot */
 const AE_MV={EWS:[106,113,0,0],WIDE:[106,113,0,0],WS:[106,113,0,0],POV:[104,112,0,0],AERIAL:[108,100,0,0],TRACKING:[112,112,-70,0],DOLLY:[105,115,0,0],OVER:[108,112,26,0],OTS:[108,112,26,0],CLOSE:[110,116,0,-10],CU:[110,116,0,-10],MCU:[109,115,0,-8],ECU:[112,118,0,0],MS:[107,113,0,0],INSERT:[112,106,18,8],MACRO:[112,106,18,8],DETAIL:[112,106,18,8]};
 const AE_FPS=24,AE_WIDTH=1680,AE_HEIGHT=720,AE_DIS=0,AE_FADE=0;
 /* Midjourney takes its newest model when no version is named, and an old
@@ -702,19 +739,11 @@ function mjClean(t){
     .replace(/\s--niji\s+[\d.]+\b/gi,' --niji')
     .replace(/\s{2,}/g,' ').trim();
 }
-function aeKind(t){const ws=String(t||'').toUpperCase().split(/[^A-Z-]+/).filter(Boolean);for(const w of ws)if(AE_W[w]||AE_MV[w])return w;return ws[0]||''}
+const aeKind=ShotSpec.kind;
 function ae2(n){return (n<10?'0':'')+n}
 function ae3(n){return Math.round(n*1000)/1000}
 /* which picture is this shot's picture: the one the check kept */
-function aeImg(sh){
-  const imgs=sh.imgs||[];if(!imgs.length)return null;
-  const chk=sh.chk||{},b=chk.best;
-  if(typeof b==='number'&&b>=0&&b<imgs.length)return{id:imgs[b].id,why:'checked: picture '+(b+1)+' of '+imgs.length+' kept'};
-  if(typeof b==='number'&&b<0)return null;      /* the check said none of them is the shot */
-  const ok=(chk.per||[]).filter(p=>p&&p.ok&&typeof p.i==='number');
-  if(ok.length&&ok[0].i<imgs.length)return{id:imgs[ok[0].i].id,why:'checked: picture '+(ok[0].i+1)+' passed'};
-  return{id:imgs[0].id,why:imgs.length===1?'one picture, not checked':imgs.length+' pictures, not checked — the first is used'};
-}
+const aeImg=ShotSpec.pick;
 /* the four After Effects layouts; the picture is the same cut in each */
 const AE_TPL={
   clean:{label:'Clean',blurb:'The picture fills the frame. The shot brief and any dialogue sit inside the bottom of it, and nothing else is over it.',
@@ -767,43 +796,66 @@ function aeSpeed(kind,dur,cat,rasa){
   return [Math.round((mid+(mv[0]-mid)*f)*100)/100,Math.round((mid+(mv[1]-mid)*f)*100)/100,
           Math.round(mv[2]*f),Math.round(mv[3]*f),Math.round(f*1000)/1000];
 }
+/* ---------- shotspec ----------
+   The one description of a shot that everything downstream reads: After
+   Effects below, Blender blocking, and whatever comes after. Where a scene
+   falls on the board is a view of it, never part of its name. */
+function specView(code){
+  const w=where(code);if(!w)return null;
+  const col=state.cols[w.ci],order=flat();
+  return{board:bName(curBoard()),sequence:colName(col),sequence_index:w.ci+1,scene_in_sequence:w.i+1,
+    scenes_in_sequence:col.ids.length,cut:order.indexOf(code)+1,cuts:order.length};
+}
+function specScene(code,all){
+  return ShotSpec.scene(code,BY[code],ENT.s[code],ENT.e,
+    {all:!!all,pick:ShotSpec.pick,cat:catOf(code),title:sc(BY[code],'t'),view:specView(code)});
+}
+const boardVer=()=>ShotSpec.boardVersion(active,{cols:state.cols});
+function specDoc(kind,id,all){
+  let ids=[],scope;
+  if(kind==='scene'){ids=[id];scope={kind:'scene',id:id,title:id+' · '+sc(BY[id],'t')}}
+  else if(kind==='seq'){const c=state.cols.find(x=>x.id===id);if(!c)return null;ids=c.ids.slice();scope={kind:'sequence',id:c.id,title:colName(c)}}
+  else{ids=flat();scope={kind:'board',id:active,title:bName(curBoard())}}
+  const scenes=ids.filter(c=>BY[c]).map(c=>specScene(c,all)).filter(s=>s.shots.length);
+  return ShotSpec.build({entities:ENT.e,scenes:scenes,scope:scope,
+    board:{id:active,name:bName(curBoard())},boardVersion:boardVer()});
+}
 /* the approved shots of a scene, laid out across its runtime */
-function aeShots(code,ctx){
-  const s=BY[code];if(!s)return [];
-  const got=(s.shots||[]).filter(x=>x.a);
-  if(!got.length)return [];
-  const total=(s.mid||1.5)*60,ws=got.map(x=>AE_W[aeKind(x.t)]||1),sum=ws.reduce((a,b)=>a+b,0)||1;
-  const cat=catOf(code),rasa=s.rasa||'',title=sc(s,'t');
-  let at=0;
-  return got.map((x,i)=>{
-    const dur=total*ws[i]/sum,g=aeImg(x),k=aeKind(x.t),sp=aeSpeed(k,dur,cat,rasa),
-      label=ae2(i+1)+' · '+(x.t||'SHOT'),why=g?g.why:'no picture the check kept',
-      row={n:i+1,label:label,text:x.x||'',mj:x.mj||'',dlg:x.dlg||'',
-      id:g?g.id:'',why:why,imgs:(x.imgs||[]).length,
-      file:g?ae2(i+1)+'_'+(k||'SHOT')+'_'+g.id.slice(0,8)+'.png':'',
+function aeShots(code,ctx,sp){
+  if(!BY[code])return [];
+  sp=sp||specScene(code);
+  const n=sp.shots.length;
+  return sp.shots.map((x,i)=>{
+    const dur=x.camera.duration_s,at=x.camera.start_s,g=x.image,k=x.kind,sv=aeSpeed(k,dur,sp.category,sp.rasa),
+      label=ae2(i+1)+' · '+(x.type||'SHOT'),why=g?g.why:'no picture the check kept',
+      row={sid:x.id,n:i+1,label:label,text:x.text,mj:x.prompt,dlg:x.dialogue,
+      id:g?g.id:'',why:why,imgs:x.images,
+      /* named by the shot, not by where it falls: a re-order renames nothing */
+      file:g?x.id+'_'+(k||'SHOT')+'_'+g.id.slice(0,8)+'.png':'',
       at:ae3(at),dur:ae3(dur),tcIn:aeTc(at),tcOut:aeTc(at+dur),
-      z0:sp[0],z1:sp[1],dx:sp[2],dy:sp[3],mf:sp[4],
+      z0:sv[0],z1:sv[1],dx:sv[2],dy:sv[3],mf:sv[4],
       cTopRight:aeTc(at)+' – '+aeTc(at+dur)+'\r'+(Math.round(dur*10)/10)+'s',
-      cBotLeft:label+'   shot '+(i+1)+' of '+got.length+'\r'+why,
-      strip:label+'    '+aeTc(at)+' – '+aeTc(at+dur)+'    ('+(Math.round(dur*10)/10)+'s)    shot '+(i+1)+' of '+got.length+'\r'+why,
-      burn:code+'  ·  '+title+(ctx?'   ·   '+ctx:'')+'\r'+
+      cBotLeft:label+'   shot '+(i+1)+' of '+n+'\r'+why,
+      strip:label+'    '+aeTc(at)+' – '+aeTc(at+dur)+'    ('+(Math.round(dur*10)/10)+'s)    shot '+(i+1)+' of '+n+'\r'+why,
+      burn:code+'  ·  '+sp.title+(ctx?'   ·   '+ctx:'')+'\r'+
         label+'   '+aeTc(at)+' – '+aeTc(at+dur)+'   ('+(Math.round(dur*10)/10)+'s)\r'+
-        'shot '+(i+1)+' of '+got.length+'   ·   '+why+'   ·   move ×'+sp[4]};
-    at+=dur;return row;
+        'shot '+(i+1)+' of '+n+'   ·   '+why+'   ·   move ×'+sv[4]};
+    return row;
   });
 }
 function aeReady(code){return aeShots(code).some(x=>x.file)}
 function aeCount(ids){return ids.filter(aeReady).length}
 /* the ExtendScript for one scene, in the layout this scene is set to */
-function aeScript(code,rows,ctx,tpl){
-  const s=BY[code],name=code+' · '+sc(s,'t'),dur=rows.reduce((a,x)=>a+x.dur,0),
+function aeScript(code,rows,ctx,tpl,sp){
+  sp=sp||specScene(code);
+  const name=code+' · '+sp.title,dur=rows.reduce((a,x)=>a+x.dur,0),
     used=rows.filter(x=>x.file).length,up=rows.reduce((a,x)=>a+x.imgs,0),
-    dlg=rows.filter(x=>x.dlg).length,cat=catOf(code);
+    dlg=rows.filter(x=>x.dlg).length,cat=sp.category;
   const t=AE_TPL[tpl]?tpl:AE_TPL_DEF,look=AE_TPL[t].look;
   const conf={name:name,imageDir:'images',template:t,
     width:AE_WIDTH,height:AE_HEIGHT,fps:AE_FPS,
     duration:ae3(dur),dissolve:AE_DIS,fadeOut:AE_FADE,
-    cTopLeft:code+'  ·  '+sc(s,'t')+'\r'+(ctx||''),
+    cTopLeft:code+'  ·  '+sp.title+'\r'+(ctx||''),
     cBotRight:rows.length+' shots  ·  '+used+' picture'+(used===1?'':'s')+' of '+up+'\r'+
       aeTc(dur)+'  ·  '+AE_FPS+' fps  ·  weighted by shot type'+(dlg?'  ·  '+dlg+' with dialogue':'')};
   return ['/* '+name+'  —  layout: '+AE_TPL[t].label,
@@ -812,6 +864,8 @@ function aeScript(code,rows,ctx,tpl){
 ' * Pictures are found next to this file, so this folder can be moved.',
 ' * After Effects: File > Scripts > Run Script File... and choose this file.',
 ' * Edit LOOK, not the data; re-export instead of editing the data.',
+' * Generated from board '+boardVer()+' by shotspec '+ShotSpec.VERSION+'. Shots are named by their own ids,',
+' * so re-ordering the board renames nothing here.',
 ' */',
 '#target aftereffects','',
 '(function () {',
@@ -1043,7 +1097,7 @@ let aeBusy=false;
 async function aeExport(kind,id){
   if(aeBusy)return;
   let ids=[],title='';
-  if(kind==='scene'){ids=[id];title=id+' · '+sc(BY[id],'t')}
+  if(kind==='scene'){ids=[id];title=id+' · '+specScene(id).title}
   else if(kind==='seq'){const c=state.cols.find(x=>x.id===id);if(!c)return;ids=c.ids.slice();title=colName(c)}
   else {ids=flat();title=bName(curBoard())}
   const use=ids.filter(aeReady);
@@ -1058,21 +1112,22 @@ async function aeExport(kind,id){
       const ctx=kind==='scene'?(w?colName(state.cols[w.ci])+' · scene '+(w.i+1)+' of '+state.cols[w.ci].ids.length:'in the bin')
         :kind==='seq'?(title+' · scene '+(use.indexOf(code)+1)+' of '+use.length+(cut>=0?' · cut '+(cut+1)+' of '+bn:''))
         :(bName(curBoard())+(w?' · '+colName(state.cols[w.ci]):'')+(cut>=0?' · cut '+(cut+1)+' of '+bn:''));
-      const rows=aeShots(code,ctx),dir=many?code+'/':'';
+      const sp=specScene(code),rows=aeShots(code,ctx,sp),dir=many?code+'/':'';
       for(const r of rows){
         if(!r.id){missing++;continue}
         const b=await blobOf(r.id);
         if(!b){missing++;r.file='';continue}
         files.push({name:dir+'images/'+r.file,data:new Uint8Array(await b.arrayBuffer())});
       }
-      const nm=code+' · '+sc(BY[code],'t')+AE_TPL[aeTplOf(code)].look.suffix;
+      const nm=code+' · '+sp.title+AE_TPL[aeTplOf(code)].look.suffix;
       comps.push(nm);shots+=rows.length;secs+=rows.reduce((a,x)=>a+x.dur,0);
       const tpl=aeTplOf(code);
-      files.push({name:dir+code+'_'+tpl+'.js',data:aeScript(code,rows,ctx,tpl)});
+      files.push({name:dir+code+'_'+tpl+'.js',data:aeScript(code,rows,ctx,tpl,sp)});
       tpls[tpl]=(tpls[tpl]||0)+1;
-      lines.push(code+'  '+sc(BY[code],'t')+'  —  '+rows.length+' shots, '+Math.round(rows.reduce((a,x)=>a+x.dur,0))+'s, '+AE_TPL[aeTplOf(code)].label);
+      lines.push(code+'  '+sp.title+'  —  '+rows.length+' shots, '+Math.round(rows.reduce((a,x)=>a+x.dur,0))+'s, '+AE_TPL[aeTplOf(code)].label);
     }
     if(many)files.push({name:aeSafe(title)+'_master.js',data:aeMaster(title,comps)});
+    files.push({name:'shotspec.json',data:JSON.stringify(specDoc(kind,id),null,1)});
     files.push({name:'README.txt',data:
       title+'\n'+'='.repeat(title.length)+'\n\n'+
       use.length+' scene'+(use.length===1?'':'s')+' · '+shots+' shots · '+Math.round(secs)+'s · '+AE_WIDTH+'x'+AE_HEIGHT+' at '+AE_FPS+' fps\n\n'+
@@ -1253,6 +1308,288 @@ function shotCard(code,x,i){
     '<p class="shtext">'+esc(shotText(x))+'</p>'+
     body+'</div>';
 }
+/* ---------- back up and restore ----------
+   Everything the board holds that exists nowhere else — the orders, every
+   scene's edits, shots, prompts, checks, approvals and cameras, and the
+   pictures — as one zip, and back again. */
+let bkBusy=false,bkArmed=null;
+function picIds(o){
+  const ids=[];
+  Object.keys(o).forEach(c=>((o[c]&&o[c].shots)||[]).forEach(x=>{
+    (x.imgs||[]).forEach(g=>{const id=(g&&g.id)||g;if(id)ids.push(String(id))});
+    Object.keys(x.pv||{}).forEach(a=>{if(x.pv[a]&&x.pv[a].img)ids.push(String(x.pv[a].img))})}));
+  return ids.filter((x,i,a)=>a.indexOf(x)===i);
+}
+async function backupExport(){
+  if(bkBusy)return;bkBusy=true;
+  try{
+    if(pending){clearTimeout(wtimer);await flush()}
+    curBoard().cols=state.cols;
+    const boards={};boardIds().forEach(id=>{const b=boardsData[id];boards[id]={name:b.name,desc:b.desc||'',te:b.te||null,cols:b.cols}});
+    const ids=picIds(ov),files=[],got=[],lost=[];
+    toast(ids.length?'Collecting '+ids.length+' picture'+(ids.length===1?'':'s')+'…':'Collecting the board…');
+    for(const id of ids){
+      const b=await blobOf(id);
+      if(!b){lost.push(id);continue}
+      files.push({name:'pictures/'+id,data:new Uint8Array(await b.arrayBuffer())});got.push({id:id,type:b.type||'image/png'});
+    }
+    const doc={backup:'sceneboard-backup/1',at:new Date().toISOString(),active:active,boards:boards,cat:state.cat,
+      scenes:ov,pictures:got,missing:lost};
+    files.unshift({name:'backup.json',data:JSON.stringify(doc)});
+    /* the same data laid out the way scripts/shotspec.js --db reads it */
+    Object.keys(ov).forEach(c=>files.push({name:'db/scenes/'+c+'.json',data:JSON.stringify(ov[c],null,1)}));
+    Object.keys(boards).forEach(id=>files.push({name:'db/boards/'+id+'.json',data:JSON.stringify(boards[id],null,1)}));
+    const dl=await (window.claude&&window.claude.use?window.claude.use('downloads'):null);
+    if(!dl)throw {code:'unavailable'};
+    const fn='sceneboard_backup_'+doc.at.slice(0,10)+'.zip';
+    await dl.save({filename:fn,data:aeZip(files)});
+    toast('Backed up '+Object.keys(boards).length+' boards, '+Object.keys(ov).length+' scenes and '+got.length+' picture'+(got.length===1?'':'s')+(lost.length?' — '+lost.length+' could not be read':''));
+  }catch(e){
+    if(!(e&&e.code==='declined'))toast(e&&e.code==='unavailable'?'Downloads are not available in this view':'Could not make the backup');
+  }
+  bkBusy=false;
+}
+/* read a zip: the ones this page writes are stored, one that has been
+   re-zipped elsewhere is usually deflated — both are read */
+async function unzip(buf){
+  const dv=new DataView(buf),u8=new Uint8Array(buf),out={},dec=new TextDecoder();
+  let e=buf.byteLength-22;
+  while(e>=0&&dv.getUint32(e,true)!==0x06054b50)e--;
+  if(e<0)throw {code:'notzip'};
+  const n=dv.getUint16(e+10,true);let p=dv.getUint32(e+16,true);
+  for(let i=0;i<n;i++){
+    if(dv.getUint32(p,true)!==0x02014b50)throw {code:'notzip'};
+    const method=dv.getUint16(p+10,true),csz=dv.getUint32(p+20,true),nl=dv.getUint16(p+28,true),
+      xl=dv.getUint16(p+30,true),cl=dv.getUint16(p+32,true),lo=dv.getUint32(p+42,true);
+    const name=dec.decode(u8.subarray(p+46,p+46+nl));
+    const start=lo+30+dv.getUint16(lo+26,true)+dv.getUint16(lo+28,true),raw=u8.subarray(start,start+csz);
+    if(method===0)out[name]=raw;
+    else if(method===8&&typeof DecompressionStream!=='undefined')
+      out[name]=new Uint8Array(await new Response(new Blob([raw]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer());
+    else throw {code:'notzip'};
+    p+=46+nl+xl+cl;
+  }
+  return out;
+}
+async function backupRead(file){
+  if(bkBusy||!file)return;
+  try{
+    const z=await unzip(await file.arrayBuffer());
+    const key=Object.keys(z).find(k=>/(^|\/)backup\.json$/.test(k));
+    if(!key)throw {code:'notbackup'};
+    const doc=JSON.parse(new TextDecoder().decode(z[key]));
+    if(doc.backup!=='sceneboard-backup/1'||!doc.boards||!doc.scenes)throw {code:'notbackup'};
+    bkArmed={doc:doc,z:z,dir:key.replace(/backup\.json$/,'')};
+    const nb=Object.keys(doc.boards).length,ns=Object.keys(doc.scenes).length;
+    $('btn-restore').textContent='Restore now';
+    toast('Backup of '+when(doc.at)+': '+nb+' board'+(nb===1?'':'s')+', '+ns+' scene'+(ns===1?'':'s')+', '+(doc.pictures||[]).length+' pictures. Press “Restore now” to put it back over what is here.');
+    setTimeout(()=>{if(bkArmed&&bkArmed.doc===doc){bkArmed=null;$('btn-restore').textContent='Restore'}},20000);
+  }catch(e){toast(e&&e.code==='notbackup'?'That zip is not a backup from this board':'That file could not be read as a backup')}
+}
+async function backupApply(){
+  const a=bkArmed;if(!a||bkBusy)return;
+  bkArmed=null;bkBusy=true;$('btn-restore').textContent='Restore';
+  try{
+    const doc=a.doc,remap={};let put=0;
+    /* a picture that is still in the store keeps its id; one that is gone is put back and renamed */
+    for(const g of doc.pictures||[]){
+      if(await blobOf(g.id))continue;
+      const data=a.z[a.dir+'pictures/'+g.id];
+      if(!data||!assets)continue;
+      try{const r=await assets.upload(new File([data],g.id+'.png',{type:g.type||'image/png'}),{type:g.type||'image/png'});remap[g.id]=r.id;put++}catch(e){}
+    }
+    const fix=id=>remap[id]||id;
+    Object.keys(doc.scenes).forEach(code=>{
+      if(!BASE[code])return;
+      const o=JSON.parse(JSON.stringify(doc.scenes[code]));
+      (o.shots||[]).forEach(x=>{
+        if(Array.isArray(x.imgs))x.imgs=x.imgs.map(g=>({id:fix((g&&g.id)||g)}));
+        Object.keys(x.pv||{}).forEach(k=>{if(x.pv[k]&&x.pv[k].img)x.pv[k].img=fix(x.pv[k].img)})});
+      ov[code]=o;
+    });
+    Object.keys(doc.boards).forEach(id=>{boardsData[id]=readBoard(doc.boards[id],id)});
+    if(doc.cat)state.cat=clean({cols:[],cat:doc.cat}).cat;
+    if(!boardsData[active])active=boardIds()[0];
+    state.cols=curBoard().cols;lastJSON='';
+    applyOv();saveLocal();
+    try{localStorage.setItem('sceneboard.ov',JSON.stringify(ov))}catch(e){}
+    if(mode==='db'&&boardsRef&&ovRef){
+      for(const code of Object.keys(doc.scenes))if(BASE[code])await ovRef.doc(code).set(ov[code]);
+      for(const id of Object.keys(doc.boards)){const b=boardsData[id];
+        await boardsRef.doc(id).set({name:b.name,desc:b.desc||'',te:b.te||null,cols:b.cols,order:b.cols.flatMap(c=>c.ids),updated:new Date().toISOString()})}
+      if(doc.cat)await catRef.set({cat:state.cat});
+      setStatus('saved',true);
+    }
+    closeDrawer();render();
+    toast('Restored '+Object.keys(doc.boards).length+' boards and '+Object.keys(doc.scenes).length+' scenes'+(put?' — '+put+' picture'+(put===1?'':'s')+' put back':''));
+  }catch(e){toast('The restore stopped part-way. Nothing was deleted; try it again.')}
+  bkBusy=false;
+}
+/* ---------- previz ----------
+   What a scene is built from, shot by shot, and the hand-over to Blender.
+   The board says what each shot is; Blender builds it and reports back what it
+   made. A report can never change a shot — only say how far it has got. */
+let camEdit=null,pvBusy=false;
+const PV_PRES={hands:'hands only',shadow:'shadow or sound only',offscreen:'never in frame'};
+const PV_APP={blender:'Blender',comfyui:'ComfyUI',ae:'After Effects',houdini:'Houdini',nuke:'Nuke',unreal:'Unreal'};
+function setLabel(place){
+  const q=String(place||'').split('/'),s=ENT.e.sets[q[0]];
+  return s?s.name+(s.subs[q[1]]?' › '+s.subs[q[1]]:''):'';
+}
+const chName=id=>(ENT.e.characters[id]||{}).name||id;
+const shotIndex=(code,id)=>(BY[code].shots||[]).findIndex(x=>ShotSpec.shotId(code,x.sid)===id);
+/* what an application last made of a shot, and whether the shot has moved on since */
+function pvState(x,app){const r=(x.status||{})[app];if(!r)return null;return r.rev&&r.rev!==x.rev&&r.st!=='failed'?'stale':r.st}
+function pvChips(x){
+  return ShotSpec.APPS.map(a=>{const st=pvState(x,a);if(!st)return '';
+    return '<span class="pvchip '+esc(st)+'" title="'+esc(PV_APP[a]+' v'+x.status[a].v+(st==='stale'?' — the shot has changed since; build it again':''))+'">'+
+      esc(PV_APP[a])+' · '+esc(st)+'</span>'}).join('');
+}
+function pvSection(code){
+  const e=ENT.s[code];if(!e)return '';
+  const sp=specScene(code),n=sp.shots.length,frozen=shotLocked(code);
+  const cast=e.cast.filter(c=>(e.off||[]).indexOf(c)<0).map(c=>esc(chName(c))+(c==='krishna'&&PV_PRES[e.krishna]?' <span class="sub">('+PV_PRES[e.krishna]+')</span>':'')).join(', ');
+  let h='<div class="sect" id="sect-pv"><h3>Previz</h3>'+
+    '<p class="sub">What this scene is built from. Every application after the board reads this, so a shot means the same thing in After Effects, in Blender and in whatever comes next.</p>'+
+    '<dl class="kv"><dt>Set</dt><dd>'+esc(setLabel(e.set+'/'+e.sub))+((e.also||[]).length?' <span class="sub">· also seen: '+e.also.map(a=>esc(setLabel(a))).join('; ')+'</span>':'')+'</dd>'+
+    '<dt>In frame</dt><dd>'+(cast||'—')+'</dd>'+
+    ((e.off||[]).length?'<dt>Never in frame</dt><dd>'+e.off.map(c=>esc(chName(c))).join(', ')+' <span class="sub">— in the scene as a voice or an eyeline</span></dd>':'')+
+    ((e.props||[]).length?'<dt>Props</dt><dd>'+e.props.map(p=>esc((ENT.e.props[p]||{}).name||p)).join('; ')+'</dd>':'')+'</dl>';
+  if(!n)return h+'<p class="sub">Approve a shot and it appears here with its camera, ready to be blocked.</p></div>';
+  const guess=sp.shots.filter(x=>x.camera.duration_src==='derived').length;
+  h+='<div class="pvlist">'+sp.shots.map(x=>{
+    const c=x.camera,blk=(x.status||{}).blender,ed=camEdit===x.id;
+    return '<div class="pvrow" data-pvshot="'+esc(x.id)+'">'+
+      (blk&&blk.img?'<img class="pvimg" src="/_blob/'+esc(blk.img)+'" alt="Blocking for shot '+x.n+'" loading="lazy">':'<div class="pvimg none">not blocked</div>')+
+      '<div class="pvmeta"><div class="shhead"><span class="n">Shot '+x.n+'</span><span class="st">'+esc(x.type)+'</span><span class="code">'+esc(x.id)+'</span>'+pvChips(x)+'</div>'+
+      '<div class="sub">'+(x.cast.length?x.cast.map(chName).map(esc).join(', '):'no one in frame')+
+        (x.withheld?' · <b>'+esc(PV_PRES[x.withheld.krishna]||'')+'</b>':'')+
+        (x.props.length?' · '+x.props.map(p=>esc((ENT.e.props[p]||{}).name||p)).join(', '):'')+'</div>'+
+      (ed
+        ? '<div class="camform"><label>Lens (mm)<input id="camlens" type="number" min="8" max="400" step="1" value="'+c.lens_mm+'"></label>'+
+          '<label>Height (m)<input id="camh" type="number" min="0.1" max="200" step="0.05" value="'+c.height_m+'"></label>'+
+          '<label>Seconds<input id="camdur" type="number" min="0.5" max="600" step="0.1" value="'+(Math.round(c.duration_s*10)/10)+'"></label>'+
+          '<button class="btn pri" type="button" data-camsave="'+esc(x.id)+'">Save</button>'+
+          '<button class="btn" type="button" data-camclear="'+esc(x.id)+'" title="Go back to what the board works out from the kind of shot">Use the defaults</button>'+
+          '<button class="btn" type="button" data-camcancel="1">Cancel</button></div>'
+        : '<div class="sub">'+c.lens_mm+' mm · '+c.height_m+' m · '+c.angle+(c.move!=='static'?' · '+c.move:'')+' · '+
+          (Math.round(c.duration_s*10)/10)+' s'+(c.duration_src==='derived'?' <span class="guess" title="Worked out from the kind of shot. Set the seconds to make it a decision.">guess</span>':'')+
+          ' · '+esc(x.continuity.time_of_day)+
+          (frozen?'':' <button class="lbtn" type="button" data-camed="'+esc(x.id)+'">Set the camera</button>')+'</div>')+
+      '</div></div>'}).join('')+'</div>';
+  h+='<p class="sub">'+(guess?guess+' of '+n+' shot lengths are guesses, shared out from the scene’s '+(Math.round(sp.duration_s))+' seconds by kind of shot. Set the seconds on a shot and it becomes a decision every application follows.':'Every shot length here has been set by hand.')+
+    (frozen?' This scene is approved, so its cameras are locked with it.':'')+'</p>'+
+    '<div class="acts"><button class="btn pri" type="button" data-pv="scene">Build the Blender blocking</button>'+
+    '<label class="btn">Bring back the renders<input type="file" accept=".json,image/png" multiple data-pvin="1" hidden></label>'+
+    '<span class="sub">'+n+' shot'+(n===1?'':'s')+' · '+aeTc(sp.duration_s)+'</span></div>'+
+    '<p class="sub">The zip holds this scene’s shotspec and the script that builds it: a stand-in set, stand-in people, one camera per shot on a timeline. Run it, then bring back <b>report.json</b> and the pictures in <b>renders</b> — the blocking appears beside each shot.</p>';
+  return h+'</div>';
+}
+function pvSeqSection(id){
+  const col=state.cols.find(c=>c.id===id);if(!col||!col.ids.length)return '';
+  let shots=0,blocked=0,stale=0,guess=0;const sets={};
+  col.ids.forEach(c=>{const e=ENT.s[c];if(e)sets[e.set]=1;
+    specScene(c).shots.forEach(x=>{shots++;const st=pvState(x,'blender');if(st==='rendered'||st==='built')blocked++;if(st==='stale')stale++;if(x.camera.duration_src==='derived')guess++})});
+  let h='<div class="sect"><h3>Previz</h3>'+
+    '<p class="sub">This sequence is built on '+Object.keys(sets).length+' set'+(Object.keys(sets).length===1?'':'s')+': '+Object.keys(sets).map(k=>esc(ENT.e.sets[k].name)).join('; ')+'.</p>';
+  if(!shots)return h+'<p class="sub">No approved shots in this sequence yet.</p></div>';
+  return h+'<div class="acts"><button class="btn pri" type="button" data-pv="seq">Build the Blender blocking</button>'+
+    '<label class="btn">Bring back the renders<input type="file" accept=".json,image/png" multiple data-pvin="1" hidden></label>'+
+    '<span class="sub">'+shots+' approved shots · '+blocked+' blocked'+(stale?' · '+stale+' changed since':'')+(guess?' · '+guess+' lengths are guesses':'')+'</span></div></div>';
+}
+async function pvExport(kind,id){
+  if(pvBusy)return;
+  const doc=specDoc(kind,id);
+  const n=doc?doc.scenes.reduce((a,s)=>a+s.shots.length,0):0;
+  if(!n){toast('Nothing to block yet — approve a shot first');return}
+  pvBusy=true;
+  try{
+    const name=aeSafe(kind==='scene'?id:doc.scope.title),dir=name+'_previz';
+    const zip=aeZip([
+      {name:dir+'/shotspec.json',data:JSON.stringify(doc,null,1)+'\n'},
+      {name:dir+'/blender_blocking.py',data:BLOCKPY},
+      {name:dir+'/README.txt',data:
+        doc.scope.title+'\n'+'='.repeat(doc.scope.title.length)+'\n\n'+
+        doc.scenes.length+' scene'+(doc.scenes.length===1?'':'s')+' · '+n+' shots · board '+doc.provenance.board_version+'\n\n'+
+        'Unzip, then from this folder:\n\n'+
+        '    blender --background --python blender_blocking.py -- shotspec.json --out .\n\n'+
+        'It builds one Blender scene per scene here — a stand-in set, stand-in people, one camera\n'+
+        'per shot with its lens and height, each shot on the timeline for its length — and renders\n'+
+        'a block frame, a depth pass and an ID matte for every shot into renders/. Open contact.html\n'+
+        'to look at them, and the .blend to look around.\n\n'+
+        'Then, on the board, press “Bring back the renders” and choose report.json together with\n'+
+        'the *_block_*.png files in renders/.\n\n'+
+        'Everything in the .blend is generated. Change a shot on the board and run this again;\n'+
+        'do not fix it in Blender, because the next run rebuilds it from the shotspec.\n\n'+
+        'With Blender open and its MCP add-on running, Claude can run the same script for you.\n'}]);
+    const dl=await (window.claude&&window.claude.use?window.claude.use('downloads'):null);
+    if(!dl)throw {code:'unavailable'};
+    await dl.save({filename:name+'_previz.zip',data:zip});
+    toast('Built '+name+'_previz.zip — '+n+' shots for Blender');
+  }catch(e){
+    if(!(e&&e.code==='declined'))toast(e&&e.code==='unavailable'?'Downloads are not available in this view':'Could not build the package');
+  }
+  pvBusy=false;
+}
+/* take back what an application made: its report, and its pictures if they
+   came too. All of a report file is taken or none of it. */
+async function pvIngest(list){
+  const files=Array.from(list||[]);if(!files.length||pvBusy)return;
+  pvBusy=true;
+  try{
+    let reports=[];const pics={};
+    for(const f of files){
+      if(/\.json$/i.test(f.name)){
+        let d=null;try{d=JSON.parse(await f.text())}catch(e){toast(f.name+' is not a report');pvBusy=false;return}
+        reports=reports.concat(Array.isArray(d)?d:(d.reports||[]));
+      }else pics[f.name]=f;
+    }
+    if(!reports.length){toast('Choose report.json as well — the pictures alone do not say which shots they are');pvBusy=false;return}
+    for(const r of reports){
+      const errs=ShotSpec.checkReport(r);
+      if(errs.length){toast('Refused — '+errs[0]);pvBusy=false;return}
+    }
+    const touched={};let took=0,unknown=0,pictures=0;
+    for(const r of reports){
+      const code=r.shot_id.split('_')[0];
+      const i=BY[code]?shotIndex(code,r.shot_id):-1;
+      if(i<0){unknown++;continue}
+      const arr=touched[code]||(touched[code]=(BY[code].shots||[]).map(x=>Object.assign({},x)));
+      const pv=Object.assign({},arr[i].pv||{}),old=pv[r.app];
+      if(old&&old.v>(r.version||1))continue;
+      const q={st:r.status,v:r.version||1,at:r.at||new Date().toISOString()};
+      if(r.shot_rev)q.rev=r.shot_rev;
+      if(r.note)q.note=r.note;
+      const path=(r.files&&(r.files.block||r.files.render))||'';
+      if(path)q.f=path;
+      const pic=path&&pics[path.split('/').pop()];
+      if(pic&&assets){
+        try{const up=await uploadImage(pic);q.img=up.id;pictures++;if(old&&old.img)assets.delete(old.img).catch(()=>{})}catch(e){}
+      }else if(old&&old.img){
+        if(old.v===q.v)q.img=old.img;                /* the same version reported again keeps its picture */
+        else if(assets)assets.delete(old.img).catch(()=>{});   /* a new version without one does not wear the old one */
+      }
+      pv[r.app]=q;arr[i].pv=pv;took++;
+    }
+    Object.keys(touched).forEach(code=>{
+      ov[code]=Object.assign({},ov[code]||{},{shots:cleanShots(touched[code]),updated:new Date().toISOString()});
+      saveOv(code);
+    });
+    applyOv();render();reopen();
+    toast(took?('Took '+took+' report'+(took===1?'':'s')+(pictures?' and '+pictures+' picture'+(pictures===1?'':'s'):'')+(unknown?' · '+unknown+' were for shots not on this board':''))
+      :'None of those reports are for shots on this board');
+  }catch(e){toast('Could not read those files')}
+  pvBusy=false;
+}
+function camSave(code,id,clear){
+  const i=shotIndex(code,id);if(i<0)return;
+  if(clear){camEdit=null;shotPatch(code,i,{cam:undefined},'Back to the defaults for this kind of shot');return}
+  const L=Number($('camlens').value),H=Number($('camh').value),D=Number($('camdur').value);
+  if(!(L>=8&&L<=400)||!(H>0&&H<=200)||!(D>=.5&&D<=600)){toast('A lens from 8 to 400 mm, a height above the ground, and at least half a second');return}
+  const prev=(BY[code].shots[i].cam)||{};
+  camEdit=null;
+  shotPatch(code,i,{cam:Object.assign({},prev,{lens:L,h:H,dur:D})},'Camera set — anything built from this shot is now out of date');
+}
 function aeTplPicker(cur,attr){
   return '<div class="seg" role="group" aria-label="Layout">'+
     Object.keys(AE_TPL).map(k=>'<button type="button" '+attr+'="'+k+'" aria-pressed="'+(k===cur)+'" title="'+esc(AE_TPL[k].blurb)+'">'+AE_TPL[k].label+'</button>').join('')+
@@ -1369,7 +1706,7 @@ function histSection(code){
 }
 function scenePanel(code,keep){
   const s=BY[code];if(!s)return;
-  if(openCode!==code){histSel=0;shotEdit=null;mjEdit=null;histOpen=false}
+  if(openCode!==code){histSel=0;shotEdit=null;mjEdit=null;histOpen=false;camEdit=null}
   openCode=code;openSeq=null;
   const w=where(code),cat=catOf(code),order=flat(),ap=sceneAp(code);
   $('drawer').innerHTML=
@@ -1400,6 +1737,7 @@ function scenePanel(code,keep){
    '</div>'+
    shotsSection(code)+
    aeSection(code)+
+   pvSection(code)+
    optionsSection(code)+
    histSection(code)+
    '</div>';
@@ -1432,6 +1770,7 @@ function seqPanel(id,keep){
    '</div>'+
    '<div class="sect"><h3>Scenes in order</h3>'+list+'</div>'+
    aeSeqSection(id)+
+   pvSeqSection(id)+
    '<div class="sect"><h3>Options</h3><div class="orow"><span class="olab">This sequence</span>'+
      '<button class="btn" type="button" data-seqread="'+esc(id)+'">Read it through</button>'+
      '<button class="btn warn" type="button" data-seqdel="'+esc(id)+'"'+(col.ap?' disabled':'')+'>Delete it</button></div></div>'+
@@ -1620,6 +1959,11 @@ document.addEventListener('click',e=>{
     if(b.dataset.go){runEdit(b.dataset.go);return}
     if(b.dataset.stop){if(ctl)ctl.abort();return}
     if(b.dataset.ae){aeExport(b.dataset.ae,b.dataset.ae==='seq'?openSeq:openCode);return}
+    if(b.dataset.pv){pvExport(b.dataset.pv,b.dataset.pv==='seq'?openSeq:openCode);return}
+    if(b.dataset.camed){camEdit=b.dataset.camed;reopen();const x=$('camdur');if(x)x.focus();return}
+    if(b.dataset.camcancel){camEdit=null;reopen();return}
+    if(b.dataset.camsave){camSave(openCode,b.dataset.camsave);return}
+    if(b.dataset.camclear){camSave(openCode,b.dataset.camclear,true);return}
     if(b.dataset.aetpl){setAeTpl(openCode,b.dataset.aetpl);return}
     if(b.dataset.aetplall){const col=state.cols.find(c=>c.id===openSeq);
       if(col){col.ids.filter(aeReady).forEach(c=>setAeTpl(c,b.dataset.aetplall));
@@ -1718,6 +2062,7 @@ document.addEventListener('input',e=>{
 });
 document.addEventListener('change',e=>{
   const t=e.target;if(!t.closest||!t.files||!t.files[0]||openCode==null)return;
+  if(t.dataset.pvin){pvIngest(t.files);t.value='';return}
   if(t.dataset.shadd!=null){addShotImage(openCode,+t.dataset.shadd,t.files[0]);t.value=''}
   else if(t.dataset.shrep!=null){const q=t.dataset.shrep.split('_');addShotImage(openCode,+q[0],t.files[0],+q[1]);t.value=''}
 });
@@ -1786,6 +2131,10 @@ $('btn-reset').addEventListener('click',e=>{
   resetArmed=false;b.textContent=T('clear');state.cols.forEach(c=>c.ids=[]);persist();render();toast('tAllBack');
 });
 $('btn-ae').addEventListener('click',()=>aeExport('board'));
+$('btn-pv').addEventListener('click',()=>pvExport('board'));
+$('btn-backup').addEventListener('click',backupExport);
+$('btn-restore').addEventListener('click',()=>{if(bkArmed)backupApply();else $('in-restore').click()});
+$('in-restore').addEventListener('change',e=>{backupRead(e.target.files[0]);e.target.value=''});
 $('btn-export').addEventListener('click',async()=>{
   const order=flat();if(!order.length){toast('tPlaceFirst');return}
   const rows=['board,position,sequence,sequence_note,code,old_id,title,title_telugu,category,minutes,shots,edited,source,source_url'];let n=0;

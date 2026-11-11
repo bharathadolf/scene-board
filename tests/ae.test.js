@@ -68,8 +68,12 @@ module.exports = async ({ browser, check }) => {
   let inside = names(saved.b64);
   const script = (b64, c) => { const n = names(b64).find(x => x.indexOf(c) === 0 && /\.js$/.test(x)); return entry(b64, n); };
   check('it holds the script, named for its layout', inside.includes(code + '_corners.js'), inside);
-  check('it holds the pictures in cut order',
-    inside.some(n => /^images\/01_WIDE_/.test(n)) && inside.some(n => /^images\/02_INSERT_/.test(n)), inside);
+  const ids = await at(c => specScene(c).shots.map(x => x.id), code);
+  check('it holds the pictures, named by shot and not by position',
+    inside.includes('images/' + ids[0] + '_WIDE_asset100.png') && inside.some(n => n.indexOf('images/' + ids[1] + '_INSERT_') === 0) &&
+    !inside.some(n => /^images\/\d\d_/.test(n)), inside);
+  check('it holds the shotspec the comp was built from', inside.includes('shotspec.json') &&
+    JSON.parse(entry(saved.b64, 'shotspec.json')).scenes[0].shots.length === 2);
   check('it holds a readme', inside.includes('README.txt'));
   check('one scene needs no master comp', !inside.some(n => /_master\.js$/.test(n)));
 
@@ -169,8 +173,8 @@ module.exports = async ({ browser, check }) => {
   saved = await at(() => window.__saved);
   inside = names(saved.b64);
   check('the export uses the picture the check kept',
-    inside.some(n => n.indexOf('images/01_WIDE_' + second.slice(0, 8)) === 0), inside.filter(n => /^images/.test(n)));
-  check('and not the one it rejected', inside.filter(n => /^images\/01_/.test(n)).length === 1);
+    inside.some(n => n.indexOf('images/' + ids[0] + '_WIDE_' + second.slice(0, 8)) === 0), inside.filter(n => /^images/.test(n)));
+  check('and not the one it rejected', inside.filter(n => n.indexOf('images/' + ids[0] + '_') === 0).length === 1);
   check('the layer carries why that picture is on screen',
     /"why": "checked: picture 2 of 2 kept"/.test(script(saved.b64, code)) &&
     /PICTURE: " \+ s\.why/.test(script(saved.b64, code)));

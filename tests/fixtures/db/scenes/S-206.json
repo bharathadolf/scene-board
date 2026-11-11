@@ -1,0 +1,19 @@
+{
+ "shots": [
+  {
+   "t": "WIDE",
+   "x": "Wide on A street in Kuṇḍina",
+   "a": true
+  },
+  {
+   "t": "CLOSE",
+   "x": "Close on Rukmini",
+   "a": true
+  },
+  {
+   "t": "INSERT",
+   "x": "A detail",
+   "a": false
+  }
+ ]
+}

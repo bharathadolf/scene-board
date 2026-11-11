@@ -268,6 +268,22 @@ body[data-view="mobile"] #peek{display:none}
 .shot.apd{border-color:var(--ok)}
 .apb{color:var(--mut)}
 .apb.on{color:var(--ok)}
+.pvlist{display:flex;flex-direction:column;gap:8px}
+.pvrow{display:flex;gap:11px;align-items:flex-start;border:1px solid var(--line);border-radius:10px;background:var(--card);padding:9px}
+.pvimg{width:154px;aspect-ratio:7/3;flex:none;border-radius:6px;object-fit:cover;background:var(--bg);display:block}
+.pvimg.none{display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--mut);border:1px dashed var(--line)}
+.pvmeta{min-width:0;flex:1;display:flex;flex-direction:column;gap:5px}
+.pvmeta .code{font:500 11px var(--f-mono);color:var(--mut)}
+.pvchip{font:600 10px var(--f-body);letter-spacing:.04em;border:1px solid var(--line);border-radius:4px;padding:0 5px;color:var(--mut);white-space:nowrap}
+.pvchip.rendered,.pvchip.built{border-color:var(--ok);color:var(--ok)}
+.pvchip.stale,.pvchip.failed{border-color:var(--action);color:var(--action)}
+.guess{font:600 10px var(--f-body);letter-spacing:.04em;text-transform:uppercase;color:var(--action);border:1px solid var(--action);border-radius:4px;padding:0 4px}
+.lbtn{border:0;background:none;padding:0;color:var(--drama);text-decoration:underline;font:inherit;cursor:pointer}
+.camform{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap}
+.camform label{display:flex;flex-direction:column;gap:2px;font-size:11px;color:var(--mut)}
+.camform input{width:86px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:6px;padding:5px 7px;font:inherit}
+body[data-view="mobile"] .pvrow{flex-direction:column}
+body[data-view="mobile"] .pvimg{width:100%}
 .lockmsg{border:1px solid var(--ok);border-radius:8px;padding:9px 11px;font-size:13px;color:var(--ink);background:rgba(44,122,75,.08)}
 .opt{border-top:1px solid var(--line);padding-top:10px;display:flex;flex-direction:column;gap:7px}
 .opt h4{margin:0;font:600 11px var(--f-body);letter-spacing:.07em;text-transform:uppercase;color:var(--mut)}
@@ -334,8 +350,11 @@ body[data-view="mobile"] #peek{display:none}
     <div class="seg langseg" role="group" id="langseg" data-ia="aria-label:language"><button type="button" data-lang="en" aria-pressed="true">English</button><button type="button" data-lang="te" aria-pressed="false" lang="te">తెలుగు</button></div>
     <span id="status">Loading…</span>
     <button class="btn" id="btn-export" type="button" data-i="export">Export order</button>
+    <button class="btn" id="btn-backup" type="button" title="Download everything this board holds — orders, shots, prompts, checks, cameras and pictures — as one zip">Back up</button>
+    <button class="btn" id="btn-restore" type="button" title="Put a backup back">Restore</button><input type="file" id="in-restore" accept=".zip,application/zip" hidden>
     <button class="btn" id="btn-read" type="button">Read-through</button>
     <button class="btn" id="btn-ae" type="button" title="Build After Effects comps from every approved scene on this board">After Effects</button>
+    <button class="btn" id="btn-pv" type="button" title="Build Blender blocking for every approved shot on this board">Previz</button>
     <button class="btn warn" id="btn-reset" type="button" data-i="clear">Clear board</button>
   </div>
 </header>

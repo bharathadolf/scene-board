@@ -1,6 +1,7 @@
 /* Builds dist/scene_board.html: one self-contained page.
-   src/shell.html (markup + CSS, ending at <script>) + src/app.js with its
-   data placeholders filled in, then </script>.
+   src/shell.html (markup + CSS, ending at <script>) + src/shotspec.js (the
+   shot contract, also used from Node) + src/app.js with its data placeholders
+   filled in, then </script>.
    Run: npm run build */
 const fs = require('fs');
 const path = require('path');
@@ -22,11 +23,16 @@ const te = JSON.stringify({
   seq: json('data', 'te', 'sequences.json'),
 });
 
-let app = read('src', 'app.js')
+const ent = JSON.stringify({ e: json('data', 'entities.json'), s: json('data', 'scene_entities.json') });
+const blockpy = JSON.stringify(read('pipeline', 'blender_blocking.py') + '\n');
+
+let app = read('src', 'shotspec.js') + '\n' + read('src', 'app.js')
   .replace('__DATA__', () => scenes)
   .replace('__TE__', () => te)
   .replace('__UI__', () => ui)
   .replace('__SRC__', () => sources)
+  .replace('__ENT__', () => ent)
+  .replace('__BLOCK__', () => blockpy)
   .replace('__BOARDS__', () => JSON.stringify(boards));
 
 const left = app.match(/__[A-Z]+__/g);

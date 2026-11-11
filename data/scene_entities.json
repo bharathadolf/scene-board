@@ -1,0 +1,1387 @@
+{
+ "S-230": {
+  "set": "celestial",
+  "sub": "indra_court",
+  "cast": [
+   "indra",
+   "durvasa",
+   "airavata",
+   "c_devas"
+  ],
+  "props": [
+   "garland_durvasa"
+  ],
+  "place": "Indra’s court, heaven"
+ },
+ "S-144": {
+  "set": "celestial",
+  "sub": "indra_court",
+  "cast": [
+   "indra",
+   "c_devas",
+   "c_asuras"
+  ],
+  "also": [
+   "celestial/battlefield"
+  ],
+  "place": "Heaven; the field of battle; the gods’ flight"
+ },
+ "S-607": {
+  "set": "celestial",
+  "sub": "brahma_realm",
+  "cast": [
+   "indra",
+   "brahma",
+   "c_devas"
+  ],
+  "also": [
+   "milk_ocean/shore"
+  ],
+  "place": "Brahmā’s realm; the shore of the Ocean of Milk"
+ },
+ "S-127": {
+  "set": "celestial",
+  "sub": "asura_camp",
+  "cast": [
+   "indra",
+   "bali",
+   "c_devas",
+   "c_asuras"
+  ],
+  "place": "Asura camp; neutral ground"
+ },
+ "S-686": {
+  "set": "milk_ocean",
+  "sub": "shore",
+  "cast": [
+   "c_devas",
+   "c_asuras",
+   "kurma"
+  ],
+  "also": [
+   "milk_ocean/water"
+  ],
+  "props": [
+   "mandara"
+  ],
+  "place": "The shore and the Ocean of Milk"
+ },
+ "S-499": {
+  "set": "milk_ocean",
+  "sub": "water",
+  "cast": [
+   "c_devas",
+   "c_asuras",
+   "vasuki"
+  ],
+  "props": [
+   "mandara"
+  ],
+  "place": "The Ocean of Milk"
+ },
+ "S-999": {
+  "set": "milk_ocean",
+  "sub": "water",
+  "cast": [
+   "brahma",
+   "c_devas",
+   "c_asuras",
+   "fisher_child",
+   "c_fishers"
+  ],
+  "also": [
+   "milk_ocean/shore"
+  ],
+  "props": [
+   "mandara"
+  ],
+  "place": "The Ocean of Milk"
+ },
+ "S-761": {
+  "set": "milk_ocean",
+  "sub": "shore",
+  "cast": [
+   "shiva",
+   "parvati",
+   "fisher_child",
+   "c_devas",
+   "c_asuras"
+  ],
+  "place": "The shore of the Ocean of Milk"
+ },
+ "S-938": {
+  "set": "milk_ocean",
+  "sub": "water",
+  "cast": [
+   "krishna",
+   "airavata",
+   "c_devas",
+   "c_asuras"
+  ],
+  "props": [
+   "treasures"
+  ],
+  "krishna": "hands",
+  "place": "The Ocean of Milk"
+ },
+ "S-337": {
+  "set": "milk_ocean",
+  "sub": "shore",
+  "cast": [
+   "lakshmi",
+   "krishna",
+   "c_devas",
+   "c_asuras"
+  ],
+  "props": [
+   "garland_lakshmi"
+  ],
+  "krishna": "hands",
+  "place": "The shore; the assembled claimants"
+ },
+ "S-756": {
+  "set": "milk_ocean",
+  "sub": "shore",
+  "cast": [
+   "bali",
+   "varuni",
+   "c_asuras"
+  ],
+  "place": "The shore"
+ },
+ "S-444": {
+  "set": "milk_ocean",
+  "sub": "shore",
+  "cast": [
+   "dhanvantari",
+   "c_asuras"
+  ],
+  "props": [
+   "amrita_pot"
+  ],
+  "place": "The shore"
+ },
+ "S-722": {
+  "set": "milk_ocean",
+  "sub": "shore",
+  "cast": [
+   "mohini",
+   "c_asuras",
+   "c_devas"
+  ],
+  "props": [
+   "amrita_pot"
+  ],
+  "place": "The shore; the assembly"
+ },
+ "S-653": {
+  "set": "milk_ocean",
+  "sub": "shore",
+  "cast": [
+   "rahu",
+   "surya",
+   "candra",
+   "mohini",
+   "c_devas"
+  ],
+  "props": [
+   "amrita_pot",
+   "sudarshana"
+  ],
+  "place": "The Devas’ line"
+ },
+ "S-658": {
+  "set": "celestial",
+  "sub": "battlefield",
+  "cast": [
+   "indra",
+   "bali",
+   "c_devas",
+   "c_asuras"
+  ],
+  "place": "The battlefield between heaven and ocean"
+ },
+ "S-765": {
+  "set": "forest",
+  "sub": "glade",
+  "cast": [
+   "shiva",
+   "mohini"
+  ],
+  "place": "A forest"
+ },
+ "S-490": {
+  "set": "milk_ocean",
+  "sub": "shore",
+  "cast": [
+   "fisher_child",
+   "c_fishers"
+  ],
+  "props": [
+   "net"
+  ],
+  "place": "The shore of the Ocean of Milk"
+ },
+ "S-788": {
+  "set": "kundina_temple",
+  "sub": "painted_wall",
+  "cast": [
+   "rukmini",
+   "priest"
+  ],
+  "place": "Ambikā’s temple at Kuṇḍina; childhood or the eve of the wedding"
+ },
+ "S-392": {
+  "set": "kundina_palace",
+  "sub": "hall",
+  "cast": [
+   "rukmini",
+   "bard",
+   "c_kings"
+  ],
+  "place": "Kuṇḍina’s hall; evening"
+ },
+ "S-919": {
+  "set": "open_country",
+  "sub": "fields",
+  "cast": [
+   "earth_cow",
+   "c_armies"
+  ],
+  "place": "Fields and roads across a kingdom"
+ },
+ "S-687": {
+  "set": "celestial",
+  "sub": "brahma_realm",
+  "cast": [
+   "earth_cow",
+   "brahma"
+  ],
+  "place": "Brahmā’s realm"
+ },
+ "S-509": {
+  "set": "milk_ocean",
+  "sub": "shore",
+  "cast": [
+   "brahma",
+   "shiva",
+   "earth_cow",
+   "c_devas"
+  ],
+  "place": "The shore of the Ocean of Milk"
+ },
+ "S-561": {
+  "set": "milk_ocean",
+  "sub": "shore",
+  "cast": [
+   "brahma",
+   "c_devas"
+  ],
+  "place": "The shore"
+ },
+ "S-269": {
+  "set": "milk_ocean",
+  "sub": "shore",
+  "cast": [
+   "brahma",
+   "c_devas"
+  ],
+  "place": "The shore"
+ },
+ "S-981": {
+  "set": "celestial",
+  "sub": "brahma_realm",
+  "cast": [
+   "brahma",
+   "shurasena"
+  ],
+  "also": [
+   "mathura/city"
+  ],
+  "place": "Brahmā’s abode; Mathurā"
+ },
+ "S-427": {
+  "set": "kundina_outskirts",
+  "sub": "field",
+  "cast": [
+   "farmer",
+   "earth_cow",
+   "c_armies"
+  ],
+  "props": [
+   "plough_farm"
+  ],
+  "place": "A field outside Kuṇḍina"
+ },
+ "S-206": {
+  "set": "kundina_city",
+  "sub": "street",
+  "cast": [
+   "rukmini",
+   "old_woman",
+   "earth_cow",
+   "c_armies"
+  ],
+  "place": "A street in Kuṇḍina"
+ },
+ "S-612": {
+  "set": "kundina_palace",
+  "sub": "hall",
+  "cast": [
+   "rukmini",
+   "c_court"
+  ],
+  "place": "Bhīṣmaka’s palace"
+ },
+ "S-478": {
+  "set": "magadha_palace",
+  "sub": "hall",
+  "cast": [
+   "jarasandha",
+   "asti",
+   "prapti"
+  ],
+  "place": "Jarasandha’s palace, Magadha"
+ },
+ "S-610": {
+  "set": "mathura",
+  "sub": "walls",
+  "cast": [
+   "water_carrier",
+   "c_magadha_army"
+  ],
+  "also": [
+   "mathura/plain"
+  ],
+  "props": [
+   "chalk_marks"
+  ],
+  "place": "Mathurā’s walls"
+ },
+ "S-844": {
+  "set": "mathura",
+  "sub": "council",
+  "cast": [
+   "krishna",
+   "balarama"
+  ],
+  "off": [
+   "krishna"
+  ],
+  "krishna": "offscreen",
+  "place": "Mathurā; a council"
+ },
+ "S-972": {
+  "set": "mathura",
+  "sub": "gate",
+  "cast": [
+   "krishna",
+   "balarama",
+   "c_women_mathura",
+   "c_yadava_army",
+   "c_magadha_army"
+  ],
+  "also": [
+   "mathura/plain"
+  ],
+  "props": [
+   "sky_chariots",
+   "conch"
+  ],
+  "krishna": "shadow",
+  "place": "Mathurā’s gate and the plain"
+ },
+ "S-907": {
+  "set": "mathura",
+  "sub": "plain",
+  "cast": [
+   "jarasandha",
+   "balarama",
+   "c_magadha_army"
+  ],
+  "props": [
+   "sky_chariots"
+  ],
+  "place": "The plain before the walls"
+ },
+ "S-804": {
+  "set": "mathura",
+  "sub": "walls",
+  "cast": [
+   "balarama",
+   "c_women_mathura",
+   "c_magadha_army"
+  ],
+  "also": [
+   "mathura/plain"
+  ],
+  "props": [
+   "sky_chariots",
+   "plough"
+  ],
+  "place": "The walls of Mathurā; the plain"
+ },
+ "S-342": {
+  "set": "mathura",
+  "sub": "plain",
+  "cast": [
+   "balarama",
+   "jarasandha"
+  ],
+  "place": "The field"
+ },
+ "S-495": {
+  "set": "open_country",
+  "sub": "long_road",
+  "cast": [
+   "jarasandha",
+   "c_kings"
+  ],
+  "place": "The road from Mathurā to Magadha"
+ },
+ "S-370": {
+  "set": "mathura",
+  "sub": "walls",
+  "cast": [
+   "water_carrier",
+   "c_magadha_army"
+  ],
+  "props": [
+   "chalk_marks"
+  ],
+  "place": "The wall of Mathurā, across seasons"
+ },
+ "S-483": {
+  "set": "mathura",
+  "sub": "city",
+  "cast": [
+   "krishna",
+   "ugrasena",
+   "c_yadava_people"
+  ],
+  "krishna": "hands",
+  "place": "Mathurā"
+ },
+ "S-470": {
+  "set": "open_country",
+  "sub": "long_road",
+  "cast": [
+   "krishna",
+   "balarama",
+   "jarasandha",
+   "c_magadha_army",
+   "c_yadava_people"
+  ],
+  "krishna": "shadow",
+  "place": "The road from Mathurā to the hills"
+ },
+ "S-231": {
+  "set": "pravarshana",
+  "sub": "slope",
+  "cast": [
+   "krishna",
+   "balarama",
+   "jarasandha",
+   "c_magadha_army"
+  ],
+  "krishna": "shadow",
+  "place": "Mount Pravarṣaṇa"
+ },
+ "S-247": {
+  "set": "pravarshana",
+  "sub": "peak",
+  "cast": [
+   "jarasandha",
+   "c_magadha_army"
+  ],
+  "also": [
+   "war_camp/magadha"
+  ],
+  "place": "The burning peak; Jarasandha’s camp"
+ },
+ "S-663": {
+  "set": "kundina_palace",
+  "sub": "hall",
+  "cast": [
+   "rukmini",
+   "rukmi",
+   "bhishmaka",
+   "c_court"
+  ],
+  "place": "Bhīṣmaka’s palace"
+ },
+ "S-378": {
+  "set": "kundina_city",
+  "sub": "market",
+  "cast": [
+   "rukmini",
+   "soldier",
+   "merchant"
+  ],
+  "place": "A market in Kuṇḍina"
+ },
+ "S-840": {
+  "set": "mathura",
+  "sub": "walls",
+  "cast": [
+   "water_carrier",
+   "c_yavana_army"
+  ],
+  "also": [
+   "mathura/plain"
+  ],
+  "props": [
+   "chalk_marks"
+  ],
+  "place": "Mathurā"
+ },
+ "S-660": {
+  "set": "mathura",
+  "sub": "council",
+  "cast": [
+   "krishna",
+   "balarama"
+  ],
+  "off": [
+   "krishna"
+  ],
+  "krishna": "offscreen",
+  "place": "The council room in Mathurā"
+ },
+ "S-619": {
+  "set": "dvaraka_shore",
+  "sub": "beach",
+  "cast": [
+   "krishna",
+   "balarama"
+  ],
+  "krishna": "shadow",
+  "place": "The shore at Ānarta"
+ },
+ "S-174": {
+  "set": "dvaraka_shore",
+  "sub": "sea",
+  "cast": [
+   "c_sailors"
+  ],
+  "place": "The sea off Ānarta"
+ },
+ "S-797": {
+  "set": "dvaraka_city",
+  "sub": "quay",
+  "cast": [
+   "indra",
+   "varuna",
+   "kubera",
+   "c_yadava_people"
+  ],
+  "also": [
+   "dvaraka_city/hall"
+  ],
+  "props": [
+   "treasures"
+  ],
+  "place": "Dvārakā’s quay and hall"
+ },
+ "S-508": {
+  "set": "dvaraka_city",
+  "sub": "streets",
+  "cast": [
+   "potter",
+   "c_yadava_people"
+  ],
+  "also": [
+   "mathura/city"
+  ],
+  "place": "Mathurā; Dvārakā at dawn"
+ },
+ "S-719": {
+  "set": "dvaraka_city",
+  "sub": "gate",
+  "cast": [
+   "krishna",
+   "gate_guard"
+  ],
+  "props": [
+   "lotus_garland"
+  ],
+  "krishna": "hands",
+  "place": "The gate of Dvārakā; the road"
+ },
+ "S-971": {
+  "set": "dvaraka_city",
+  "sub": "quay",
+  "cast": [
+   "potter"
+  ],
+  "props": [
+   "potter_wheel"
+  ],
+  "place": "The new quay"
+ },
+ "S-163": {
+  "set": "kundina_outskirts",
+  "sub": "river_crossing",
+  "cast": [
+   "rukmini",
+   "ferryman",
+   "c_sailors"
+  ],
+  "place": "The river crossing near Kuṇḍina"
+ },
+ "S-131": {
+  "set": "kundina_palace",
+  "sub": "rukmini_quarters",
+  "cast": [
+   "rukmini"
+  ],
+  "props": [
+   "painted_cloth"
+  ],
+  "place": "Rukmini’s room at night"
+ },
+ "S-484": {
+  "set": "war_camp",
+  "sub": "yavana",
+  "cast": [
+   "kalayavana",
+   "narada",
+   "c_yavana_army"
+  ],
+  "place": "Kālayavana’s camp"
+ },
+ "S-851": {
+  "set": "mathura",
+  "sub": "plain",
+  "cast": [
+   "krishna",
+   "kalayavana",
+   "c_yavana_army"
+  ],
+  "props": [
+   "lotus_garland"
+  ],
+  "krishna": "hands",
+  "place": "The road outside Mathurā"
+ },
+ "S-937": {
+  "set": "open_country",
+  "sub": "long_road",
+  "cast": [
+   "krishna",
+   "kalayavana"
+  ],
+  "props": [
+   "lotus_garland"
+  ],
+  "krishna": "shadow",
+  "place": "Across the land to the mountains"
+ },
+ "S-668": {
+  "set": "cave_mountain",
+  "sub": "cave",
+  "cast": [
+   "krishna",
+   "kalayavana",
+   "mucukunda"
+  ],
+  "krishna": "shadow",
+  "place": "A mountain cave"
+ },
+ "S-973": {
+  "set": "cave_mountain",
+  "sub": "cave",
+  "cast": [
+   "kalayavana",
+   "mucukunda"
+  ],
+  "place": "The cave"
+ },
+ "S-515": {
+  "set": "cave_mountain",
+  "sub": "cave",
+  "cast": [
+   "mucukunda",
+   "c_devas",
+   "c_asuras"
+  ],
+  "also": [
+   "celestial/battlefield"
+  ],
+  "place": "Heaven’s war; the cave"
+ },
+ "S-345": {
+  "set": "cave_mountain",
+  "sub": "cave",
+  "cast": [
+   "mucukunda",
+   "krishna"
+  ],
+  "krishna": "offscreen",
+  "place": "The cave"
+ },
+ "S-871": {
+  "set": "cave_mountain",
+  "sub": "cave",
+  "cast": [
+   "mucukunda",
+   "krishna"
+  ],
+  "off": [
+   "krishna"
+  ],
+  "krishna": "offscreen",
+  "place": "The cave"
+ },
+ "S-640": {
+  "set": "cave_mountain",
+  "sub": "cave",
+  "cast": [
+   "mucukunda",
+   "krishna"
+  ],
+  "off": [
+   "krishna"
+  ],
+  "krishna": "offscreen",
+  "place": "The cave"
+ },
+ "S-589": {
+  "set": "cave_mountain",
+  "sub": "cave",
+  "cast": [
+   "mucukunda",
+   "krishna"
+  ],
+  "off": [
+   "krishna"
+  ],
+  "krishna": "offscreen",
+  "place": "The cave"
+ },
+ "S-557": {
+  "set": "cave_mountain",
+  "sub": "road",
+  "cast": [
+   "mucukunda"
+  ],
+  "place": "The mountain road"
+ },
+ "S-881": {
+  "set": "mathura",
+  "sub": "walls",
+  "cast": [
+   "water_carrier",
+   "c_yavana_army"
+  ],
+  "also": [
+   "mathura/plain"
+  ],
+  "props": [
+   "chalk_marks"
+  ],
+  "place": "Mathurā"
+ },
+ "S-659": {
+  "set": "cave_mountain",
+  "sub": "road",
+  "cast": [
+   "goatherd",
+   "mucukunda"
+  ],
+  "place": "The mountain road"
+ },
+ "S-906": {
+  "set": "kundina_outskirts",
+  "sub": "well",
+  "cast": [
+   "rukmini",
+   "herdsman"
+  ],
+  "props": [
+   "water_jar"
+  ],
+  "place": "A roadside well near Kuṇḍina"
+ },
+ "S-237": {
+  "set": "kundina_temple",
+  "sub": "interior",
+  "cast": [
+   "rukmini",
+   "rukmini_mother",
+   "priest"
+  ],
+  "place": "The temple of Ambikā"
+ },
+ "S-702": {
+  "set": "kundina_palace",
+  "sub": "hall",
+  "cast": [
+   "rukmini",
+   "maid",
+   "c_court"
+  ],
+  "place": "Bhīṣmaka’s palace"
+ },
+ "S-438": {
+  "set": "bard_fire",
+  "sub": "fire",
+  "cast": [
+   "bard",
+   "c_listeners"
+  ],
+  "place": "The court of Parīkṣit; or a bard’s fire"
+ },
+ "S-407": {
+  "set": "kundina_palace",
+  "sub": "hall",
+  "cast": [
+   "rukmini",
+   "c_court"
+  ],
+  "place": "Bhīṣmaka’s palace"
+ },
+ "S-164": {
+  "set": "kundina_palace",
+  "sub": "hall",
+  "cast": [
+   "rukmini",
+   "rukmi",
+   "bhishmaka"
+  ],
+  "place": "Palace hall"
+ },
+ "S-958": {
+  "set": "kundina_palace",
+  "sub": "rukmini_quarters",
+  "cast": [
+   "rukmini",
+   "brahmin"
+  ],
+  "props": [
+   "letter"
+  ],
+  "place": "Rukmini’s quarters"
+ },
+ "S-354": {
+  "set": "open_country",
+  "sub": "long_road",
+  "cast": [
+   "brahmin"
+  ],
+  "props": [
+   "letter"
+  ],
+  "place": "The road from Kuṇḍina to Dvārakā"
+ },
+ "S-705": {
+  "set": "dvaraka_city",
+  "sub": "hall",
+  "cast": [
+   "brahmin",
+   "krishna"
+  ],
+  "props": [
+   "letter"
+  ],
+  "krishna": "hands",
+  "place": "Dvārakā"
+ },
+ "S-793": {
+  "set": "open_country",
+  "sub": "long_road",
+  "cast": [
+   "brahmin",
+   "daruka",
+   "krishna"
+  ],
+  "props": [
+   "chariot"
+  ],
+  "krishna": "shadow",
+  "place": "The road from Ānarta to Vidarbha, one night"
+ },
+ "S-108": {
+  "set": "kundina_palace",
+  "sub": "rukmini_quarters",
+  "cast": [
+   "rukmini",
+   "bhishmaka",
+   "maid"
+  ],
+  "props": [
+   "wedding_dress"
+  ],
+  "place": "Palace; women’s quarters"
+ },
+ "S-741": {
+  "set": "kundina_palace",
+  "sub": "hall",
+  "cast": [
+   "rukmini",
+   "damaghosha",
+   "jarasandha",
+   "shishupala",
+   "c_kings"
+  ],
+  "also": [
+   "kundina_city/street"
+  ],
+  "place": "Kuṇḍina’s hall and streets"
+ },
+ "S-121": {
+  "set": "open_country",
+  "sub": "long_road",
+  "cast": [
+   "balarama",
+   "c_yadava_army"
+  ],
+  "place": "The road to Kuṇḍina"
+ },
+ "S-922": {
+  "set": "kundina_palace",
+  "sub": "rukmini_quarters",
+  "cast": [
+   "rukmini"
+  ],
+  "place": "Rukmini’s quarters"
+ },
+ "S-430": {
+  "set": "kundina_palace",
+  "sub": "rukmini_quarters",
+  "cast": [
+   "rukmini",
+   "brahmin"
+  ],
+  "place": "Rukmini’s quarters"
+ },
+ "S-896": {
+  "set": "kundina_palace",
+  "sub": "gate",
+  "cast": [
+   "rukmini",
+   "brahmin",
+   "bhishmaka",
+   "balarama",
+   "krishna",
+   "c_kings"
+  ],
+  "off": [
+   "krishna"
+  ],
+  "krishna": "offscreen",
+  "place": "The palace gate"
+ },
+ "S-944": {
+  "set": "kundina_city",
+  "sub": "street",
+  "cast": [
+   "rukmini",
+   "c_kundina_people"
+  ],
+  "props": [
+   "wedding_garland"
+  ],
+  "place": "Kuṇḍina’s streets"
+ },
+ "S-420": {
+  "set": "kundina_temple",
+  "sub": "approach",
+  "cast": [
+   "rukmini",
+   "rukmini_mother",
+   "c_procession",
+   "c_guards"
+  ],
+  "place": "The road from the palace to Ambikā’s temple"
+ },
+ "S-802": {
+  "set": "kundina_temple",
+  "sub": "interior",
+  "cast": [
+   "rukmini",
+   "c_brahmana_women"
+  ],
+  "place": "The temple of Ambikā"
+ },
+ "S-279": {
+  "set": "kundina_temple",
+  "sub": "forecourt",
+  "cast": [
+   "rukmini",
+   "maid",
+   "c_kings"
+  ],
+  "place": "The temple door and the forecourt"
+ },
+ "S-449": {
+  "set": "kundina_temple",
+  "sub": "forecourt",
+  "cast": [
+   "rukmini",
+   "krishna",
+   "c_kings"
+  ],
+  "props": [
+   "chariot"
+  ],
+  "krishna": "face",
+  "place": "The forecourt of the temple"
+ },
+ "S-615": {
+  "set": "kundina_temple",
+  "sub": "forecourt",
+  "cast": [
+   "rukmini",
+   "krishna",
+   "c_kings"
+  ],
+  "props": [
+   "chariot"
+  ],
+  "krishna": "face",
+  "place": "The forecourt"
+ },
+ "S-413": {
+  "set": "kundina_temple",
+  "sub": "forecourt",
+  "cast": [
+   "rukmini",
+   "krishna",
+   "balarama",
+   "c_kings"
+  ],
+  "also": [
+   "open_country/chase_road"
+  ],
+  "props": [
+   "chariot",
+   "conch"
+  ],
+  "krishna": "shadow",
+  "place": "The forecourt and the road"
+ },
+ "S-190": {
+  "set": "kundina_temple",
+  "sub": "forecourt",
+  "cast": [
+   "shishupala",
+   "jarasandha",
+   "c_kings"
+  ],
+  "place": "The forecourt"
+ },
+ "S-753": {
+  "set": "open_country",
+  "sub": "chase_road",
+  "cast": [
+   "rukmini",
+   "krishna",
+   "c_kings",
+   "c_yadava_army"
+  ],
+  "off": [
+   "krishna"
+  ],
+  "props": [
+   "chariot"
+  ],
+  "krishna": "offscreen",
+  "place": "The road and the plain"
+ },
+ "S-905": {
+  "set": "open_country",
+  "sub": "roadside",
+  "cast": [
+   "jarasandha",
+   "shishupala",
+   "c_kings"
+  ],
+  "place": "The roadside after the rout"
+ },
+ "S-697": {
+  "set": "open_country",
+  "sub": "roadside",
+  "cast": [
+   "rukmi",
+   "c_kings",
+   "c_rukmi_division"
+  ],
+  "place": "The roadside"
+ },
+ "S-713": {
+  "set": "open_country",
+  "sub": "duel_plain",
+  "cast": [
+   "rukmini",
+   "krishna",
+   "rukmi"
+  ],
+  "props": [
+   "chariot",
+   "bows_rukmi",
+   "sword_rukmi"
+  ],
+  "krishna": "face",
+  "place": "The road; the plain"
+ },
+ "S-703": {
+  "set": "open_country",
+  "sub": "duel_plain",
+  "cast": [
+   "rukmini",
+   "krishna",
+   "rukmi"
+  ],
+  "props": [
+   "sword_rukmi"
+  ],
+  "krishna": "face",
+  "place": "The plain"
+ },
+ "S-950": {
+  "set": "open_country",
+  "sub": "duel_plain",
+  "cast": [
+   "rukmini",
+   "krishna",
+   "rukmi"
+  ],
+  "props": [
+   "razor_cloth"
+  ],
+  "krishna": "face",
+  "place": "The plain"
+ },
+ "S-569": {
+  "set": "open_country",
+  "sub": "duel_plain",
+  "cast": [
+   "rukmini",
+   "krishna",
+   "balarama",
+   "rukmi"
+  ],
+  "off": [
+   "krishna"
+  ],
+  "props": [
+   "razor_cloth"
+  ],
+  "krishna": "offscreen",
+  "place": "The plain"
+ },
+ "S-866": {
+  "set": "open_country",
+  "sub": "duel_plain",
+  "cast": [
+   "rukmini",
+   "balarama"
+  ],
+  "place": "The plain"
+ },
+ "S-191": {
+  "set": "open_country",
+  "sub": "river_plain",
+  "cast": [
+   "rukmi"
+  ],
+  "place": "A river plain; Bhojakaṭa"
+ },
+ "S-435": {
+  "set": "kundina_city",
+  "sub": "street",
+  "cast": [
+   "flower_vendor",
+   "weaver",
+   "ferryman"
+  ],
+  "also": [
+   "kundina_outskirts/river_crossing"
+  ],
+  "place": "Kuṇḍina; the river"
+ },
+ "S-565": {
+  "set": "open_country",
+  "sub": "long_road",
+  "cast": [
+   "rukmini",
+   "krishna"
+  ],
+  "off": [
+   "krishna"
+  ],
+  "props": [
+   "chariot"
+  ],
+  "krishna": "offscreen",
+  "place": "The road to Dvārakā"
+ },
+ "S-735": {
+  "set": "dvaraka_shore",
+  "sub": "beach",
+  "cast": [
+   "rukmini",
+   "krishna"
+  ],
+  "off": [
+   "krishna"
+  ],
+  "props": [
+   "chariot"
+  ],
+  "krishna": "offscreen",
+  "place": "The shore at Dvārakā"
+ },
+ "S-460": {
+  "set": "dvaraka_city",
+  "sub": "streets",
+  "cast": [
+   "rukmini",
+   "water_carrier",
+   "potter",
+   "goatherd",
+   "farmer",
+   "flower_vendor",
+   "c_fishers",
+   "earth_cow",
+   "c_yadava_people"
+  ],
+  "place": "The streets of Dvārakā"
+ },
+ "S-334": {
+  "set": "dvaraka_city",
+  "sub": "room",
+  "cast": [
+   "rukmini",
+   "krishna"
+  ],
+  "props": [
+   "lamp_kundina",
+   "lamp_dvaraka"
+  ],
+  "krishna": "hands",
+  "place": "Rukmini’s new room"
+ },
+ "S-547": {
+  "set": "dvaraka_city",
+  "sub": "hall",
+  "cast": [
+   "rukmini",
+   "c_yadava_people"
+  ],
+  "props": [
+   "empty_place"
+  ],
+  "place": "The hall of Dvārakā"
+ },
+ "S-285": {
+  "set": "dvaraka_city",
+  "sub": "courtyard",
+  "cast": [
+   "rukmini",
+   "bard",
+   "c_kings"
+  ],
+  "place": "A courtyard in Dvārakā"
+ },
+ "S-559": {
+  "set": "dvaraka_city",
+  "sub": "terrace",
+  "cast": [
+   "rukmini",
+   "krishna"
+  ],
+  "krishna": "face",
+  "place": "A terrace by the sea"
+ },
+ "S-709": {
+  "set": "dvaraka_shore",
+  "sub": "beach",
+  "cast": [
+   "rukmini",
+   "krishna"
+  ],
+  "krishna": "face",
+  "place": "The shore at Dvārakā"
+ },
+ "S-446": {
+  "set": "chedi_palace",
+  "sub": "chamber",
+  "cast": [
+   "shishupala_mother",
+   "infant_shishupala"
+  ],
+  "place": "The palace of Chedi"
+ },
+ "S-807": {
+  "set": "chedi_palace",
+  "sub": "chamber",
+  "cast": [
+   "shishupala_mother",
+   "infant_shishupala",
+   "krishna"
+  ],
+  "krishna": "hands",
+  "place": "The palace"
+ },
+ "S-208": {
+  "set": "chedi_palace",
+  "sub": "chamber",
+  "cast": [
+   "shishupala_mother",
+   "krishna"
+  ],
+  "off": [
+   "krishna"
+  ],
+  "krishna": "offscreen",
+  "place": "The palace"
+ },
+ "S-329": {
+  "set": "celestial",
+  "sub": "vaikuntha",
+  "cast": [
+   "jaya",
+   "vijaya",
+   "c_kumaras"
+  ],
+  "place": "Vaikuṇṭha"
+ },
+ "S-946": {
+  "set": "kundina_temple",
+  "sub": "forecourt",
+  "cast": [
+   "shishupala"
+  ],
+  "place": "Kuṇḍina"
+ },
+ "S-128": {
+  "set": "open_country",
+  "sub": "duel_plain",
+  "cast": [
+   "balarama",
+   "krishna",
+   "rukmi"
+  ],
+  "off": [
+   "krishna"
+  ],
+  "also": [
+   "dvaraka_city/hall"
+  ],
+  "krishna": "offscreen",
+  "place": "The plain; Dvārakā"
+ },
+ "S-218": {
+  "set": "kundina_palace",
+  "sub": "hall",
+  "cast": [
+   "rukmi"
+  ],
+  "also": [
+   "open_country/chase_road"
+  ],
+  "place": "Kuṇḍina; the road"
+ }
+}

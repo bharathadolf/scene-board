@@ -1,0 +1,285 @@
+{
+  "ap": true,
+  "apAt": "2026-11-09T17:53:17.546Z",
+  "hist": [
+    {
+      "at": "2026-11-09T17:12:41.761Z",
+      "base": true,
+      "carrier": false,
+      "gen": [
+        "Mythological epic",
+        "Spiritual drama",
+        "Western-like"
+      ],
+      "k": "Hands",
+      "mins": "2",
+      "pl": "The gate of Dvārakā; the road",
+      "pov": "A gate guard",
+      "prompt": "",
+      "rasa": "Karuṇa",
+      "story": "The city is asleep, and one man is not. He comes to the gate in a garland of lotuses. He carries no weapon. The guard sees him and does not know what to say. The man nods and goes out. A footprint is left in the dust. The gate closes. The guard stands there a long time.",
+      "sum": "Krishna, unarmed and wearing a lotus garland, walks out through the city gate while the people sleep in safety. A guard watches him go.",
+      "t": "The lone walk from the gate",
+      "tier": 2,
+      "turn": "The gate closes behind him.",
+      "why": "The one man who goes out alone to absorb the threat; the image Rukmini carries of him."
+    }
+  ],
+  "shotp": "create shots for this scene",
+  "shots": [
+    {
+      "a": true,
+      "imgs": [
+        {
+          "id": "638c0a700307b759f22d11349304fb86"
+        }
+      ],
+      "mj": "a lone guard in bronze scale armour stands motionless under a single burning torch beside a massive closed timber gate, the empty street before him with every window dark, ancient city of Dvārakā, deep night, warm torchlight against blue darkness, wide shot, 35mm lens, hushed and watchful, photoreal cinematic film still, ancient India, mythic epic, natural light, shallow depth of field, 35mm --ar 21:9 --style raw --v 7",
+      "t": "WIDE",
+      "te": "రాత్రి వేళ ద్వారకా నగర ద్వారం; వీధి ఖాళీగా ఉంది, కిటికీలన్నీ చీకటిలో ఉన్నాయి, ద్వారం పక్కన ఒక దీపం వెలుగుతోంది, దాని కింద ఒక కాపలాదారు నిలబడి ఉన్నాడు.",
+      "x": "The gate of Dvārakā at night, the street empty, every window dark, one torch burning beside the gate and a guard standing under it."
+    },
+    {
+      "a": true,
+      "chk": {
+        "at": "2026-11-09T17:22:07.112Z",
+        "best": 0,
+        "fix": "",
+        "note": "Image 1 fits the shot: a tight close-up of a weathered guard whose eyes lift to something off frame, lips parted, lit warmly as if by torchlight. Krishna is not shown, so he stays off screen as the scene requires.",
+        "per": [
+          {
+            "i": 0,
+            "note": "Tight close-up of a bearded man in a pale head-wrap with eyes lifted and lips parted, warm torch-like light, blurred background; no Krishna on screen, though the lotus petal and gate are not clearly visible and the night reads only as a dark blur.",
+            "ok": true
+          }
+        ]
+      },
+      "imgs": [
+        {
+          "id": "09f725801e0d55243f7e0b210a41fe04"
+        }
+      ],
+      "mj": "Close on a weathered city guard's face in torchlight, eyes lifted toward something down the street and fixed there, lips slightly parted, a lotus petal drifting at the frame edge, at the stone gate of Dvārakā with a dusty road beyond, deep night lit by one torch, tight close-up 85mm, hushed and reverent, photoreal cinematic film still, ancient India, mythic epic, natural light, shallow depth of field, 35mm --ar 21:9 --style raw --v 7",
+      "t": "CLOSE",
+      "te": "దీపం వెలుగులో కాపలాదారు ముఖం; అతని కళ్ళు వీధి చివర ఏదో వైపు పైకి లేచి అక్కడే నిలిచిపోతాయి.",
+      "x": "The guard's face in torchlight; his eyes lift toward something down the street and stay there."
+    },
+    {
+      "a": true,
+      "chk": {
+        "at": "2026-11-09T17:24:40.783Z",
+        "best": 0,
+        "fix": "",
+        "note": "Image 1 is shot from inside the gate with the arch framing a far, dim figure walking away on a pale road, and footprints in the dust in the foreground. This matches the guard's POV and keeps the figure unreadable, with no face visible.",
+        "per": [
+          {
+            "i": 0,
+            "note": "Inside-the-gate view looking out along a dark road, a small far figure seen only as a silhouette, sleeping houses either side and footprints in the foreground; the garland is not visible, but the figure is dim and faceless as the shot asks.",
+            "ok": true
+          },
+          {
+            "i": 1,
+            "note": "The figure is much closer, seen from behind in a robe at mid distance, with a long shadow, and the camera is outside the gate looking toward it, so it is not the guard's view of a far, dim figure and no garland shows.",
+            "ok": false
+          }
+        ]
+      },
+      "imgs": [
+        {
+          "id": "c157adc0d5d099466b91a9fc5a410fe2"
+        },
+        {
+          "id": "a879572e302e8abd4b592228103178f8"
+        }
+      ],
+      "mj": "view from inside an ancient stone city gate looking out along a dark empty road, a far distant figure walking away, too dim to read, no face visible, only small pale shapes of a lotus garland catching faint moonlight, a single bare footprint in the dust in the near foreground, sleeping stone houses either side, deep night, very low light, wide shot from a guard's eye level, 35mm lens, quiet, solemn, photoreal black and white cinematic film still, ancient India, natural light --ar 21:9 --style raw --v 7",
+      "t": "POV",
+      "te": "కాపలాదారు చూపు నుండి, చీకటి వీధి; దూరంలో ఉన్న ఆకారం స్పష్టంగా కనిపించదు, తామర పూల మాల లేత రంగులో వెలుగును పట్టుకుంటుంది.",
+      "x": "From the guard's position, the dark street; a figure far off is too dim to make out, and only the pale shapes of a lotus garland catch the light."
+    },
+    {
+      "a": true,
+      "chk": {
+        "at": "2026-11-09T17:51:47.812Z",
+        "best": 0,
+        "fix": "",
+        "note": "The only image fits the insert well: open empty hands, a lotus garland at the wrists, and the frame cropped at the torso so no face shows. The one mismatch is the lighting, which is warm and lit rather than deep night, but it is usable as the shot.",
+        "per": [
+          {
+            "i": 0,
+            "note": "Both open, empty hands with a lotus garland at the wrists, cropped at chest and hips with no face, and a blurred stone colonnade behind; the light is warm and wet-looking rather than cold blue night, and the hands are held forward rather than hanging at the sides.",
+            "ok": true
+          }
+        ]
+      },
+      "imgs": [
+        {
+          "id": "b39e79a45e232d3ef099228f69181259"
+        }
+      ],
+      "mj": "A man's empty open hands hang relaxed at his sides, fingers loose, a pale lotus garland resting against his wrists, nothing held, frame cropped at the forearms and hips, dark stone gate and empty dust road blurred behind, deep night, cold blue moonlight, close insert, 35mm, solemn, still, photoreal cinematic film still, ancient India, mythic epic, natural light, shallow depth of field --ar 21:9 --style raw --v 7",
+      "t": "INSERT",
+      "te": "ఒక మనిషి చేతులు ఖాళీగా తెరిచి అతని పక్కన వేలాడుతున్నాయి, తామర పూల మాల అతని మణికట్టులపై ఆనుకుని ఉంది; రెండు చేతుల్లోనూ ఆయుధం లేదు.",
+      "x": "A man's hands hang open and empty at his sides, a lotus garland resting against his wrists; no weapon in either hand."
+    },
+    {
+      "a": true,
+      "chk": {
+        "at": "2026-11-09T17:31:18.304Z",
+        "best": 0,
+        "fix": "",
+        "note": "The image fits the shot: a close view of an aging guard with mouth open, eyes fixed on empty hands, with only the hands and garland of Krishna in frame. The guard is the right person to show and Krishna's face stays off screen.",
+        "per": [
+          {
+            "i": 0,
+            "note": "Close shot of a bearded guard in studded bronze leather, mouth open, looking up at open empty hands, with a lotus garland at the right edge, torch and wooden gate behind, dusky blue light; Krishna's face is not shown.",
+            "ok": true
+          }
+        ]
+      },
+      "imgs": [
+        {
+          "id": "0a662a709fc5cc3bdb3b2e157db014b7"
+        }
+      ],
+      "mj": "close shot of an aging gate guard in worn bronze-studded leather, mouth slightly open, eyes fixed on a pair of empty open hands with a lotus garland hanging at the edge of frame, hands soft in focus, ancient Dvārakā stone gate and dusty road behind, pre-dawn blue light with faint torch glow, 35mm close-up, solemn hushed bewildered mood, photoreal cinematic film still, ancient India, mythic epic, natural light, shallow depth of field, 35mm --ar 21:9 --style raw --v 7",
+      "t": "CLOSE",
+      "te": "కాపలాదారు ఆ ఖాళీ చేతులను చూస్తాడు, నోరు తెరుస్తాడు, ఏమీ అనడు.",
+      "x": "The guard looks at the empty hands, opens his mouth, and says nothing."
+    },
+    {
+      "a": true,
+      "chk": {
+        "at": "2026-11-09T17:35:53.452Z",
+        "best": 0,
+        "fix": "",
+        "note": "Image 1 fits the shot: over the guard's shoulder, the open gate ahead, and only a hand and wrist with a lotus garland enter at the right edge, so Krishna's face stays off screen. The one flaw is the light, which is bright and snowy rather than deep night, but the framing and content are right.",
+        "per": [
+          {
+            "i": 0,
+            "note": "Guard in helmet and worn leather seen from behind, open arched gate ahead, a footprint in the ground, and a lone hand with a braided garland at the wrist at the frame edge with no face shown, though the light reads as pale daylight on white ground rather than night and the hand grips a bar rather th",
+            "ok": true
+          }
+        ]
+      },
+      "imgs": [
+        {
+          "id": "4be938ebd4d2f09fc2e8f18b7c3518fc"
+        }
+      ],
+      "mj": "over the shoulder of a guard in worn leather and cloth, a single hand with a lotus garland draped at the wrist enters the edge of frame in a small nod of greeting, the great wooden gate of Dvārakā standing open ahead onto a dusty road, a footprint in the dust, deep night before dawn, pale moonlight and dim lamplight, medium shot, 35mm lens, quiet, solemn, photoreal cinematic film still, ancient India, mythic epic, natural light, shallow depth of field, 35mm --ar 21:9 --style raw --v 7",
+      "t": "OVER",
+      "te": "కాపలాదారు భుజం మీదుగా, ముందు ద్వారం తెరిచి ఉంది; ఫ్రేమ్ అంచున ఒక చేయి చిన్న నమస్కార సంజ్ఞతో పైకి లేస్తుంది, ఆ ఆకారం ద్వారం వైపు ఫ్రేమ్ నుండి వెళ్ళిపోతుంది.",
+      "x": "Over the guard's shoulder, the gate stands open ahead; a hand comes into frame at the edge, lifted in a small nod of greeting, and the figure passes out of the frame toward the gate."
+    },
+    {
+      "a": true,
+      "chk": {
+        "at": "2026-11-09T17:40:32.933Z",
+        "best": 0,
+        "fix": "",
+        "note": "The only image fits the shot: a wide view from behind of the guard on the threshold, looking out at a pale, empty moonlit road. No face is visible, so Krishna stays off screen.",
+        "per": [
+          {
+            "i": 0,
+            "note": "Wide shot, guard seen from behind in a dark wrap and iron cap with a spear, tall carved sandstone gate, full moon, pale empty ground, a few small footprints leading away; no face shown and no other figure, though the footprints are a faint trail rather than one small print.",
+            "ok": true
+          }
+        ]
+      },
+      "imgs": [
+        {
+          "id": "8be988da6e6079f20db82ee230920350"
+        }
+      ],
+      "mj": "A lone guard in a plain dark cloth wrap and iron cap stands upright on the threshold of a tall carved sandstone city gate, seen from behind, spear at his side, looking out at an empty pale dust road, one small footprint in the dust, no other figure, warm dry earth, low sleeping city wall, midnight under a bright full moon, wide shot, 35mm, solemn and hushed, photoreal cinematic film still, ancient India, mythic epic, natural moonlight --ar 21:9 --style raw --v 7",
+      "t": "WIDE",
+      "te": "ద్వారం బయట రోడ్డు వెన్నెలలో లేతగా సాగుతోంది, మనుషులెవరూ లేరు, గుమ్మం దగ్గర నుండి కాపలాదారు చూస్తున్నాడు.",
+      "x": "The road outside the gate runs pale under the moon, empty of people, and the guard watches from the threshold."
+    },
+    {
+      "a": true,
+      "chk": {
+        "at": "2026-11-09T17:41:44.175Z",
+        "best": 0,
+        "fix": "",
+        "note": "The single image matches the insert: a low, close view of a footprint in dust with a crumbling edge, a blurred gate behind it, and blue pre-dawn light with a faint warm glow. No person is shown, so Krishna stays off screen.",
+        "per": [
+          {
+            "i": 0,
+            "note": "Low-angle extreme close-up of one crumbling footprint in pale dust, with a soft timber gate and warm glow behind it and a few petal-like bits beside the print; no figure or face appears, and the blue pre-dawn light fits.",
+            "ok": true
+          }
+        ]
+      },
+      "imgs": [
+        {
+          "id": "b66df1274821368a310c47a2c0a855cc"
+        }
+      ],
+      "mj": "A single bare footprint pressed into pale road dust, its edge still crumbling, a few fallen lotus petals beside it, before the massive closed timber gate of Dvārakā, pre-dawn blue light with faint warm glow, extreme close-up low angle, 35mm lens, quiet, solemn, suspended, photoreal cinematic film still, ancient India, mythic epic, natural light, shallow depth of field, 35mm --ar 21:9 --style raw --v 7",
+      "t": "INSERT",
+      "te": "రోడ్డు దుమ్ములో ఒకే ఒక అడుగు గుర్తు, దాని అంచు ఇంకా రాలుతోంది.",
+      "x": "A single footprint in the road dust, the edge of the print still crumbling."
+    },
+    {
+      "a": true,
+      "chk": {
+        "at": "2026-11-09T17:51:37.527Z",
+        "best": 0,
+        "fix": "",
+        "note": "The image fits the shot well: two huge weathered doors almost meet, a narrow gap shows pale road, and a single bare footprint lies in the dust. One guard stands beside the left door with his back to camera, and a lamp burns near him in a deep-night, warm, hushed wide frame.",
+        "per": [
+          {
+            "i": 0,
+            "note": "Wide, solemn night shot from inside the gate with a bare footprint in the pale dust and a guard seen from behind; no face is visible and nobody stands outside, so Krishna stays off screen (the guard holds a bow rather than a spear and the gap is slightly wider than 'almost closed', both minor).",
+            "ok": true
+          }
+        ]
+      },
+      "imgs": [
+        {
+          "id": "fc8a7684fa5812aabf02f8da8bab70c2"
+        }
+      ],
+      "mj": "Two massive weathered timber gate doors of the city of Dvārakā, almost closed and meeting at the center, only a narrow vertical gap of pale road visible between them, seen from inside the city, one guard in simple bronze armor standing motionless beside the left door holding a spear, his back partly to camera, a single bare footprint pressed in the pale dust of the road beyond the gap, no person visible outside the gate, no buildings visible through the gap, small oil lamp glowing near the guard, deep night, faint moonlight, no other people, wide shot, 35mm lens, solemn, hushed, photoreal cinematic film still, ancient India, natural light --ar 21:9 --style raw --v 7",
+      "t": "WIDE",
+      "te": "ద్వారపు రెండు తలుపులు మూసుకుని కలుస్తాయి; ఆ శబ్దం నిద్రిస్తున్న వీధి వెంట వినిపిస్తుంది.",
+      "x": "The two gate doors swing shut and meet; the sound carries down the sleeping street."
+    },
+    {
+      "a": true,
+      "chk": {
+        "at": "2026-11-09T17:48:40.047Z",
+        "best": 1,
+        "fix": "",
+        "note": "Image 2 fits the brief better: a tired, bearded guard in a cloth headwrap and bronze armor, torch flickering at frame edge, wooden gate soft behind him, eyes cast sideways as if following someone leaving. Image 1 reads as a Roman legionary, which is wrong for ancient Dvārakā.",
+        "per": [
+          {
+            "i": 0,
+            "note": "The crested bronze helmet, segmented armor and gaze looking up and away make him a Roman legionary, not an ancient Indian guard, and the torch is only a faint glow far left.",
+            "ok": false
+          },
+          {
+            "i": 1,
+            "note": "Close chest-up three-quarter shot of a weary bearded guard in a cloth headwrap, warm torchlight, night, eyes following someone off; the gate is blurry but reads as wood, and no Krishna or garland is shown.",
+            "ok": true
+          }
+        ]
+      },
+      "imgs": [
+        {
+          "id": "08747481bd941b0d9b0b1cab02d96a09"
+        },
+        {
+          "id": "5a73134f2c6766f01f4933d85b90dbd1"
+        }
+      ],
+      "mj": "Close shot of a tired middle-aged guard in plain ancient Indian leather and bronze armor, chest up, in three-quarter profile, facing a closed heavy wooden city gate soft and out of focus behind him, a lit torch at the edge of frame flickering warm light across his weary, lined face, helmet or simple cloth headwrap, stubble, eyes following someone leaving, gate of Dvārakā, deep night, warm torchlight against dark, 35mm lens, shallow depth of field, solemn and hushed, photoreal cinematic film still, ancient India, natural light --ar 21:9 --style raw --v 7 --no cartoon, illustration, anime, garland, young prince",
+      "t": "CLOSE",
+      "te": "కాపలాదారు మూసిన ద్వారం ఎదురుగా నిలబడి ఉన్నాడు, దీపం అతని ముఖంపై రెపరెపలాడుతోంది, కెమెరా కట్ చేయకుండా అతనిపైనే నిలుస్తుంది.",
+      "x": "The guard stands facing the closed gate, the torch flickering on his face, and the camera holds on him without cutting."
+    }
+  ],
+  "updated": "2026-11-09T17:51:47.812Z"
+}

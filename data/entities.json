@@ -1,0 +1,971 @@
+{
+ "sets": {
+  "celestial": {
+   "name": "The celestial realms",
+   "form": "court",
+   "ext": false,
+   "why": "Every non-earthly interior shares one architecture and one lookdev; the subs are dressings of it.",
+   "subs": {
+    "indra_court": "Indra's court",
+    "battlefield": "The field between heaven and ocean",
+    "brahma_realm": "Brahmā's realm",
+    "vaikuntha": "The gate of Vaikuṇṭha",
+    "asura_camp": "The Asura camp, neutral ground"
+   }
+  },
+  "milk_ocean": {
+   "name": "The Ocean of Milk",
+   "form": "shore",
+   "ext": true,
+   "why": "One shoreline and one body of water carry the whole Churning and the Earth's petition.",
+   "subs": {
+    "shore": "The shore",
+    "water": "The open water, the churning"
+   }
+  },
+  "forest": {
+   "name": "The forest",
+   "form": "forest",
+   "ext": true,
+   "why": "Used once, for Śiva and Mohinī; nothing else in the film is woodland.",
+   "subs": {
+    "glade": "A glade"
+   }
+  },
+  "kundina_temple": {
+   "name": "The temple of Ambikā, Kuṇḍina",
+   "form": "temple",
+   "ext": true,
+   "why": "The procession road, the sanctum, the painted wall and the forecourt are one continuous walk in the story and one build.",
+   "subs": {
+    "approach": "The road from the palace",
+    "interior": "The sanctum",
+    "painted_wall": "The painted wall of the Churning",
+    "forecourt": "The door and the forecourt"
+   }
+  },
+  "kundina_palace": {
+   "name": "Bhīṣmaka's palace, Kuṇḍina",
+   "form": "hall",
+   "ext": false,
+   "why": "Hall, gate and the women's side are rooms of one house; she overhears one from another.",
+   "subs": {
+    "hall": "The hall",
+    "rukmini_quarters": "Rukmini's quarters",
+    "gate": "The palace gate"
+   }
+  },
+  "kundina_city": {
+   "name": "Kuṇḍina, the city",
+   "form": "street",
+   "ext": true,
+   "why": "Street and market are the same street kit dressed twice.",
+   "subs": {
+    "street": "A street",
+    "market": "The market"
+   }
+  },
+  "kundina_outskirts": {
+   "name": "Outside Kuṇḍina",
+   "form": "plain",
+   "ext": true,
+   "why": "Field, well and river crossing are the inland country she walks through; one terrain, three dressings.",
+   "subs": {
+    "field": "A field by the army road",
+    "well": "The roadside well",
+    "river_crossing": "The river crossing"
+   }
+  },
+  "mathura": {
+   "name": "Mathurā",
+   "form": "wall",
+   "ext": true,
+   "why": "The wall is the water-carrier's whole world, and the plain is what is seen from it.",
+   "subs": {
+    "walls": "The walls",
+    "gate": "The gate",
+    "council": "The council room",
+    "city": "Inside the city",
+    "plain": "The plain before the walls"
+   }
+  },
+  "magadha_palace": {
+   "name": "Jarasandha's palace, Magadha",
+   "form": "hall",
+   "ext": false,
+   "why": "The only interior that belongs to the enemy.",
+   "subs": {
+    "hall": "The hall"
+   }
+  },
+  "war_camp": {
+   "name": "A war camp",
+   "form": "camp",
+   "ext": true,
+   "why": "One tent kit; the banners are the dressing.",
+   "subs": {
+    "yavana": "Kālayavana's camp",
+    "magadha": "Jarasandha's camp"
+   }
+  },
+  "open_country": {
+   "name": "The open country",
+   "form": "road",
+   "ext": true,
+   "why": "Every road, chase and duel happens on procedural terrain: one environment, generated per shot.",
+   "subs": {
+    "long_road": "A long road",
+    "fields": "Fields and villages under an army",
+    "chase_road": "The road out of Kuṇḍina",
+    "roadside": "The roadside after the rout",
+    "duel_plain": "The plain of the duel",
+    "river_plain": "The river plain, Bhojakaṭa"
+   }
+  },
+  "cave_mountain": {
+   "name": "The cave and its mountain",
+   "form": "cave",
+   "ext": false,
+   "why": "Mucukunda walks out of the cave onto the mountain road, and the goatherd sees the cave's smoke from it: adjacent by the story.",
+   "subs": {
+    "cave": "The cave",
+    "road": "The mountain road"
+   }
+  },
+  "pravarshana": {
+   "name": "Mount Pravarṣaṇa",
+   "form": "mountain",
+   "ext": true,
+   "why": "A different mountain in the story, and the only one that burns.",
+   "subs": {
+    "slope": "The climb",
+    "peak": "The burning peak"
+   }
+  },
+  "dvaraka_city": {
+   "name": "Dvārakā, the city",
+   "form": "gate",
+   "ext": true,
+   "why": "The city that rises from the sea: gate, streets, quay, hall and her rooms are one build seen at different scales.",
+   "subs": {
+    "gate": "The gate and the road outside",
+    "streets": "The streets",
+    "quay": "The quay",
+    "hall": "The hall",
+    "room": "Rukmini's new room",
+    "courtyard": "A courtyard",
+    "terrace": "A terrace by the sea"
+   }
+  },
+  "dvaraka_shore": {
+   "name": "The shore at Dvārakā",
+   "form": "shore",
+   "ext": true,
+   "why": "The earthly shore, before the city and after it.",
+   "subs": {
+    "beach": "The shore",
+    "sea": "The sea off Ānarta"
+   }
+  },
+  "chedi_palace": {
+   "name": "The palace of Chedi",
+   "form": "room",
+   "ext": false,
+   "why": "Śiśupāla's birth and his mother's plea; three scenes, one chamber.",
+   "subs": {
+    "chamber": "The birth chamber"
+   }
+  },
+  "bard_fire": {
+   "name": "The bard's fire",
+   "form": "fire",
+   "ext": true,
+   "why": "The frame of the telling; used once.",
+   "subs": {
+    "fire": "The fire"
+   }
+  }
+ },
+ "characters": {
+  "rukmini": {
+   "name": "Rukmini",
+   "kind": "lead",
+   "alias": [
+    "rukmini"
+   ]
+  },
+  "krishna": {
+   "name": "Krishna",
+   "kind": "lead",
+   "alias": [
+    "krishna"
+   ]
+  },
+  "balarama": {
+   "name": "Balarama",
+   "kind": "role",
+   "alias": [
+    "balarama"
+   ]
+  },
+  "rukmi": {
+   "name": "Rukmī",
+   "kind": "role",
+   "alias": [
+    "her brother",
+    "brother",
+    "rukmi"
+   ]
+  },
+  "bhishmaka": {
+   "name": "Bhīṣmaka",
+   "kind": "role",
+   "alias": [
+    "her father",
+    "bhishmaka",
+    "bhismaka",
+    "the king"
+   ]
+  },
+  "shishupala": {
+   "name": "Śiśupāla",
+   "kind": "role",
+   "alias": [
+    "bridegroom",
+    "shishupala",
+    "sisupala",
+    "groom"
+   ]
+  },
+  "jarasandha": {
+   "name": "Jarasandha",
+   "kind": "role",
+   "alias": [
+    "jarasandha"
+   ]
+  },
+  "kalayavana": {
+   "name": "Kālayavana",
+   "kind": "role",
+   "alias": [
+    "kalayavana"
+   ]
+  },
+  "mucukunda": {
+   "name": "Mucukunda",
+   "kind": "role",
+   "alias": [
+    "mucukunda"
+   ]
+  },
+  "brahmin": {
+   "name": "The Brahmin",
+   "kind": "role",
+   "alias": [
+    "messenger",
+    "brahmana",
+    "brahmin"
+   ]
+  },
+  "daruka": {
+   "name": "Dāruka",
+   "kind": "role",
+   "alias": [
+    "daruka"
+   ]
+  },
+  "water_carrier": {
+   "name": "The water-carrier",
+   "kind": "role",
+   "alias": [
+    "water carrier",
+    "water-carrier"
+   ]
+  },
+  "gate_guard": {
+   "name": "The gate guard",
+   "kind": "role",
+   "alias": [
+    "gate guard",
+    "guard's",
+    "guard"
+   ]
+  },
+  "potter": {
+   "name": "The potter",
+   "kind": "role",
+   "alias": [
+    "potter"
+   ]
+  },
+  "goatherd": {
+   "name": "The goatherd",
+   "kind": "role",
+   "alias": [
+    "goatherd"
+   ]
+  },
+  "herdsman": {
+   "name": "The herdsman",
+   "kind": "role",
+   "alias": [
+    "herdsman"
+   ]
+  },
+  "ferryman": {
+   "name": "The ferryman",
+   "kind": "role",
+   "alias": [
+    "ferryman"
+   ]
+  },
+  "farmer": {
+   "name": "The farmer",
+   "kind": "role",
+   "alias": [
+    "farmer"
+   ]
+  },
+  "old_woman": {
+   "name": "The old woman",
+   "kind": "role",
+   "alias": [
+    "old woman"
+   ]
+  },
+  "soldier": {
+   "name": "The soldier from the north",
+   "kind": "role",
+   "alias": [
+    "soldier from the north",
+    "soldier"
+   ]
+  },
+  "merchant": {
+   "name": "The merchant",
+   "kind": "role",
+   "alias": [
+    "merchant"
+   ]
+  },
+  "priest": {
+   "name": "The priest",
+   "kind": "role",
+   "alias": [
+    "priest"
+   ]
+  },
+  "rukmini_mother": {
+   "name": "Rukmini's mother",
+   "kind": "role",
+   "alias": [
+    "rukmini's mother",
+    "her mother",
+    "mother"
+   ]
+  },
+  "maid": {
+   "name": "Rukmini's maid",
+   "kind": "role",
+   "alias": [
+    "rukmini's maid",
+    "maidservant",
+    "maid"
+   ]
+  },
+  "bard": {
+   "name": "The bard",
+   "kind": "role",
+   "alias": [
+    "bard"
+   ]
+  },
+  "flower_vendor": {
+   "name": "The flower vendor",
+   "kind": "role",
+   "alias": [
+    "flower vendor"
+   ]
+  },
+  "weaver": {
+   "name": "The weaver",
+   "kind": "role",
+   "alias": [
+    "weaver"
+   ]
+  },
+  "asti": {
+   "name": "Asti",
+   "kind": "role",
+   "alias": [
+    "asti"
+   ]
+  },
+  "prapti": {
+   "name": "Prāpti",
+   "kind": "role",
+   "alias": [
+    "prapti"
+   ]
+  },
+  "ugrasena": {
+   "name": "Ugrasena",
+   "kind": "role",
+   "alias": [
+    "ugrasena"
+   ]
+  },
+  "shurasena": {
+   "name": "Śūrasena",
+   "kind": "role",
+   "alias": [
+    "surasena"
+   ]
+  },
+  "narada": {
+   "name": "Nārada",
+   "kind": "role",
+   "alias": [
+    "narada"
+   ]
+  },
+  "damaghosha": {
+   "name": "Damaghoṣa",
+   "kind": "role",
+   "alias": [
+    "damaghosa"
+   ]
+  },
+  "shishupala_mother": {
+   "name": "Śiśupāla's mother",
+   "kind": "role",
+   "alias": [
+    "sisupala's mother",
+    "mother"
+   ]
+  },
+  "infant_shishupala": {
+   "name": "The infant Śiśupāla",
+   "kind": "role",
+   "alias": [
+    "infant sisupala",
+    "infant",
+    "child",
+    "baby"
+   ]
+  },
+  "indra": {
+   "name": "Indra",
+   "kind": "role",
+   "alias": [
+    "indra"
+   ]
+  },
+  "durvasa": {
+   "name": "Durvāsā",
+   "kind": "role",
+   "alias": [
+    "durvasa"
+   ]
+  },
+  "brahma": {
+   "name": "Brahmā",
+   "kind": "role",
+   "alias": [
+    "brahma"
+   ]
+  },
+  "shiva": {
+   "name": "Śiva",
+   "kind": "role",
+   "alias": [
+    "siva"
+   ]
+  },
+  "parvati": {
+   "name": "Pārvatī",
+   "kind": "role",
+   "alias": [
+    "parvati"
+   ]
+  },
+  "lakshmi": {
+   "name": "Lakṣmī",
+   "kind": "role",
+   "alias": [
+    "laksmi"
+   ]
+  },
+  "bali": {
+   "name": "Bali",
+   "kind": "role",
+   "alias": [
+    "bali"
+   ]
+  },
+  "varuni": {
+   "name": "Vāruṇī",
+   "kind": "role",
+   "alias": [
+    "varuni"
+   ]
+  },
+  "dhanvantari": {
+   "name": "Dhanvantari",
+   "kind": "role",
+   "alias": [
+    "dhanvantari"
+   ]
+  },
+  "mohini": {
+   "name": "Mohinī",
+   "kind": "role",
+   "alias": [
+    "mohini"
+   ]
+  },
+  "rahu": {
+   "name": "Rāhu",
+   "kind": "role",
+   "alias": [
+    "rahu"
+   ]
+  },
+  "surya": {
+   "name": "Sūrya",
+   "kind": "role",
+   "alias": [
+    "surya"
+   ]
+  },
+  "candra": {
+   "name": "Candra",
+   "kind": "role",
+   "alias": [
+    "candra"
+   ]
+  },
+  "kubera": {
+   "name": "Kubera",
+   "kind": "role",
+   "alias": [
+    "kubera"
+   ]
+  },
+  "varuna": {
+   "name": "Varuṇa",
+   "kind": "role",
+   "alias": [
+    "varuna"
+   ]
+  },
+  "jaya": {
+   "name": "Jaya",
+   "kind": "role",
+   "alias": [
+    "jaya"
+   ]
+  },
+  "vijaya": {
+   "name": "Vijaya",
+   "kind": "role",
+   "alias": [
+    "vijaya"
+   ]
+  },
+  "fisher_child": {
+   "name": "The fisher child",
+   "kind": "role",
+   "alias": [
+    "fisher child",
+    "child"
+   ]
+  },
+  "airavata": {
+   "name": "Airāvata, the elephant",
+   "kind": "creature",
+   "alias": [
+    "airavata",
+    "elephant"
+   ]
+  },
+  "vasuki": {
+   "name": "Vāsuki, the serpent",
+   "kind": "creature",
+   "alias": [
+    "serpent",
+    "vasuki"
+   ]
+  },
+  "kurma": {
+   "name": "Kūrma, the tortoise",
+   "kind": "creature",
+   "alias": [
+    "tortoise",
+    "kurma"
+   ]
+  },
+  "earth_cow": {
+   "name": "The Earth, as a cow",
+   "kind": "creature",
+   "alias": [
+    "earth",
+    "cow"
+   ]
+  },
+  "c_devas": {
+   "name": "The Devas",
+   "kind": "crowd",
+   "alias": [
+    "devas",
+    "gods"
+   ]
+  },
+  "c_asuras": {
+   "name": "The Asuras",
+   "kind": "crowd",
+   "alias": [
+    "asuras"
+   ]
+  },
+  "c_kings": {
+   "name": "The coalition of kings",
+   "kind": "crowd",
+   "alias": [
+    "coalition of kings",
+    "ring of kings",
+    "claimants",
+    "kings"
+   ]
+  },
+  "c_kumaras": {
+   "name": "The four Kumāras",
+   "kind": "crowd",
+   "alias": [
+    "four kumaras"
+   ]
+  },
+  "c_magadha_army": {
+   "name": "Jarasandha's army",
+   "kind": "crowd",
+   "alias": [
+    "jarasandha's army",
+    "enemy",
+    "tents",
+    "army"
+   ]
+  },
+  "c_yavana_army": {
+   "name": "Kālayavana's army",
+   "kind": "crowd",
+   "alias": [
+    "kalayavana's army",
+    "barbarian",
+    "banners",
+    "army"
+   ]
+  },
+  "c_yadava_army": {
+   "name": "The Yadava army",
+   "kind": "crowd",
+   "alias": [
+    "yadava army",
+    "commanders",
+    "rear-guard",
+    "yadava"
+   ]
+  },
+  "c_rukmi_division": {
+   "name": "Rukmī's division",
+   "kind": "crowd",
+   "alias": [
+    "rukmi's division"
+   ]
+  },
+  "c_armies": {
+   "name": "Armies of the arrogant kings",
+   "kind": "crowd",
+   "alias": [
+    "armies of the arrogant kings",
+    "soldiers",
+    "armies",
+    "army"
+   ]
+  },
+  "c_yadava_people": {
+   "name": "The people of Mathurā, later of Dvārakā",
+   "kind": "crowd",
+   "alias": [
+    "people of mathura",
+    "citizens",
+    "people",
+    "crowd"
+   ]
+  },
+  "c_women_mathura": {
+   "name": "The women on the wall",
+   "kind": "crowd",
+   "alias": [
+    "women on the wall",
+    "women"
+   ]
+  },
+  "c_kundina_people": {
+   "name": "The people of Kuṇḍina",
+   "kind": "crowd",
+   "alias": [
+    "people of kundina",
+    "citizens",
+    "people",
+    "crowd"
+   ]
+  },
+  "c_court": {
+   "name": "Bhīṣmaka's court and its visitors",
+   "kind": "crowd",
+   "alias": [
+    "bhismaka's court and its visitors",
+    "visitors",
+    "visitor",
+    "court"
+   ]
+  },
+  "c_procession": {
+   "name": "The wedding procession",
+   "kind": "crowd",
+   "alias": [
+    "wedding procession",
+    "procession",
+    "musicians"
+   ]
+  },
+  "c_guards": {
+   "name": "The ring of soldiers",
+   "kind": "crowd",
+   "alias": [
+    "ring of soldiers",
+    "soldiers",
+    "guards"
+   ]
+  },
+  "c_brahmana_women": {
+   "name": "The brāhmaṇa women",
+   "kind": "crowd",
+   "alias": [
+    "brahmana women",
+    "women"
+   ]
+  },
+  "c_fishers": {
+   "name": "The fisher family",
+   "kind": "crowd",
+   "alias": [
+    "fisher family",
+    "family"
+   ]
+  },
+  "c_sailors": {
+   "name": "The sailors",
+   "kind": "crowd",
+   "alias": [
+    "sailors",
+    "sailor"
+   ]
+  },
+  "c_listeners": {
+   "name": "The bard's listeners",
+   "kind": "crowd",
+   "alias": [
+    "bard's listeners",
+    "listeners",
+    "listener"
+   ]
+  }
+ },
+ "props": {
+  "garland_durvasa": {
+   "name": "Durvāsā's garland, trampled",
+   "alias": [
+    "garland"
+   ]
+  },
+  "garland_lakshmi": {
+   "name": "Lakṣmī's garland of choosing",
+   "alias": [
+    "garland"
+   ]
+  },
+  "lotus_garland": {
+   "name": "His lotus garland — the mark he is known by",
+   "alias": [
+    "lotus garland",
+    "garland"
+   ]
+  },
+  "wedding_garland": {
+   "name": "The garland lifted toward her window",
+   "alias": [
+    "garland"
+   ]
+  },
+  "mandara": {
+   "name": "Mount Mandara, the churning rod",
+   "alias": [
+    "mountain",
+    "mandara"
+   ]
+  },
+  "amrita_pot": {
+   "name": "The pot of amṛta",
+   "alias": [
+    "nectar",
+    "amrita",
+    "pot"
+   ]
+  },
+  "sudarshana": {
+   "name": "The Sudarśana disc",
+   "alias": [
+    "disc"
+   ]
+  },
+  "treasures": {
+   "name": "The treasures of the churning",
+   "alias": [
+    "treasures",
+    "jewel"
+   ]
+  },
+  "sky_chariots": {
+   "name": "The two radiant chariots",
+   "alias": [
+    "chariots",
+    "chariot"
+   ]
+  },
+  "chariot": {
+   "name": "His chariot",
+   "alias": [
+    "chariot"
+   ]
+  },
+  "plough": {
+   "name": "Balarama's plough",
+   "alias": [
+    "plough"
+   ]
+  },
+  "conch": {
+   "name": "The conch",
+   "alias": [
+    "conch"
+   ]
+  },
+  "chalk_marks": {
+   "name": "The chalk marks on the wall of Mathurā",
+   "alias": [
+    "chalk",
+    "marks",
+    "mark"
+   ]
+  },
+  "water_jar": {
+   "name": "A water jar",
+   "alias": [
+    "jar"
+   ]
+  },
+  "letter": {
+   "name": "Her letter",
+   "alias": [
+    "letter"
+   ]
+  },
+  "painted_cloth": {
+   "name": "The painted cloth of the city in the sea",
+   "alias": [
+    "painted cloth",
+    "sketch",
+    "cloth"
+   ]
+  },
+  "potter_wheel": {
+   "name": "The potter's wheel",
+   "alias": [
+    "wheel"
+   ]
+  },
+  "lamp_kundina": {
+   "name": "Her lamp from Kuṇḍina",
+   "alias": [
+    "lamp"
+   ]
+  },
+  "lamp_dvaraka": {
+   "name": "The second lamp, already lit",
+   "alias": [
+    "second lamp",
+    "lamp"
+   ]
+  },
+  "empty_place": {
+   "name": "The place laid for a brother who will not come",
+   "alias": [
+    "empty place",
+    "place laid",
+    "empty seat"
+   ]
+  },
+  "sword_rukmi": {
+   "name": "Rukmī's sword",
+   "alias": [
+    "sword",
+    "blade"
+   ]
+  },
+  "bows_rukmi": {
+   "name": "Rukmī's bows, broken one by one",
+   "alias": [
+    "bows",
+    "bow"
+   ]
+  },
+  "razor_cloth": {
+   "name": "The cloth that binds him and the razor",
+   "alias": [
+    "razor",
+    "cloth"
+   ]
+  },
+  "wedding_dress": {
+   "name": "The wedding dress and ornaments",
+   "alias": [
+    "ornaments",
+    "dress"
+   ]
+  },
+  "plough_farm": {
+   "name": "The farmer's plough",
+   "alias": [
+    "plough"
+   ]
+  },
+  "net": {
+   "name": "The fisher family's net",
+   "alias": [
+    "net"
+   ]
+  }
+ },
+ "oblique": [
+  "figure",
+  "a man",
+  "man's",
+  "the man",
+  "silhouette",
+  "shadow",
+  "his hands",
+  "a hand",
+  "the hand"
+ ]
+}

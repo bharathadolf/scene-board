@@ -154,3 +154,30 @@ page says dragging is off and everything else still works.
 `__BOARDS__` is what makes the page useful on its own: with no database behind
 it, and nothing in browser storage, the board starts from those five orders
 rather than empty. A published artifact whose database is empty does the same.
+
+## What a scene is built from — `data/entities.json`, `data/scene_entities.json`
+
+Written by `scripts/make-entities.py` (authored rows, not text matching) and
+checked by `scripts/audit-entities.py`.
+
+- `entities.json` — `sets` (`name`, `form`, `ext`, `why`, `subs`), `characters`
+  (`name`, `kind`: lead / role / creature / crowd, `alias`), `props`, and
+  `oblique`: the words shot lists use for Krishna while he is withheld.
+- `scene_entities.json` — per scene code: `set`, `sub`, `also` (other sets seen),
+  `cast`, `off` (in the scene, never in frame), `props`, `krishna`
+  (`face` / `hands` / `shadow` / `offscreen`), and `place`, the prose it was read from.
+- `entity_decisions.json` — the merges left for a person; see `docs/ENTITY_DECISIONS.md`.
+
+## More on a shot
+
+| field | meaning |
+| --- | --- |
+| `sid` | the shot's own stamp, five characters, made once and kept. The shot's id is `<scene code>_<sid>`. |
+| `cam` | `{lens, h, dur, ang, mv}` — only what has been set by hand. Everything else is worked out from the kind of shot and marked `derived` in the shotspec. |
+| `cast`, `set` | set by hand only when the words of the shot do not say it |
+| `cont` | `{dir, tod}` — screen direction, time of day |
+| `dlg` | dialogue that belongs to this shot |
+| `pv` | per application, what it last reported: `{st, v, at, rev, img, f, note}`. Written by *Bring back the renders*; never by an edit. |
+
+The shotspec — the resolved form every application reads — is described in
+`docs/DCC_AUTHORITY.md`.

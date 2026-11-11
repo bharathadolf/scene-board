@@ -5,13 +5,18 @@
   "description": "A board for ordering the 115 scenes of The Unseen Sun, with the story data behind it.",
   "scripts": {
     "build": "node scripts/build.js",
-    "test": "node tests/run.js",
+    "test": "node tests/run.js && npm run test:py",
     "check": "npm run build && npm test",
     "serve": "node scripts/serve.js",
     "data": "npm run data:scenes && npm run data:sources && npm run data:boards",
     "data:scenes": "node scripts/make-scenes.js",
     "data:sources": "node scripts/make-sources.js",
-    "data:boards": "node scripts/make-boards.js"
+    "data:boards": "node scripts/make-boards.js",
+    "test:js": "node tests/run.js",
+    "test:py": "python3 -m unittest discover -s tests/py",
+    "data:entities": "python3 scripts/make-entities.py && python3 scripts/audit-entities.py",
+    "shotspec": "node scripts/shotspec.js",
+    "bridge": "python3 pipeline/dcc_bridge.py"
   },
   "engines": {
     "node": ">=18"
