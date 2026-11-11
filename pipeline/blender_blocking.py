@@ -622,7 +622,9 @@ if __name__ == "__main__":
     spec_file, i = argv[0], 1
     while i < len(argv):
         if argv[i] == "--out":
-            opts["out_dir"] = argv[i + 1]; i += 1
+            if i + 1 < len(argv) and not argv[i + 1].startswith("--"):
+                opts["out_dir"] = argv[i + 1]; i += 1
+            # bare --out: keep the default folder (next to the shotspec)
         elif argv[i] == "--no-render":
             opts["render"] = False
         elif argv[i] == "--engine":

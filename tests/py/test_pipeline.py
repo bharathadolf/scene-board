@@ -63,6 +63,19 @@ class Entities(unittest.TestCase):
         self.assertGreaterEqual(len(dec), 3)
         self.assertTrue(all(d["recommend"] and d["alternative"] for d in dec))
 
+    def test_the_two_shores_are_two_places(self):
+        """Settled by the director: the Ocean of Milk is the Churning's, the shore at Dvārakā is Dvāpara Yuga."""
+        scenes = json.loads((ROOT / "data/scenes.json").read_text(encoding="utf8"))
+        se = json.loads((ROOT / "data/scene_entities.json").read_text(encoding="utf8"))
+        for s in scenes:
+            e = se[s["c"]]
+            places = [e["set"]] + [a.split("/")[0] for a in e.get("also", [])]
+            self.assertFalse("milk_ocean" in places and "dvaraka_shore" in places, s["src"])
+            if e["set"] == "milk_ocean":
+                self.assertIn(s["ev"], (1, 2), s["src"])
+            if e["set"] == "dvaraka_shore":
+                self.assertIn(s["ev"], (4, 7), s["src"])
+
 
 class Bridge(unittest.TestCase):
     def setUp(self):

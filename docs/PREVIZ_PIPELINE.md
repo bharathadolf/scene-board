@@ -5,7 +5,7 @@
 > | task | state |
 > | --- | --- |
 > | T0 back up / restore | **built** — toolbar, one zip with pictures; restore tested by wiping and comparing |
-> | T1 entity layer | **built** — 89 place strings → 17 sets, 76 characters, 26 props; four merges left for you in `docs/ENTITY_DECISIONS.md` |
+> | T1 entity layer | **built** — 89 place strings → 17 sets, 76 characters, 26 props; three merges left for you in `docs/ENTITY_DECISIONS.md` (the two shores are settled: separate places) |
 > | T2 shot schema v2 | **built** — set, cast, camera, continuity on every shot; lengths marked as guesses until set. *Not done:* importing the ~1,000 Fountain shots |
 > | T3 identity and provenance | **built** — a re-order changes no shot id, no fingerprint and no file name |
 > | T4 `shotspec` | **built** — After Effects now reads it |

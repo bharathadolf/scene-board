@@ -1,23 +1,11 @@
-# Four decisions about sets that are yours to make
+# Three decisions about sets that are yours to make
 
 The entity layer (`data/entities.json`) turns 89 place strings into 17 sets. Most of that was
-reading; these four were judgement. Each has been given a working answer so that every scene
-resolves to a set today — but the answer is a recommendation, and changing it is one row in
+reading; these were judgement. Each has a working answer so that every scene resolves to a set
+today — but the answer is a recommendation, and changing it is one row in
 `scripts/make-entities.py` and a re-run.
 
-## 1 · Is the shore of the Ocean of Milk the same build as the shore at Dvārakā?
-
-The strings: `The shore` · `The shore of the Ocean of Milk` · `The shore and the Ocean of Milk` · `The shore; the assembled claimants` · `The shore; the assembly` · `The shore at Dvārakā` · `The shore at Ānarta`
-
-**What the data shows.** “The shore” on its own is always the Ocean of Milk — all four uses are in events 1 and 2 — so those merge without argument. The open question is the earthly shore.
-
-**Recommended.** Two sets, one ocean. Keep `milk_ocean` and `dvaraka_shore` as separate builds that share one water simulation and one shoreline kit. The film rhymes them on purpose (the Earth is brought to “the same Ocean of Milk”), and a shared kit makes the rhyme visible without making the mythic shore and her shore the same place.
-
-**The alternative.** One set, redressed. Cheaper by one environment, but the last shot of the film would stand on the first act's ground.
-
-**Applied for now:** two sets.
-
-## 2 · How many palaces is “the palace”?
+## 1 · How many palaces is “the palace”?
 
 The strings: `Bhīṣmaka’s palace` · `The palace` · `Palace hall` · `Palace; women’s quarters` · `Rukmini’s quarters` · `Rukmini’s room at night` · `The palace gate` · `The forecourt` · `The forecourt of the temple` · `Kuṇḍina’s hall; evening` · `Kuṇḍina’s hall and streets`
 
@@ -29,7 +17,7 @@ The strings: `Bhīṣmaka’s palace` · `The palace` · `Palace hall` · `Palac
 
 **Applied for now:** one palace, forecourt to the temple, two scenes to Chedi.
 
-## 3 · Is the cave on the mountain road, and is Pravarṣaṇa the same mountain?
+## 2 · Is the cave on the mountain road, and is Pravarṣaṇa the same mountain?
 
 The strings: `A mountain cave` · `The cave` · `Heaven’s war; the cave` · `The mountain road` · `Mount Pravarṣaṇa` · `The burning peak; Jarasandha’s camp` · `Across the land to the mountains`
 
@@ -41,7 +29,7 @@ The strings: `A mountain cave` · `The cave` · `Heaven’s war; the cave` · `T
 
 **Applied for now:** two sets.
 
-## 4 · Where does Śiśupāla find the bride gone (E08-05)?
+## 3 · Where does Śiśupāla find the bride gone (E08-05)?
 
 The strings: `Kuṇḍina`
 
@@ -55,5 +43,17 @@ The strings: `Kuṇḍina`
 
 ---
 
+# Settled
+
+## Is the shore of the Ocean of Milk the same build as the shore at Dvārakā?
+
+The strings: `The shore` · `The shore of the Ocean of Milk` · `The shore and the Ocean of Milk` · `The shore; the assembled claimants` · `The shore; the assembly` · `The shore at Dvārakā` · `The shore at Ānarta`
+
+**Settled.** Two different places, and not for sharing. The Ocean of Milk belongs to the Kṣīra-sāgara-mathanam — the Churning — and the shore at Dvārakā is an earthly coast in the Dvāpara Yuga. They are separate builds with separate water: the mythic ocean is milk, the other is the sea. Nothing is shared between them.
+
+**In the data:** two sets.
+
+---
+
 To change one: edit the scene rows in `scripts/make-entities.py`, then
-`npm run data:entities` — it regenerates the data and audits it.
+`npm run data:entities` — it regenerates the data and this page, and audits both.

@@ -32,7 +32,7 @@ SETS = {
               "brahma_realm": "Brahmā's realm", "vaikuntha": "The gate of Vaikuṇṭha",
               "asura_camp": "The Asura camp, neutral ground"}),
     "milk_ocean": dict(name="The Ocean of Milk", form="shore", ext=True,
-        why="One shoreline and one body of water carry the whole Churning and the Earth's petition.",
+        why="The Kṣīra-sāgara of the Churning: one mythic shoreline and one ocean of milk carry the Churning and the Earth's petition. Not the sea at Dvārakā, and nothing is shared with it.",
         subs={"shore": "The shore", "water": "The open water, the churning"}),
     "forest": dict(name="The forest", form="forest", ext=True,
         why="Used once, for Śiva and Mohinī; nothing else in the film is woodland.",
@@ -77,7 +77,7 @@ SETS = {
               "hall": "The hall", "room": "Rukmini's new room", "courtyard": "A courtyard",
               "terrace": "A terrace by the sea"}),
     "dvaraka_shore": dict(name="The shore at Dvārakā", form="shore", ext=True,
-        why="The earthly shore, before the city and after it.",
+        why="An earthly coast in the Dvāpara Yuga, before the city rises and after it. A different place and a different water from the Ocean of Milk.",
         subs={"beach": "The shore", "sea": "The sea off Ānarta"}),
     "chedi_palace": dict(name="The palace of Chedi", form="room", ext=False,
         why="Śiśupāla's birth and his mother's plea; three scenes, one chamber.",
@@ -326,7 +326,8 @@ DECISIONS = [
          found="“The shore” on its own is always the Ocean of Milk — all four uses are in events 1 and 2 — so those merge without argument. The open question is the earthly shore.",
          recommend="Two sets, one ocean. Keep `milk_ocean` and `dvaraka_shore` as separate builds that share one water simulation and one shoreline kit. The film rhymes them on purpose (the Earth is brought to “the same Ocean of Milk”), and a shared kit makes the rhyme visible without making the mythic shore and her shore the same place.",
          alternative="One set, redressed. Cheaper by one environment, but the last shot of the film would stand on the first act's ground.",
-         applied="two sets"),
+         applied="two sets",
+         settled="Two different places, and not for sharing. The Ocean of Milk belongs to the Kṣīra-sāgara-mathanam — the Churning — and the shore at Dvārakā is an earthly coast in the Dvāpara Yuga. They are separate builds with separate water: the mythic ocean is milk, the other is the sea. Nothing is shared between them."),
     dict(id="palace", title="How many palaces is “the palace”?",
          strings=["Bhīṣmaka’s palace", "The palace", "Palace hall", "Palace; women’s quarters",
                   "Rukmini’s quarters", "Rukmini’s room at night", "The palace gate", "The forecourt",
@@ -365,6 +366,29 @@ def presence(k):
     if k.startswith("effect"):
         return "effect"
     return "absent"
+
+
+def write_decisions_doc():
+    still = [d for d in DECISIONS if not d.get("settled")]
+    done = [d for d in DECISIONS if d.get("settled")]
+    n = {1: "One decision", 2: "Two decisions", 3: "Three decisions", 4: "Four decisions"}.get(len(still), f"{len(still)} decisions")
+    out = [f"# {n} about sets that {'is' if len(still) == 1 else 'are'} yours to make", "",
+           "The entity layer (`data/entities.json`) turns 89 place strings into 17 sets. Most of that was",
+           "reading; these were judgement. Each has a working answer so that every scene resolves to a set",
+           "today — but the answer is a recommendation, and changing it is one row in",
+           "`scripts/make-entities.py` and a re-run.", ""]
+    for i, x in enumerate(still, 1):
+        out += [f"## {i} · {x['title']}", "", "The strings: " + " · ".join(f"`{s}`" for s in x["strings"]), "",
+                "**What the data shows.** " + x["found"], "", "**Recommended.** " + x["recommend"], "",
+                "**The alternative.** " + x["alternative"], "", "**Applied for now:** " + x["applied"] + ".", ""]
+    if done:
+        out += ["---", "", "# Settled", ""]
+        for x in done:
+            out += [f"## {x['title']}", "", "The strings: " + " · ".join(f"`{s}`" for s in x["strings"]), "",
+                    "**Settled.** " + x["settled"], "", "**In the data:** " + x["applied"] + ".", ""]
+    out += ["---", "", "To change one: edit the scene rows in `scripts/make-entities.py`, then",
+            "`npm run data:entities` — it regenerates the data and this page, and audits both.", ""]
+    (ROOT / "docs" / "ENTITY_DECISIONS.md").write_text("\n".join(out), encoding="utf8")
 
 
 def main():
@@ -447,6 +471,7 @@ def main():
     dump("entities.json", ents)
     dump("scene_entities.json", out)
     dump("entity_decisions.json", DECISIONS)
+    write_decisions_doc()
     used_sets = {e["set"] for e in out.values()}
     used_subs = {e["set"] + "/" + e["sub"] for e in out.values()}
     print(f"{len(out)} scenes → {len(used_sets)} sets, {len(used_subs)} sub-locations, "
