@@ -36,3 +36,21 @@ render_blocking.bat   playblasts and all-pass EXRs for every shot that does not 
 ```
 
 `pipeline/DEPENDENCIES.md` always says what is done, what is ready to start, and what each blocked step is waiting for.
+
+## Sets built in Houdini
+
+A set is modelled once, procedurally, and every shot that uses it links the same publish.
+
+```
+assets/set/<id>/houdini/<id>_model_v###.hiplc      the procedural network; knobs are on /obj/set_<id>
+assets/set/<id>/publish/<id>_<state>_v###.usd      written by /stage/PUBLISH_USD
+assets/set/<id>/publish/<id>_<state>_v###.blend    the USD wrapped in one collection, set_<id>, for Blender
+```
+
+1. Build in Houdini inside `/obj/set_<id>`, in metres, Y-up, on the same footprint as the proxy: Blender (x, y, z) is Houdini (x, z, -y).
+   Give every branch a `name` so it becomes its own USD prim.
+2. Publish with `/stage/PUBLISH_USD`.
+3. Wrap and relink:
+   `blender -b --factory-startup --python pipeline/scripts/trailer_shots.py -- --root . --manifest pipeline/manifest.json --usd assets/set/<id>/publish/<id>_blocking_v001.usd --asset set/<id> --state blocking --shots <units that use it> --stills`
+   Shots always link the furthest published state of an asset, so this upgrades them.
+4. `status.bat` then shows the renders of those shots as out of date.

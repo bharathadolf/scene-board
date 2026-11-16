@@ -250,8 +250,70 @@ def set_geo(col, sid):
                   (11, 20, 7 + 2 * (i % 3)), rgba=(.62, .54, .44, 1))
 
 
+ASSET_STATES = ["proxy", "blocking", "model_approved", "rig_v1", "lookdev_approved", "final"]
+
+
 def asset_path(root, kind, aid):
     return os.path.join(root, "assets", kind, aid, "publish", "%s_proxy_%s.blend" % (aid, VER))
+
+
+def best_asset(root, kind, aid):
+    """The furthest state of an asset that has been published, at its newest version.
+    Shots link whatever this returns, so publishing a later state upgrades them on the next build."""
+    import glob
+    pub = os.path.join(root, "assets", kind, aid, "publish")
+    for state in reversed(ASSET_STATES):
+        hits = sorted(glob.glob(os.path.join(pub, "%s_%s_v[0-9][0-9][0-9].blend" % (aid, state))))
+        if hits:
+            return hits[-1], state
+    return asset_path(root, kind, aid), "proxy"
+
+
+def import_usd_asset(root, key, state, usd, names):
+    """Wrap a USD published from Houdini in a .blend whose one collection carries the
+    asset's name, which is what a shot file links."""
+    kind, aid = key.split("/")
+    bpy.ops.wm.read_factory_settings(use_empty=True)
+    col = bpy.data.collections.new("%s_%s" % (kind, aid))
+    bpy.context.scene.collection.children.link(col)
+    bpy.context.view_layer.active_layer_collection = bpy.context.view_layer.layer_collection.children[col.name]
+    bpy.ops.wm.usd_import(filepath=usd)
+    n = 0
+    for ob in list(bpy.context.scene.objects):
+        if col not in ob.users_collection:
+            for c in ob.users_collection:
+                c.objects.unlink(ob)
+            col.objects.link(ob)
+        if ob.type != "MESH":
+            continue
+        n += 1
+        rgba = (.6, .6, .6, 1)
+        ca = ob.data.color_attributes.get("displayColor") or (ob.data.color_attributes[0] if len(ob.data.color_attributes) else None)
+        if ca is not None and len(ca.data):
+            c = ca.data[0].color
+            rgba = (c[0], c[1], c[2], 1)
+        ob.data.materials.clear()
+        ob.data.materials.append(mat("M_%s_%s" % (aid, ob.name), rgba))
+        ob.color = rgba
+    label = (names.get("sets", {}).get(aid) or names.get("characters", {}).get(aid, {}).get("name")
+             or names.get("props", {}).get(aid) or aid) if kind != "char" else names["characters"].get(aid, {}).get("name", aid)
+    col["asset_id"], col["asset_kind"], col["asset_state"], col["asset_name"] = aid, kind, state, label
+    col["source_usd"] = os.path.basename(usd)
+    try:
+        col.asset_mark()
+    except Exception:
+        pass
+    m = __import__("re").search(r"_v(\d{3})", os.path.basename(usd))
+    ver = "v" + (m.group(1) if m else "001")
+    p = os.path.join(root, "assets", kind, aid, "publish", "%s_%s_%s.blend" % (aid, state, ver))
+    bpy.ops.wm.save_as_mainfile(filepath=p)
+    meta = os.path.join(root, "assets", kind, aid, "asset.json")
+    rec = json.load(open(meta, encoding="utf8")) if os.path.exists(meta) else dict(id=aid, kind=kind, name=label)
+    rec.update(state=state, version=ver, collection=col.name, publish=os.path.relpath(p, root).replace("\\", "/"),
+               source="houdini", source_usd=os.path.relpath(usd, root).replace("\\", "/"), meshes=n)
+    with open(meta, "w", encoding="utf8") as fh:
+        json.dump(rec, fh, ensure_ascii=False, indent=1)
+    return p, n
 
 
 def build_asset(root, kind, aid, names):
@@ -425,8 +487,8 @@ S = {
  ("T-16", 2): dict(o=(0, -96, 0), cast=[("rukmini", 0, 0, 180, dict(walk=(0, 2, 0)))],
                    crowd=[("c_guards", "ring", (0, 0, 3.6, 0), 16, 180, dict(walk=(0, 2, 0)))],
                    cam=dict(on="rukmini", front=10, follow=True)),
- ("T-17", 0): dict(o=(0, 4.4, 0), cast=[("rukmini", 0, -1.2, 0), ("maid", -.95, -.5, 0)], cam=dict(on="rukmini", front=10)),
- ("T-17", 1): dict(o=(0, 4.4, 0), cast=[("rukmini", 0, -1.2, 0)], cam=dict(on="rukmini", front=-22)),
+ ("T-17", 0): dict(o=(0, 4.4, 0), cast=[("rukmini", 0, -1.2, 0, dict(z=.4)), ("maid", -.95, -.5, 0, dict(z=.4))], cam=dict(on="rukmini", front=10)),
+ ("T-17", 1): dict(o=(0, 4.4, 0), cast=[("rukmini", 0, -1.2, 0, dict(z=.4))], cam=dict(on="rukmini", front=-22)),
  ("T-17", 2): dict(cast=[("rukmini", 0, -6, 0, dict(walk=(0, -5, 0)))], crowd=KINGS,
                    fx=[("dropped_cup", "cyl", (-4.2, -11.5, .06), (.1, .1, .12), (.8, .7, .3, 1))],
                    cam=dict(on="rukmini", az=14, dist=4.6, aimh=1.3, h=1.5, follow=True)),
@@ -463,7 +525,7 @@ def shot_dir(root, sh):
 
 
 def link_asset(root, kind, aid, here):
-    p = asset_path(root, kind, aid)
+    p, _state = best_asset(root, kind, aid)
     name = "%s_%s" % (kind, aid)
     col = next((c for c in bpy.data.collections if c.name == name and c.library), None)
     if col is None:
@@ -631,7 +693,7 @@ def build_shot(root, sh, names):
         e = inst(link_asset(root, "set", sid, blend), "SET_" + sid, cols["SET"], at, 0, dict(asset="set/" + sid))
         if to is not None:
             key_move(e, f0, f1, Vector(to) - Vector(at))
-        links.append("set/%s  →  assets/set/%s/publish/%s_proxy_%s.blend" % (sid, sid, sid, VER))
+        links.append("set/%s  →  %s" % (sid, os.path.relpath(best_asset(root, "set", sid)[0], root).replace("\\", "/")))
 
     # --- props first: people may ride them
     where, props = {}, {}
@@ -940,11 +1002,12 @@ def exr(root, sh):
 
 # ----------------------------------------------------------------------- main
 def main(argv):
-    o = dict(root=None, manifest=None, shots=None, assets=False, stills=False, playblast=False, exr=False, missing=False)
+    o = dict(root=None, manifest=None, shots=None, assets=False, stills=False, playblast=False, exr=False, missing=False,
+             wait=False, usd=None, asset=None, state="blocking", log="build_status.json")
     i = 0
     while i < len(argv):
         k = argv[i].lstrip("-")
-        if k in ("assets", "stills", "playblast", "exr", "missing"):
+        if k in ("assets", "stills", "playblast", "exr", "missing", "wait"):
             o[k] = True
         else:
             o[k] = argv[i + 1]
@@ -954,7 +1017,15 @@ def main(argv):
     man = json.load(open(o["manifest"], encoding="utf8"))
     names = man["names"]
     os.makedirs(os.path.join(root, "pipeline", "logs"), exist_ok=True)
-    log_p = os.path.join(root, "pipeline", "logs", "build_status.json")
+    log_p = os.path.join(root, "pipeline", "logs", o["log"])
+    wait_p = os.path.join(root, "pipeline", "logs", "build_status.json")
+    if o["wait"]:                 # queue behind a run that is already going
+        import time
+        while os.path.exists(wait_p) and json.load(open(wait_p, encoding="utf8")).get("phase") != "finished":
+            time.sleep(20)
+    if o["usd"]:
+        p, n = import_usd_asset(root, o["asset"], o["state"], os.path.abspath(o["usd"]), names)
+        print("asset %s → %s (%d meshes)" % (o["asset"], p, n))
     log = dict(started=datetime.datetime.now(datetime.timezone.utc).isoformat(), args=o, done=[], errors=[], phase="")
 
     def save():
