@@ -1,0 +1,72 @@
+{
+ "ap": true,
+ "shots": [
+  {
+   "a": true,
+   "t": "AERIAL",
+   "x": "The Ocean of Milk from above: the mountain turning in white water, and two lines of figures running out to either horizon on one serpent.",
+   "cam": {
+    "lens": 24,
+    "h": 90,
+    "ang": "top",
+    "mv": "drift",
+    "dur": 4.0
+   },
+   "cast": [
+    "c_devas",
+    "c_asuras",
+    "vasuki"
+   ],
+   "vo": "They were made to pull the same rope, and not one of them could see what was holding the mountain up."
+  },
+  {
+   "a": true,
+   "t": "INSERT",
+   "x": "Blistered hands close on the serpent's body, knuckles white, the skin of the palm split.",
+   "cam": {
+    "lens": 100,
+    "h": 1.0,
+    "ang": "eye",
+    "mv": "static",
+    "dur": 1.7916666666666667
+   },
+   "cast": [
+    "c_devas",
+    "vasuki"
+   ]
+  },
+  {
+   "a": true,
+   "t": "MCU",
+   "x": "An Asura's face at the serpent's head, teeth set, smoke coughing past him.",
+   "cam": {
+    "lens": 70,
+    "h": 1.5,
+    "ang": "eye",
+    "mv": "static",
+    "dur": 1.5833333333333333
+   },
+   "cast": [
+    "c_asuras",
+    "vasuki"
+   ]
+  },
+  {
+   "a": true,
+   "t": "WIDE",
+   "x": "From the waterline the mountain spins, and nothing that can be seen is holding it up.",
+   "cam": {
+    "lens": 28,
+    "h": 1.2,
+    "ang": "low",
+    "mv": "static",
+    "dur": 2.2083333333333335
+   },
+   "cast": [
+    "kurma"
+   ]
+  }
+ ],
+ "shotp": "trailer cut",
+ "updated": ""
+}

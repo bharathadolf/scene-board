@@ -1,0 +1,53 @@
+{
+ "ap": true,
+ "shots": [
+  {
+   "a": true,
+   "t": "CLOSE",
+   "x": "Her eyes are down on the stones. Then they lift.",
+   "cam": {
+    "lens": 85,
+    "h": 1.55,
+    "ang": "eye",
+    "mv": "static",
+    "dur": 2.0
+   },
+   "cast": [
+    "rukmini"
+   ]
+  },
+  {
+   "a": true,
+   "t": "POV",
+   "x": "What she sees: a chariot at the edge of the forecourt, and the man in it, in full, for the first time in the film. The blue light arrives with him. Nobody says his name.",
+   "cam": {
+    "lens": 50,
+    "h": 1.55,
+    "ang": "eye",
+    "mv": "static",
+    "dur": 3.0
+   },
+   "cast": [
+    "rukmini",
+    "krishna"
+   ]
+  },
+  {
+   "a": true,
+   "t": "CLOSE",
+   "x": "Back to her, and what the sight has done to her face.",
+   "cam": {
+    "lens": 85,
+    "h": 1.55,
+    "ang": "eye",
+    "mv": "push",
+    "dur": 2.0
+   },
+   "cast": [
+    "rukmini"
+   ]
+  }
+ ],
+ "shotp": "trailer cut",
+ "updated": ""
+}

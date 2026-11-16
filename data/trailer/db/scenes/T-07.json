@@ -1,0 +1,38 @@
+{
+ "ap": true,
+ "shots": [
+  {
+   "a": true,
+   "t": "EWS",
+   "x": "One man on an enormous road at first light, and the country he has to cross opening out past him in every direction.",
+   "cam": {
+    "lens": 18,
+    "h": 40,
+    "ang": "top",
+    "mv": "drift",
+    "dur": 2.5833333333333335
+   },
+   "cast": [
+    "brahmin"
+   ]
+  },
+  {
+   "a": true,
+   "t": "TRACKING",
+   "x": "Feet, then water: he crosses a river with the letter held above his head, dry.",
+   "cam": {
+    "lens": 35,
+    "h": 0.6,
+    "ang": "low",
+    "mv": "track",
+    "dur": 2.2083333333333335
+   },
+   "cast": [
+    "brahmin",
+    "ferryman"
+   ]
+  }
+ ],
+ "shotp": "trailer cut",
+ "updated": ""
+}

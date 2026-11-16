@@ -1,0 +1,35 @@
+{
+ "ap": true,
+ "shots": [
+  {
+   "a": true,
+   "t": "EWS",
+   "x": "The first gate breaks the surface of the sea. Then a wall, then towers, then terraces of crystal and gold, and the water parts and settles around them as if they had always been there.",
+   "cam": {
+    "lens": 24,
+    "h": 18,
+    "ang": "low",
+    "mv": "crane",
+    "dur": 3.2083333333333335
+   },
+   "cast": []
+  },
+  {
+   "a": true,
+   "t": "MS",
+   "x": "On the shore a sailor's hand goes to her mouth.",
+   "cam": {
+    "lens": 70,
+    "h": 1.5,
+    "ang": "eye",
+    "mv": "static",
+    "dur": 1.2083333333333333
+   },
+   "cast": [
+    "c_sailors"
+   ]
+  }
+ ],
+ "shotp": "trailer cut",
+ "updated": ""
+}

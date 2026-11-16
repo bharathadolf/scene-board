@@ -1,0 +1,53 @@
+{
+ "ap": true,
+ "shots": [
+  {
+   "a": true,
+   "t": "WIDE",
+   "x": "From the wall the women watch two chariots go in, and the dust closes over them.",
+   "cam": {
+    "lens": 35,
+    "h": 12,
+    "ang": "high",
+    "mv": "static",
+    "dur": 2.0
+   },
+   "cast": [
+    "c_women_mathura"
+   ]
+  },
+  {
+   "a": true,
+   "t": "WIDE",
+   "x": "Inside the dust: the plough comes through and sweeps the footsoldiers aside like a field being cleared.",
+   "cam": {
+    "lens": 35,
+    "h": 1.4,
+    "ang": "low",
+    "mv": "track",
+    "dur": 1.5833333333333333
+   },
+   "cast": [
+    "balarama",
+    "c_magadha_army"
+   ]
+  },
+  {
+   "a": true,
+   "t": "CLOSE",
+   "x": "On the wall, a woman faints and the ones beside her do not catch her.",
+   "cam": {
+    "lens": 85,
+    "h": 1.5,
+    "ang": "eye",
+    "mv": "static",
+    "dur": 1.0
+   },
+   "cast": [
+    "c_women_mathura"
+   ]
+  }
+ ],
+ "shotp": "trailer cut",
+ "updated": ""
+}

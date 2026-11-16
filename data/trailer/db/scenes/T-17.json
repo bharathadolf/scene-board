@@ -1,0 +1,54 @@
+{
+ "ap": true,
+ "shots": [
+  {
+   "a": true,
+   "t": "MS",
+   "x": "She comes out of the temple door with her friends behind her and stops on the threshold.",
+   "cam": {
+    "lens": 50,
+    "h": 1.55,
+    "ang": "eye",
+    "mv": "static",
+    "dur": 1.7916666666666667
+   },
+   "cast": [
+    "rukmini",
+    "maid"
+   ]
+  },
+  {
+   "a": true,
+   "t": "CLOSE",
+   "x": "She breaks a vow of silence and says something, and the trailer does not let us hear it.",
+   "cam": {
+    "lens": 85,
+    "h": 1.55,
+    "ang": "eye",
+    "mv": "static",
+    "dur": 1.5833333333333333
+   },
+   "cast": [
+    "rukmini"
+   ]
+  },
+  {
+   "a": true,
+   "t": "TRACKING",
+   "x": "She walks out among the kings who came for her, and goes past them as if they were furniture. One of them drops a cup.",
+   "cam": {
+    "lens": 35,
+    "h": 1.5,
+    "ang": "eye",
+    "mv": "track",
+    "dur": 2.2083333333333335
+   },
+   "cast": [
+    "rukmini",
+    "c_kings"
+   ]
+  }
+ ],
+ "shotp": "trailer cut",
+ "updated": ""
+}

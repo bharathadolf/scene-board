@@ -1,0 +1,37 @@
+{
+ "ap": true,
+ "shots": [
+  {
+   "a": true,
+   "t": "EWS",
+   "x": "From the wall: a line of dust becomes tents, becomes banners, becomes a country of fires out to the horizon.",
+   "cam": {
+    "lens": 24,
+    "h": 30,
+    "ang": "high",
+    "mv": "drift",
+    "dur": 2.7916666666666665
+   },
+   "cast": [
+    "c_magadha_army"
+   ]
+  },
+  {
+   "a": true,
+   "t": "CLOSE",
+   "x": "The water-carrier stops counting, puts down his bucket, and makes one chalk mark on the wall because there is nothing else to do.",
+   "cam": {
+    "lens": 85,
+    "h": 1.5,
+    "ang": "eye",
+    "mv": "static",
+    "dur": 1.7916666666666667
+   },
+   "cast": [
+    "water_carrier"
+   ]
+  }
+ ],
+ "shotp": "trailer cut",
+ "updated": ""
+}

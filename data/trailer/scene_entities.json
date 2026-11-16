@@ -1,0 +1,274 @@
+{
+ "T-01": {
+  "set": "milk_ocean",
+  "sub": "water",
+  "cast": [
+   "c_devas",
+   "c_asuras",
+   "vasuki",
+   "kurma"
+  ],
+  "props": [
+   "mandara"
+  ],
+  "place": "The Ocean of Milk",
+  "also": [
+   "milk_ocean/shore"
+  ],
+  "krishna": "effect"
+ },
+ "T-02": {
+  "set": "milk_ocean",
+  "sub": "water",
+  "cast": [
+   "c_devas",
+   "c_asuras",
+   "fisher_child"
+  ],
+  "props": [],
+  "place": "The Ocean of Milk",
+  "also": [
+   "milk_ocean/shore"
+  ]
+ },
+ "T-03": {
+  "set": "milk_ocean",
+  "sub": "shore",
+  "cast": [
+   "lakshmi",
+   "c_devas",
+   "c_asuras",
+   "krishna"
+  ],
+  "props": [
+   "garland_lakshmi"
+  ],
+  "place": "The shore; the assembled claimants",
+  "krishna": "hands"
+ },
+ "T-04": {
+  "set": "kundina_temple",
+  "sub": "painted_wall",
+  "cast": [
+   "rukmini",
+   "priest"
+  ],
+  "props": [],
+  "place": "Ambikā's temple at Kuṇḍina"
+ },
+ "T-05": {
+  "set": "kundina_palace",
+  "sub": "hall",
+  "cast": [
+   "rukmini",
+   "rukmi",
+   "bhishmaka",
+   "c_court"
+  ],
+  "props": [],
+  "place": "Palace hall"
+ },
+ "T-06": {
+  "set": "kundina_palace",
+  "sub": "rukmini_quarters",
+  "cast": [
+   "rukmini",
+   "brahmin"
+  ],
+  "props": [
+   "letter",
+   "lamp_kundina"
+  ],
+  "place": "Rukmini's quarters, night"
+ },
+ "T-07": {
+  "set": "open_country",
+  "sub": "long_road",
+  "cast": [
+   "brahmin",
+   "ferryman"
+  ],
+  "props": [
+   "letter"
+  ],
+  "place": "The road from Kuṇḍina to Dvārakā",
+  "also": [
+   "kundina_outskirts/river_crossing"
+  ]
+ },
+ "T-08": {
+  "set": "mathura",
+  "sub": "walls",
+  "cast": [
+   "water_carrier",
+   "c_magadha_army"
+  ],
+  "props": [
+   "chalk_marks"
+  ],
+  "place": "Mathurā's walls",
+  "also": [
+   "mathura/plain"
+  ]
+ },
+ "T-09": {
+  "set": "mathura",
+  "sub": "plain",
+  "cast": [
+   "c_women_mathura",
+   "balarama",
+   "c_magadha_army"
+  ],
+  "props": [
+   "plough",
+   "chariot"
+  ],
+  "place": "The walls of Mathurā; the plain",
+  "also": [
+   "mathura/walls"
+  ],
+  "krishna": "effect"
+ },
+ "T-10": {
+  "set": "mathura",
+  "sub": "walls",
+  "cast": [
+   "water_carrier",
+   "c_magadha_army"
+  ],
+  "props": [
+   "chalk_marks"
+  ],
+  "place": "The wall of Mathurā, across seasons",
+  "krishna": "effect"
+ },
+ "T-11": {
+  "set": "pravarshana",
+  "sub": "peak",
+  "cast": [
+   "balarama",
+   "krishna"
+  ],
+  "props": [],
+  "place": "Mount Pravarṣaṇa",
+  "also": [
+   "pravarshana/slope"
+  ],
+  "krishna": "shadow"
+ },
+ "T-12": {
+  "set": "open_country",
+  "sub": "long_road",
+  "cast": [
+   "kalayavana",
+   "krishna",
+   "c_yavana_army"
+  ],
+  "props": [
+   "lotus_garland"
+  ],
+  "place": "The road outside Mathurā",
+  "krishna": "hands"
+ },
+ "T-13": {
+  "set": "dvaraka_shore",
+  "sub": "sea",
+  "cast": [
+   "c_sailors"
+  ],
+  "props": [],
+  "place": "The sea off Ānarta",
+  "also": [
+   "dvaraka_city/gate"
+  ],
+  "krishna": "effect"
+ },
+ "T-14": {
+  "set": "kundina_palace",
+  "sub": "hall",
+  "cast": [
+   "rukmini",
+   "jarasandha",
+   "shishupala",
+   "c_kings",
+   "balarama"
+  ],
+  "props": [],
+  "place": "Kuṇḍina's hall and streets",
+  "also": [
+   "kundina_city/street",
+   "open_country/long_road"
+  ]
+ },
+ "T-15": {
+  "set": "kundina_palace",
+  "sub": "rukmini_quarters",
+  "cast": [
+   "rukmini",
+   "maid"
+  ],
+  "props": [
+   "wedding_dress",
+   "lamp_kundina"
+  ],
+  "place": "Rukmini's quarters"
+ },
+ "T-16": {
+  "set": "kundina_temple",
+  "sub": "approach",
+  "cast": [
+   "rukmini",
+   "c_procession",
+   "c_guards"
+  ],
+  "props": [
+   "wedding_dress"
+  ],
+  "place": "The road from the palace to Ambikā's temple"
+ },
+ "T-17": {
+  "set": "kundina_temple",
+  "sub": "forecourt",
+  "cast": [
+   "rukmini",
+   "maid",
+   "c_kings"
+  ],
+  "props": [],
+  "place": "The temple door and the forecourt"
+ },
+ "T-18": {
+  "set": "kundina_temple",
+  "sub": "forecourt",
+  "cast": [
+   "rukmini",
+   "krishna",
+   "c_kings"
+  ],
+  "props": [
+   "chariot"
+  ],
+  "place": "The forecourt of the temple",
+  "krishna": "face"
+ },
+ "T-19": {
+  "set": "kundina_temple",
+  "sub": "forecourt",
+  "cast": [
+   "rukmini",
+   "krishna",
+   "daruka",
+   "c_kings",
+   "balarama"
+  ],
+  "props": [
+   "chariot",
+   "conch"
+  ],
+  "place": "The forecourt and the road",
+  "also": [
+   "open_country/chase_road"
+  ],
+  "krishna": "face"
+ }
+}

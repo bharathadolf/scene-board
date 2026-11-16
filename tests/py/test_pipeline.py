@@ -4,6 +4,7 @@ stand-in server.
 
     python3 -m unittest discover -s tests/py -v
 """
+import collections
 import http.server
 import json
 import os
@@ -339,6 +340,59 @@ class Comfy(unittest.TestCase):
         wf = json.loads((ROOT / "comfy/workflows/sdxl_controlnet_depth.json").read_text())
         g = run_comfy.fill(wf, job, "d.png", "c", "n", 1)
         self.assertIn("face visible", g["3"]["inputs"]["text"])
+
+
+class TrailerCut(unittest.TestCase):
+    """The trailer is a cut of the film, so the film's rules hold inside it."""
+
+    @classmethod
+    def setUpClass(cls):
+        out = subprocess.run([sys.executable, "story/trailer/build_trailer.py"],
+                             cwd=ROOT, capture_output=True, text=True)
+        assert out.returncode == 0, out.stdout + out.stderr
+        cls.spec = json.loads((ROOT / "previz/trailer/shotspec.json").read_text())
+        cls.cuts = [(sc, sh) for sc in cls.spec["scenes"] for sh in sc["shots"]]
+
+    def test_his_face_arrives_once_and_late(self):
+        at, first_face, named_before = 0.0, None, []
+        for sc, sh in self.cuts:
+            names_him = "krishna" in sh["cast"] + sh["off"]
+            if names_him and sc["krishna"] == "face" and first_face is None:
+                first_face = at
+            if names_him and sc["krishna"] != "face":
+                named_before.append((sh["id"], sc["krishna"], at))
+            at += sh["camera"]["duration_s"]
+        self.assertIsNotNone(first_face, "the trailer has to arrive at him")
+        self.assertGreater(first_face, at * 0.8, "the face comes in the last fifth of the cut")
+        for sid, how, when in named_before:
+            self.assertLess(when, first_face, "%s shows him after the reveal without his face" % sid)
+            self.assertIn(how, ("hands", "shadow", "offscreen", "effect"))
+
+    def test_nothing_from_after_the_seventh_event(self):
+        for sc in self.spec["scenes"]:
+            self.assertLess(sc["src"][:3], "E07", "%s draws on %s" % (sc["code"], sc["src"]))
+
+    def test_she_is_in_more_of_it_than_anyone(self):
+        seen = collections.Counter(c for _, sh in self.cuts for c in sh["cast"])
+        self.assertEqual(seen.most_common(1)[0][0], "rukmini")
+
+    def test_every_cut_has_a_set_a_length_and_a_fingerprint(self):
+        for sc, sh in self.cuts:
+            self.assertTrue(sh["set"], sh["id"])
+            self.assertEqual(sh["camera"]["duration_src"], "authored", sh["id"])
+            self.assertGreater(sh["camera"]["duration_s"], 0.3, sh["id"])
+            self.assertTrue(sh["rev"], sh["id"])
+
+    def test_the_document_the_edl_and_the_csv_agree_on_the_length(self):
+        import csv as _csv
+        rows = list(_csv.DictReader((ROOT / "story/trailer/trailer_shots.csv").read_text().splitlines()))
+        frames = sum(int(r["frames"]) for r in rows)
+        edl = (ROOT / "story/trailer/trailer.edl").read_text()
+        self.assertEqual(len([l for l in edl.splitlines() if l.startswith("* FROM CLIP")]), len(rows))
+        last = [l for l in edl.splitlines() if l[:3].isdigit()][-1].split()
+        h, m, s, f = (int(x) for x in last[-1].split(":"))
+        self.assertEqual(((h * 60 + m) * 60 + s) * 24 + f, frames)
+        self.assertIn("(%d frames)" % frames, (ROOT / "story/TRAILER_CUT.md").read_text())
 
 
 if __name__ == "__main__":

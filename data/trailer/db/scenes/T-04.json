@@ -1,0 +1,52 @@
+{
+ "ap": true,
+ "shots": [
+  {
+   "a": true,
+   "t": "WIDE",
+   "x": "A painted wall in the temple of Ambikā: a mountain, a serpent, a dark flood, a hand at a god's throat, and a goddess walking a line of suitors. A priest sweeps at the far end.",
+   "cam": {
+    "lens": 28,
+    "h": 1.6,
+    "ang": "eye",
+    "mv": "push",
+    "dur": 2.4166666666666665
+   },
+   "cast": [
+    "priest"
+   ]
+  },
+  {
+   "a": true,
+   "t": "CLOSE",
+   "x": "Rukmini's face, lit by nothing but the light off the painted wall. The first time the film looks at her.",
+   "cam": {
+    "lens": 85,
+    "h": 1.55,
+    "ang": "eye",
+    "mv": "static",
+    "dur": 2.0
+   },
+   "cast": [
+    "rukmini"
+   ]
+  },
+  {
+   "a": true,
+   "t": "INSERT",
+   "x": "Her finger touches the painted figure at the end of the line — the one the goddess stopped for.",
+   "cam": {
+    "lens": 100,
+    "h": 1.4,
+    "ang": "eye",
+    "mv": "static",
+    "dur": 2.2083333333333335
+   },
+   "cast": [
+    "rukmini"
+   ]
+  }
+ ],
+ "shotp": "trailer cut",
+ "updated": ""
+}

@@ -1,0 +1,89 @@
+{
+ "ap": true,
+ "shots": [
+  {
+   "a": true,
+   "t": "ACTION",
+   "x": "He does not wait for her to climb. He takes her up in front of every king there and sets her beside him; her foot leaves the ground.",
+   "cam": {
+    "lens": 35,
+    "h": 1.4,
+    "ang": "low",
+    "mv": "track",
+    "dur": 1.5833333333333333
+   },
+   "cast": [
+    "krishna",
+    "rukmini",
+    "c_kings"
+   ]
+  },
+  {
+   "a": true,
+   "t": "WIDE",
+   "x": "The chariot goes through the ring of kings the way a lion goes through jackals, and Balarama's men open the road in front of it.",
+   "cam": {
+    "lens": 28,
+    "h": 1.2,
+    "ang": "low",
+    "mv": "track",
+    "dur": 1.7916666666666667
+   },
+   "cast": [
+    "krishna",
+    "rukmini",
+    "daruka",
+    "balarama",
+    "c_kings"
+   ]
+  },
+  {
+   "a": true,
+   "t": "MS",
+   "x": "From the moving chariot, he says the only thing he says in this trailer, to the kings he is leaving behind.",
+   "cam": {
+    "lens": 50,
+    "h": 1.6,
+    "ang": "low",
+    "mv": "track",
+    "dur": 3.4166666666666665
+   },
+   "cast": [
+    "krishna",
+    "rukmini"
+   ],
+   "dlg": "Krishna: Kings — she walked out on her own feet. I am only the chariot.",
+   "te": "రాజులారా — ఆమె తన కాళ్లతోనే నడిచి వచ్చింది. నేను కేవలం రథాన్ని."
+  },
+  {
+   "a": true,
+   "t": "ACTION",
+   "x": "The kings draw their swords too late. Behind the chariot a hundred horses turn at once.",
+   "cam": {
+    "lens": 35,
+    "h": 2.0,
+    "ang": "high",
+    "mv": "pan",
+    "dur": 1.5833333333333333
+   },
+   "cast": [
+    "c_kings"
+   ]
+  },
+  {
+   "a": true,
+   "t": "INSERT",
+   "x": "The conch, sounded once — and the trailer cuts to black on it.",
+   "cam": {
+    "lens": 100,
+    "h": 1.6,
+    "ang": "eye",
+    "mv": "static",
+    "dur": 1.0
+   },
+   "cast": []
+  }
+ ],
+ "shotp": "trailer cut",
+ "updated": ""
+}

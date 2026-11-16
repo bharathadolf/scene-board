@@ -1,0 +1,67 @@
+{
+ "ap": true,
+ "shots": [
+  {
+   "a": true,
+   "t": "WIDE",
+   "x": "A black stain crosses the milk-white water faster than a man can run; fish turn white and float up behind it.",
+   "cam": {
+    "lens": 24,
+    "h": 14,
+    "ang": "high",
+    "mv": "track",
+    "dur": 2.4166666666666665
+   },
+   "cast": [],
+   "vo": "The first thing the ocean gave them was not the prize."
+  },
+  {
+   "a": true,
+   "t": "WIDE",
+   "x": "Both armies drop the rope and run along the shore, gods and demons mixed together in the same direction.",
+   "cam": {
+    "lens": 35,
+    "h": 1.6,
+    "ang": "eye",
+    "mv": "pan",
+    "dur": 1.5833333333333333
+   },
+   "cast": [
+    "c_devas",
+    "c_asuras"
+   ]
+  },
+  {
+   "a": true,
+   "t": "MS",
+   "x": "At the edge of the water a fisher child stays where she is, one hand held out toward the dark.",
+   "cam": {
+    "lens": 50,
+    "h": 1.1,
+    "ang": "eye",
+    "mv": "static",
+    "dur": 2.0
+   },
+   "cast": [
+    "fisher_child"
+   ]
+  },
+  {
+   "a": true,
+   "t": "ECU",
+   "x": "The black water reaches her feet and goes round them, and does not touch her.",
+   "cam": {
+    "lens": 100,
+    "h": 0.3,
+    "ang": "low",
+    "mv": "static",
+    "dur": 1.4166666666666667
+   },
+   "cast": [
+    "fisher_child"
+   ]
+  }
+ ],
+ "shotp": "trailer cut",
+ "updated": ""
+}

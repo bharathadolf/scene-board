@@ -1,0 +1,52 @@
+{
+ "ap": true,
+ "shots": [
+  {
+   "a": true,
+   "t": "EWS",
+   "x": "The whole hillside alight, fire running up through the trees toward two figures near the top.",
+   "cam": {
+    "lens": 24,
+    "h": 60,
+    "ang": "high",
+    "mv": "drift",
+    "dur": 2.0
+   },
+   "cast": []
+  },
+  {
+   "a": true,
+   "t": "MS",
+   "x": "Balarama looks down the mountain they have run out of. Behind him a figure stands in the smoke with his back to the fire — a silhouette, and nothing more than that.",
+   "cam": {
+    "lens": 50,
+    "h": 1.6,
+    "ang": "eye",
+    "mv": "static",
+    "dur": 2.2083333333333335
+   },
+   "cast": [
+    "balarama",
+    "krishna"
+   ]
+  },
+  {
+   "a": true,
+   "t": "ACTION",
+   "x": "They jump. The camera follows one silhouette against the flames and stops before the ground.",
+   "cam": {
+    "lens": 35,
+    "h": 20,
+    "ang": "low",
+    "mv": "track",
+    "dur": 1.7916666666666667
+   },
+   "cast": [
+    "krishna",
+    "balarama"
+   ]
+  }
+ ],
+ "shotp": "trailer cut",
+ "updated": ""
+}

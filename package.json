@@ -15,6 +15,7 @@
     "test:js": "node tests/run.js",
     "test:py": "python3 -m unittest discover -s tests/py",
     "data:entities": "python3 scripts/make-entities.py && python3 scripts/audit-entities.py",
+    "trailer": "python3 story/trailer/build_trailer.py",
     "shotspec": "node scripts/shotspec.js",
     "bridge": "python3 pipeline/dcc_bridge.py"
   },

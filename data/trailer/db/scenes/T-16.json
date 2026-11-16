@@ -1,0 +1,54 @@
+{
+ "ap": true,
+ "shots": [
+  {
+   "a": true,
+   "t": "CRANE",
+   "x": "A ring of soldiers around one woman, moving down a road lined with people, toward a temple door at the end of it.",
+   "cam": {
+    "lens": 28,
+    "h": 9,
+    "ang": "high",
+    "mv": "crane",
+    "dur": 2.5833333333333335
+   },
+   "cast": [
+    "rukmini",
+    "c_procession",
+    "c_guards"
+   ]
+  },
+  {
+   "a": true,
+   "t": "CLOSE",
+   "x": "A soldier's eyes go along the roofline and the road, looking for a man nobody here has seen.",
+   "cam": {
+    "lens": 85,
+    "h": 1.7,
+    "ang": "eye",
+    "mv": "static",
+    "dur": 1.2083333333333333
+   },
+   "cast": [
+    "c_guards"
+   ]
+  },
+  {
+   "a": true,
+   "t": "CLOSE",
+   "x": "Rukmini looks straight ahead and at nothing, carried forward at somebody else's pace.",
+   "cam": {
+    "lens": 85,
+    "h": 1.55,
+    "ang": "eye",
+    "mv": "track",
+    "dur": 1.4166666666666667
+   },
+   "cast": [
+    "rukmini"
+   ]
+  }
+ ],
+ "shotp": "trailer cut",
+ "updated": ""
+}

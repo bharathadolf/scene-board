@@ -1,0 +1,56 @@
+{
+ "ap": true,
+ "shots": [
+  {
+   "a": true,
+   "t": "WIDE",
+   "x": "Kālayavana gets off his horse in front of his army, takes off his sword and lets it fall in the dust.",
+   "cam": {
+    "lens": 35,
+    "h": 1.6,
+    "ang": "eye",
+    "mv": "static",
+    "dur": 1.5833333333333333
+   },
+   "cast": [
+    "kalayavana",
+    "c_yavana_army"
+   ]
+  },
+  {
+   "a": true,
+   "t": "CLOSE",
+   "x": "Kālayavana, close, looking at something walking toward him that he does not believe.",
+   "cam": {
+    "lens": 85,
+    "h": 1.7,
+    "ang": "eye",
+    "mv": "static",
+    "dur": 3.0
+   },
+   "cast": [
+    "kalayavana"
+   ],
+   "dlg": "Kālayavana: No chariot. No bow. No shoes. This is the one they call a god?",
+   "te": "రథం లేదు. విల్లు లేదు. చెప్పులు కూడా లేవు. వీడినా దేవుడంటున్నది?"
+  },
+  {
+   "a": true,
+   "t": "TRACKING",
+   "x": "The chase: a barefoot man always one step out of reach, shot from behind and below, and never once from the front.",
+   "cam": {
+    "lens": 35,
+    "h": 1.2,
+    "ang": "eye",
+    "mv": "track",
+    "dur": 2.4166666666666665
+   },
+   "cast": [
+    "krishna",
+    "kalayavana"
+   ]
+  }
+ ],
+ "shotp": "trailer cut",
+ "updated": ""
+}

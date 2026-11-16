@@ -1,0 +1,85 @@
+{
+ "ap": true,
+ "shots": [
+  {
+   "a": true,
+   "t": "MACRO",
+   "x": "Ink. The nib goes in, comes out loaded, and makes the first stroke of a letter to a king.",
+   "cam": {
+    "lens": 100,
+    "h": 0.8,
+    "ang": "high",
+    "mv": "static",
+    "dur": 2.0
+   },
+   "cast": [
+    "rukmini"
+   ]
+  },
+  {
+   "a": true,
+   "t": "MS",
+   "x": "Her room at night, one lamp, the city asleep outside. She is writing fast, which she was never taught to do.",
+   "cam": {
+    "lens": 50,
+    "h": 1.1,
+    "ang": "eye",
+    "mv": "static",
+    "dur": 2.4166666666666665
+   },
+   "cast": [
+    "rukmini"
+   ]
+  },
+  {
+   "a": true,
+   "t": "INSERT",
+   "x": "Her hand presses the seal into the wax, and holds it there a beat too long.",
+   "cam": {
+    "lens": 85,
+    "h": 0.9,
+    "ang": "high",
+    "mv": "static",
+    "dur": 1.7916666666666667
+   },
+   "cast": [
+    "rukmini"
+   ]
+  },
+  {
+   "a": true,
+   "t": "CLOSE",
+   "x": "Her face over the sealed letter. She says the line to nobody, and it is the thesis of the film.",
+   "cam": {
+    "lens": 85,
+    "h": 1.55,
+    "ang": "eye",
+    "mv": "static",
+    "dur": 4.0
+   },
+   "cast": [
+    "rukmini"
+   ],
+   "dlg": "Rukmini: They will say a woman was stolen. Let them. I am the one holding the pen.",
+   "te": "ఒక ఆడపిల్లను ఎత్తుకుపోయారని అంటారు. అననివ్వండి — కలం పట్టుకున్నది నేనే."
+  },
+  {
+   "a": true,
+   "t": "INSERT",
+   "x": "The letter goes into the Brahmin's hands and disappears into his clothes.",
+   "cam": {
+    "lens": 70,
+    "h": 1.2,
+    "ang": "eye",
+    "mv": "static",
+    "dur": 1.5833333333333333
+   },
+   "cast": [
+    "rukmini",
+    "brahmin"
+   ]
+  }
+ ],
+ "shotp": "trailer cut",
+ "updated": ""
+}

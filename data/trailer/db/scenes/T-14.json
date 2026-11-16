@@ -1,0 +1,71 @@
+{
+ "ap": true,
+ "shots": [
+  {
+   "a": true,
+   "t": "WIDE",
+   "x": "The kings arrive in a column that does not end: escort after escort, banner after banner, filling the streets of Kuṇḍina.",
+   "cam": {
+    "lens": 35,
+    "h": 14,
+    "ang": "high",
+    "mv": "drift",
+    "dur": 2.0
+   },
+   "cast": [
+    "c_kings"
+   ]
+  },
+  {
+   "a": true,
+   "t": "MS",
+   "x": "In the hall they swear it together and then one by one: if he comes for her, we fight him.",
+   "cam": {
+    "lens": 50,
+    "h": 1.6,
+    "ang": "low",
+    "mv": "push",
+    "dur": 1.7916666666666667
+   },
+   "cast": [
+    "jarasandha",
+    "shishupala",
+    "c_kings"
+   ]
+  },
+  {
+   "a": true,
+   "t": "CLOSE",
+   "x": "Rukmini at a window above them, counting banners. There are too many to count.",
+   "cam": {
+    "lens": 85,
+    "h": 1.55,
+    "ang": "eye",
+    "mv": "static",
+    "dur": 1.7916666666666667
+   },
+   "cast": [
+    "rukmini"
+   ]
+  },
+  {
+   "a": true,
+   "t": "MS",
+   "x": "On the road outside, Balarama arrives with an army behind him and says what he has come for.",
+   "cam": {
+    "lens": 50,
+    "h": 1.6,
+    "ang": "eye",
+    "mv": "static",
+    "dur": 3.2083333333333335
+   },
+   "cast": [
+    "balarama"
+   ],
+   "dlg": "Balarama: You came for a bride. I came for the war that follows her.",
+   "te": "నువ్వు పెళ్లికూతురి కోసం వచ్చావు. ఆమె వెనకాల వచ్చే యుద్ధం కోసం నేను వచ్చాను."
+  }
+ ],
+ "shotp": "trailer cut",
+ "updated": ""
+}

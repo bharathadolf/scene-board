@@ -1,0 +1,98 @@
+{
+ "ap": true,
+ "shots": [
+  {
+   "a": true,
+   "t": "INSERT",
+   "x": "A chalk stroke on the wall.",
+   "cam": {
+    "lens": 100,
+    "h": 1.5,
+    "ang": "eye",
+    "mv": "static",
+    "dur": 0.5833333333333334
+   },
+   "cast": [
+    "water_carrier"
+   ]
+  },
+  {
+   "a": true,
+   "t": "WIDE",
+   "x": "Night, torches coming at the wall.",
+   "cam": {
+    "lens": 35,
+    "h": 8,
+    "ang": "high",
+    "mv": "static",
+    "dur": 0.5833333333333334
+   },
+   "cast": [
+    "c_magadha_army"
+   ]
+  },
+  {
+   "a": true,
+   "t": "INSERT",
+   "x": "A second chalk stroke beside the first.",
+   "cam": {
+    "lens": 100,
+    "h": 1.5,
+    "ang": "eye",
+    "mv": "static",
+    "dur": 0.5
+   },
+   "cast": [
+    "water_carrier"
+   ]
+  },
+  {
+   "a": true,
+   "t": "WIDE",
+   "x": "A siege tower burning against the wall.",
+   "cam": {
+    "lens": 35,
+    "h": 8,
+    "ang": "high",
+    "mv": "static",
+    "dur": 0.5833333333333334
+   },
+   "cast": [
+    "c_magadha_army"
+   ]
+  },
+  {
+   "a": true,
+   "t": "INSERT",
+   "x": "A third stroke. The wall is getting crowded.",
+   "cam": {
+    "lens": 100,
+    "h": 1.5,
+    "ang": "eye",
+    "mv": "static",
+    "dur": 0.5
+   },
+   "cast": [
+    "water_carrier"
+   ]
+  },
+  {
+   "a": true,
+   "t": "WIDE",
+   "x": "The camera pulls back off seventeen strokes. The carrier steps back with it, and this time there is no army on the horizon to follow it.",
+   "cam": {
+    "lens": 28,
+    "h": 1.6,
+    "ang": "eye",
+    "mv": "pull",
+    "dur": 2.0
+   },
+   "cast": [
+    "water_carrier"
+   ],
+   "vo": "Jarasandha (V.O.): Tell Mathurā their king is ash. Tell them who swept it."
+  }
+ ],
+ "shotp": "trailer cut",
+ "updated": ""
+}

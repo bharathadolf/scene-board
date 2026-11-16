@@ -1,0 +1,57 @@
+{
+ "ap": true,
+ "shots": [
+  {
+   "a": true,
+   "t": "WIDE",
+   "x": "The line of claimants along the shore, every one of them arranged to be chosen, every one of them leaning in.",
+   "cam": {
+    "lens": 35,
+    "h": 2.4,
+    "ang": "high",
+    "mv": "static",
+    "dur": 2.2083333333333335
+   },
+   "cast": [
+    "c_devas",
+    "c_asuras"
+   ]
+  },
+  {
+   "a": true,
+   "t": "TRACKING",
+   "x": "Lakṣmī walks the line with the garland. The camera travels with her, past face after face, and she passes each one.",
+   "cam": {
+    "lens": 50,
+    "h": 1.6,
+    "ang": "eye",
+    "mv": "track",
+    "dur": 3.0
+   },
+   "cast": [
+    "lakshmi",
+    "c_devas",
+    "c_asuras"
+   ],
+   "vo": "Everything in it was taken. One thing was given."
+  },
+  {
+   "a": true,
+   "t": "INSERT",
+   "x": "The garland lifts toward a pair of hands that never came forward — and the cut comes before the face.",
+   "cam": {
+    "lens": 85,
+    "h": 1.5,
+    "ang": "eye",
+    "mv": "static",
+    "dur": 1.5833333333333333
+   },
+   "cast": [
+    "lakshmi",
+    "krishna"
+   ]
+  }
+ ],
+ "shotp": "trailer cut",
+ "updated": ""
+}
