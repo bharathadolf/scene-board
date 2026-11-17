@@ -32,8 +32,9 @@ import bpy
 import bmesh
 from mathutils import Vector
 
-GEN = "trailer_shots/1.0.0"
-VER = "v001"
+GEN = "trailer_shots/2.0.0"
+VER = "v001"          # the shot version being built; --version sets it
+PROXY_VER = "v001"    # proxy assets are only ever v001
 SENSOR_W, FIGURE = 36.0, 1.7
 FILL = dict(EWS=.12, AERIAL=.05, WIDE=.42, MS=1.3, MCU=2.8, CLOSE=4.2, ECU=11, INSERT=4.2,
             MACRO=11, POV=.55, TRACKING=.8, CRANE=.3, ACTION=.8)
@@ -254,7 +255,7 @@ ASSET_STATES = ["proxy", "blocking", "model_approved", "rig_v1", "lookdev_approv
 
 
 def asset_path(root, kind, aid):
-    return os.path.join(root, "assets", kind, aid, "publish", "%s_proxy_%s.blend" % (aid, VER))
+    return os.path.join(root, "assets", kind, aid, "publish", "%s_proxy_%s.blend" % (aid, PROXY_VER))
 
 
 def best_asset(root, kind, aid):
@@ -267,6 +268,86 @@ def best_asset(root, kind, aid):
         if hits:
             return hits[-1], state
     return asset_path(root, kind, aid), "proxy"
+
+
+LOOK = [  # (match in the USD part name, look)
+    (("terrain", "ground"), "terrain"), (("canopy", "leaf", "foliage"), "foliage"), (("trunk", "bark"), "bark"),
+    (("flag", "banner_cloth"), "cloth"), (("pole", "door"), "wood"), (("mural_panels",), "paint"),
+]
+
+
+def look_of(name):
+    n = name.lower()
+    for keys, look in LOOK:
+        if any(k in n for k in keys):
+            return look
+    return "stone"
+
+
+def lookdev(name, look):
+    """A procedural material that reads the per-point colour Houdini baked (displayColor)
+    and adds the surface breakup a flat colour lacks. No textures, so it travels with the file."""
+    m = bpy.data.materials.new(name)
+    m.use_nodes = True
+    nt = m.node_tree
+    N, L = nt.nodes, nt.links
+    bsdf = next(n for n in N if n.type == "BSDF_PRINCIPLED")
+    attr = N.new("ShaderNodeAttribute")
+    attr.attribute_name = "displayColor"
+    coord = N.new("ShaderNodeTexCoord")
+    noise = N.new("ShaderNodeTexNoise")
+    L.new(coord.outputs["Object"], noise.inputs["Vector"])
+    noise.inputs["Detail"].default_value = 8.0
+    noise.inputs["Roughness"].default_value = .62
+    gam = N.new("ShaderNodeGamma")             # the colours were picked by eye on a display: make them linear
+    gam.inputs["Gamma"].default_value = 2.0
+    L.new(attr.outputs["Color"], gam.inputs["Color"])
+    mix = N.new("ShaderNodeMix")
+    mix.data_type = "RGBA"
+    mix.blend_type = "MULTIPLY"
+    L.new(gam.outputs["Color"], mix.inputs[6])
+    ramp = N.new("ShaderNodeValToRGB")
+    L.new(noise.outputs["Fac"], ramp.inputs["Fac"])
+    lo, hi = dict(stone=(.72, 1.08), terrain=(.62, 1.15), foliage=(.75, 1.15), bark=(.6, 1.0),
+                  cloth=(.85, 1.05), wood=(.7, 1.0), paint=(.7, 1.05))[look]
+    ramp.color_ramp.elements[0].color = (lo, lo, lo, 1)
+    ramp.color_ramp.elements[1].color = (hi, hi, hi, 1)
+    L.new(ramp.outputs["Color"], mix.inputs[7])
+    mix.inputs["Factor"].default_value = 1.0
+    L.new(mix.outputs[2], bsdf.inputs["Base Color"])
+    rough, scale, bstr = dict(stone=(.82, 3.0, .35), terrain=(.95, .35, .5), foliage=(.55, 9.0, .15),
+                              bark=(.9, 6.0, .45), cloth=(.75, 14.0, .08), wood=(.7, 5.0, .2),
+                              paint=(.8, 2.0, .15))[look]
+    noise.inputs["Scale"].default_value = scale
+    bsdf.inputs["Roughness"].default_value = rough
+    bump = N.new("ShaderNodeBump")
+    bump.inputs["Strength"].default_value = bstr
+    fine = N.new("ShaderNodeTexNoise")
+    L.new(coord.outputs["Object"], fine.inputs["Vector"])
+    fine.inputs["Scale"].default_value = scale * 9
+    fine.inputs["Detail"].default_value = 6.0
+    if look == "stone":                       # chipped edges and joints read as cracks
+        vor = N.new("ShaderNodeTexVoronoi")
+        vor.feature = "DISTANCE_TO_EDGE"
+        L.new(coord.outputs["Object"], vor.inputs["Vector"])
+        vor.inputs["Scale"].default_value = 2.2
+        add = N.new("ShaderNodeMath")
+        add.operation = "MULTIPLY_ADD"
+        L.new(fine.outputs["Fac"], add.inputs[0])
+        add.inputs[1].default_value = .6
+        L.new(vor.outputs["Distance"], add.inputs[2])
+        L.new(add.outputs[0], bump.inputs["Height"])
+    else:
+        L.new(fine.outputs["Fac"], bump.inputs["Height"])
+    L.new(bump.outputs["Normal"], bsdf.inputs["Normal"])
+    if look == "foliage":
+        for k in ("Subsurface Weight", "Transmission Weight"):
+            if k in bsdf.inputs:
+                bsdf.inputs[k].default_value = .12
+    if look == "cloth" and "Sheen Weight" in bsdf.inputs:
+        bsdf.inputs["Sheen Weight"].default_value = .4
+    m.diffuse_color = (.6, .58, .52, 1)
+    return m
 
 
 def import_usd_asset(root, key, state, usd, names):
@@ -293,7 +374,9 @@ def import_usd_asset(root, key, state, usd, names):
             c = ca.data[0].color
             rgba = (c[0], c[1], c[2], 1)
         ob.data.materials.clear()
-        ob.data.materials.append(mat("M_%s_%s" % (aid, ob.name), rgba))
+        look = look_of(ob.name)
+        ob.data.materials.append(lookdev("M_%s_%s" % (aid, ob.name), look))
+        ob["look"] = look
         ob.color = rgba
     label = (names.get("sets", {}).get(aid) or names.get("characters", {}).get(aid, {}).get("name")
              or names.get("props", {}).get(aid) or aid) if kind != "char" else names["characters"].get(aid, {}).get("name", aid)
@@ -332,14 +415,14 @@ def build_asset(root, kind, aid, names):
     col["asset_id"], col["asset_kind"], col["asset_state"], col["asset_name"] = aid, kind, "proxy", label
     try:
         col.asset_mark()
-        col.asset_data.description = "%s — proxy %s. Replace by publishing a later state under the same collection name." % (label, VER)
+        col.asset_data.description = "%s — proxy %s. Replace by publishing a later state under the same collection name." % (label, PROXY_VER)
     except Exception:
         pass
     p = asset_path(root, kind, aid)
     os.makedirs(os.path.dirname(p), exist_ok=True)
     bpy.ops.wm.save_as_mainfile(filepath=p)
     with open(os.path.join(os.path.dirname(os.path.dirname(p)), "asset.json"), "w", encoding="utf8") as fh:
-        json.dump(dict(id=aid, kind=kind, name=label, state="proxy", version=VER, collection=col.name,
+        json.dump(dict(id=aid, kind=kind, name=label, state="proxy", version=PROXY_VER, collection=col.name,
                        publish=os.path.relpath(p, root).replace("\\", "/"),
                        next_states=["blocking", "model_approved", "rig_v1", "lookdev_approved", "final"],
                        generator=GEN), fh, ensure_ascii=False, indent=1)
@@ -706,15 +789,16 @@ def build_shot(root, sh, names):
         e["_held"] = op.get("held", "")
         e["_local"] = (x, y, z)
         key_move(e, f0, f1, op.get("walk"))
-        links.append("prop/%s  →  assets/prop/%s/publish/%s_proxy_%s.blend" % (pid, pid, pid, VER))
+        links.append("prop/%s  →  %s" % (pid, os.path.relpath(best_asset(root, "prop", pid)[0], root).replace("\\", "/")))
 
     # --- cast
     for row in st.get("cast", []):
         cid, x, y, rot = row[:4]
         op = row[4] if len(row) > 4 else {}
         z = op.get("z", 0)
-        e = inst(link_asset(root, "char", cid, blend), "CH_" + cid, cols["CAST"], o + Vector((x, y, z)), rot,
-                 dict(asset="char/" + cid))
+        ccol = link_asset(root, "char", cid, blend)
+        e = inst(ccol, "CH_" + cid, cols["CAST"], o + Vector((x, y, z)), rot, dict(asset="char/" + cid))
+        hk = ccol.get("height_m")
         walk = op.get("walk")
         if op.get("on") and op["on"] in props:
             par = props[op["on"]]
@@ -726,8 +810,9 @@ def build_shot(root, sh, names):
             key_move(e, f0, f1, walk)
         if cid == "krishna" and sh["krishna"] != "face":
             e["withheld"] = sh["krishna"]
-        where[cid] = dict(pos=pos, rot=rot, walk=Vector(walk) if walk else Vector((0, 0, 0)), k=.62 if cid == "fisher_child" else 1)
-        links.append("char/%s  →  assets/char/%s/publish/%s_proxy_%s.blend" % (cid, cid, cid, VER))
+        k = (float(hk) / FIGURE) if hk else (.62 if cid == "fisher_child" else 1)
+        where[cid] = dict(pos=pos, rot=rot, walk=Vector(walk) if walk else Vector((0, 0, 0)), k=k)
+        links.append("char/%s  →  %s" % (cid, os.path.relpath(best_asset(root, "char", cid)[0], root).replace("\\", "/")))
     for e in cols["PROPS"].objects:                       # things in a hand travel with the hand
         h = e.get("_held", "")
         if h and ("CH_" + h) in bpy.data.objects:
@@ -753,7 +838,7 @@ def build_shot(root, sh, names):
             e = inst(col, "%s_%03d" % (grp.name, i), cols["CAST"], (x, y, z), face)
             e.parent = grp
             where.setdefault((cid, i), dict(pos=o + Vector((x, y, z)), rot=face, walk=Vector(op.get("walk") or (0, 0, 0)), k=1))
-        tag = "char/%s  →  assets/char/%s/publish/%s_proxy_%s.blend" % (cid, cid, cid, VER)
+        tag = "char/%s  →  %s" % (cid, os.path.relpath(best_asset(root, "char", cid)[0], root).replace("\\", "/"))
         if tag not in links:
             links.append(tag)
 
@@ -846,6 +931,18 @@ def build_shot(root, sh, names):
     if bg:
         bg.inputs[0].default_value = (sky[0], sky[1], sky[2], 1)
         bg.inputs[1].default_value = amb
+        if tod != "night":                     # a physical sky; the sun lamp carries the direct light
+            try:
+                tex = world.node_tree.nodes.new("ShaderNodeTexSky")
+                types = [i.identifier for i in tex.bl_rna.properties["sky_type"].enum_items]
+                tex.sky_type = "SINGLE_SCATTERING" if "SINGLE_SCATTERING" in types else types[0]
+                tex.sun_disc = False
+                tex.sun_elevation = rad(el)
+                tex.sun_rotation = rad(-35)
+                world.node_tree.links.new(tex.outputs["Color"], bg.inputs[0])
+                bg.inputs[1].default_value = dict(day=.09, dawn=.07, dusk=.06).get(tod, .08)
+            except Exception:
+                pass
     scene.world = world
     for e in list(cols["PROPS"].objects):
         if e.name.startswith("PROP_lamp"):
@@ -953,10 +1050,16 @@ def gpu_on():
 def still(root, sh):
     scene = bpy.context.scene
     r = scene.render
-    keep = (r.engine, r.filepath, r.resolution_percentage)
-    r.engine = "BLENDER_WORKBENCH"
-    scene.display.shading.light, scene.display.shading.color_type = "STUDIO", "MATERIAL"
-    scene.display.shading.show_shadows = True
+    keep = (r.engine, r.filepath, r.resolution_percentage, scene.cycles.samples, scene.cycles.use_denoising)
+    if VER == "v001":                          # v001 stayed a grey blocking pass
+        r.engine = "BLENDER_WORKBENCH"
+        scene.display.shading.light, scene.display.shading.color_type = "STUDIO", "MATERIAL"
+        scene.display.shading.show_shadows = True
+    else:
+        gpu_on()
+        r.engine = "CYCLES"
+        scene.cycles.device = "GPU"
+        scene.cycles.samples, scene.cycles.use_denoising = 48, True
     r.resolution_percentage = 25
     if hasattr(r.image_settings, "media_type"):
         r.image_settings.media_type = "IMAGE"
@@ -965,15 +1068,23 @@ def still(root, sh):
     scene.frame_set((sh["frame_start"] + sh["frame_end"]) // 2)
     bpy.ops.render.render(write_still=True)
     r.engine, r.resolution_percentage = keep[0], keep[2]
+    scene.cycles.samples, scene.cycles.use_denoising = keep[3], keep[4]
     exr_output(scene, keep[1])
 
 
 def playblast(root, sh):
     scene = bpy.context.scene
     r = scene.render
-    r.engine = "BLENDER_WORKBENCH"
-    scene.display.shading.light, scene.display.shading.color_type = "STUDIO", "MATERIAL"
-    scene.display.shading.show_shadows = True
+    if VER == "v001":
+        r.engine = "BLENDER_WORKBENCH"
+        scene.display.shading.light, scene.display.shading.color_type = "STUDIO", "MATERIAL"
+        scene.display.shading.show_shadows = True
+    else:                                      # EEVEE: the look-dev, at playblast speed
+        r.engine = "BLENDER_EEVEE"
+        try:
+            scene.eevee.taa_render_samples = 16
+        except Exception:
+            pass
     r.resolution_x, r.resolution_y, r.resolution_percentage = 1024, 430, 100     # H.264 wants even sides
     r.use_stamp, r.use_stamp_note, r.use_stamp_frame, r.use_stamp_lens = True, True, True, True
     for k in ("use_stamp_date", "use_stamp_time", "use_stamp_render_time", "use_stamp_filename", "use_stamp_scene",
@@ -1003,17 +1114,19 @@ def exr(root, sh):
 # ----------------------------------------------------------------------- main
 def main(argv):
     o = dict(root=None, manifest=None, shots=None, assets=False, stills=False, playblast=False, exr=False, missing=False,
-             wait=False, usd=None, asset=None, state="blocking", log="build_status.json")
+             wait=False, usd=None, asset=None, state="blocking", log="build_status.json", version="v001", force=False)
     i = 0
     while i < len(argv):
         k = argv[i].lstrip("-")
-        if k in ("assets", "stills", "playblast", "exr", "missing", "wait"):
+        if k in ("assets", "stills", "playblast", "exr", "missing", "wait", "force"):
             o[k] = True
         else:
             o[k] = argv[i + 1]
             i += 1
         i += 1
     root = os.path.abspath(o["root"])
+    global VER
+    VER = o["version"]
     man = json.load(open(o["manifest"], encoding="utf8"))
     names = man["names"]
     os.makedirs(os.path.join(root, "pipeline", "logs"), exist_ok=True)
@@ -1063,7 +1176,15 @@ def main(argv):
                 d = shot_dir(root, sh)
                 blend = os.path.join(d, "blender", "%s_blocking_%s.blend" % (sh["id"], VER))
                 if building:
+                    mark = blend + ".generated"
+                    if os.path.exists(blend) and not os.path.exists(mark) and not o["force"]:
+                        log["errors"].append(dict(shot=sh["id"], error="%s exists and was not written by the builder; "
+                                                  "left alone (hand work). Use a new --version." % os.path.basename(blend)))
+                        save()
+                        continue
                     build_shot(root, sh, names)
+                    with open(mark, "w") as fh:
+                        fh.write(GEN)
                     if o["stills"]:
                         still(root, sh)
                 else:
