@@ -1319,7 +1319,7 @@ def final(root, sh):
     im.file_format, im.color_mode, im.color_depth = "PNG", "RGB", "8"
     d, pattern, mp4 = final_paths(root, sh)
     os.makedirs(d, exist_ok=True)
-    r.filepath = pattern.replace("####", "")
+    r.filepath = pattern.replace("####.png", "")          # Blender adds the frame number and .png
     r.use_overwrite, r.use_placeholder = False, True
     pre, post = dissolve_handles(root, sh)
     scene.frame_start, scene.frame_end = sh["frame_start"] - pre, sh["frame_end"] + post
