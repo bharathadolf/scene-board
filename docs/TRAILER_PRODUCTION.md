@@ -12,6 +12,7 @@ shots/MV<I-IV>/<unit>/<shot id>/
     publish/camera/<id>_cam_v001.abc          the camera alone, with 8-frame handles
     renders/preview/                          still PNG and playblast MP4 with burn-in
     renders/blocking/v001/                    multilayer EXR, every pass, every frame of the cut
+    renders/final/v003/  + <id>_final_v003.mp4  the watchable render (Cycles, motion blur), PNGs + movie
     cache/  comp/                             empty until FX and comp start
 pipeline/  manifest.json, shotspec.json, TRAILER_CUT.md, dependency.json, status.json, DEPENDENCIES.md, logs/
 edit/      trailer.edl
@@ -29,6 +30,11 @@ edit/      trailer.edl
   next version up.
 - **Versions so far.** `v001`: grey blocking on proxy assets. `v002`: the Houdini temple (v002) with look-dev
   materials and a physical sky, MPFB characters with arms down (v002), Cycles stills and EEVEE playblasts.
+  `v003`: every set built in Houdini (palace hall and quarters, Ocean of Milk, open country, river crossing,
+  Mathura, Pravarshana, Dvaraka shore and city, Kundina city), Mandara/Vasuki/Kurma built in Houdini, a camera move
+  on every shot (see `MOVES` in `trailer_shots.py`), interior lighting, FX stand-ins left out of the render, and
+  full-length Cycles renders of every shot assembled into `edit/trailer_v003_assembly.mp4` with the transitions in
+  `pipeline/transitions_v003.json` and an EDL.
 - **FXPROXY_ objects** in a blocking file mark where an effect goes and how big it is. They are stand-ins for Houdini's work.
 - **Krishna** is turned away from camera in every shot before `T-18_82ert`. Keep it that way.
 
@@ -37,6 +43,8 @@ edit/      trailer.edl
 ```
 status.bat                refresh pipeline/DEPENDENCIES.md, status.json and dependency.json from what is on disk
 make_version.bat v003     build every shot at a new version, then playblasts, all-pass EXRs and the status
+make_final.bat v003       build (if needed), render every shot at full cut length in Cycles, assemble the trailer,
+                          write the EDL and refresh the status; re-run to resume
 build_shots.bat           rebuild every v001 blocking file from the manifest (assets too)
 render_blocking.bat       v001 playblasts and EXRs for every shot that does not have them yet
 ```
@@ -55,7 +63,10 @@ assets/set/<id>/publish/<id>_<state>_v###.blend    the USD wrapped in one collec
 
 1. Build in Houdini inside `/obj/set_<id>`, in metres, Y-up, on the same footprint as the proxy: Blender (x, y, z) is Houdini (x, z, -y).
    Give every branch a `name` so it becomes its own USD prim; the name picks the Blender look:
-   `terrain`/`ground`, `canopy`/`leaf`, `trunk`/`bark`, `flag`, `pole`/`door`, `mural_panels`, and stone for anything else.
+   `flame`, `milk`/`foam`, `water`/`sea_`/`river`, `gold`/`brass`, `crystal`, `terrain`/`ground`/`paving`,
+   `canopy`/`leaf`/`foliage`, `trunk`/`bark`, cloth (`flag`, `banner_cloth`, `carpet`, `rug`, `drape`, `cushion`,
+   `awning`), wood (`pole`, `door`, `wood`), `mural_panels`, and stone for anything else. First match wins.
+   Shared library geometry (the tree) lives in `assets/lib/`.
    Colour goes in `Cd` as you would pick it by eye; the look-dev converts it to linear and adds surface breakup.
 2. Publish with `/stage/PUBLISH_USD`.
 3. Wrap and relink:

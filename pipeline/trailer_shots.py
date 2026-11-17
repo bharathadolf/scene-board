@@ -32,7 +32,7 @@ import bpy
 import bmesh
 from mathutils import Vector
 
-GEN = "trailer_shots/2.0.0"
+GEN = "trailer_shots/3.0.0"
 VER = "v001"          # the shot version being built; --version sets it
 PROXY_VER = "v001"    # proxy assets are only ever v001
 SENSOR_W, FIGURE = 36.0, 1.7
@@ -270,9 +270,13 @@ def best_asset(root, kind, aid):
     return asset_path(root, kind, aid), "proxy"
 
 
-LOOK = [  # (match in the USD part name, look)
-    (("terrain", "ground"), "terrain"), (("canopy", "leaf", "foliage"), "foliage"), (("trunk", "bark"), "bark"),
-    (("flag", "banner_cloth"), "cloth"), (("pole", "door"), "wood"), (("mural_panels",), "paint"),
+LOOK = [  # (match in the USD part name, look) -- first match wins
+    (("flame", "fire"), "flame"), (("milk", "foam"), "milk"), (("water", "sea_", "ocean", "river", "pool_w"), "water"),
+    (("gold", "brass"), "gold"), (("crystal",), "crystal"), (("windows_dark",), "dark"),
+    (("terrain", "ground", "paving", "thatch"), "terrain"), (("canopy", "leaf", "foliage"), "foliage"),
+    (("trunk", "bark"), "bark"),
+    (("flag", "banner_cloth", "carpet", "rug", "drape", "cushion", "awning", "bunting"), "cloth"),
+    (("pole", "door", "wood"), "wood"), (("mural_panels",), "paint"),
 ]
 
 
@@ -309,7 +313,8 @@ def lookdev(name, look):
     ramp = N.new("ShaderNodeValToRGB")
     L.new(noise.outputs["Fac"], ramp.inputs["Fac"])
     lo, hi = dict(stone=(.72, 1.08), terrain=(.62, 1.15), foliage=(.75, 1.15), bark=(.6, 1.0),
-                  cloth=(.85, 1.05), wood=(.7, 1.0), paint=(.7, 1.05))[look]
+                  cloth=(.85, 1.05), wood=(.7, 1.0), paint=(.7, 1.05), water=(.9, 1.05), milk=(.96, 1.02),
+                  gold=(.8, 1.05), crystal=(.92, 1.03), dark=(.8, 1.0), flame=(1, 1))[look]
     ramp.color_ramp.elements[0].color = (lo, lo, lo, 1)
     ramp.color_ramp.elements[1].color = (hi, hi, hi, 1)
     L.new(ramp.outputs["Color"], mix.inputs[7])
@@ -317,7 +322,9 @@ def lookdev(name, look):
     L.new(mix.outputs[2], bsdf.inputs["Base Color"])
     rough, scale, bstr = dict(stone=(.82, 3.0, .35), terrain=(.95, .35, .5), foliage=(.55, 9.0, .15),
                               bark=(.9, 6.0, .45), cloth=(.75, 14.0, .08), wood=(.7, 5.0, .2),
-                              paint=(.8, 2.0, .15))[look]
+                              paint=(.8, 2.0, .15), water=(.04, .9, .12), milk=(.28, .6, .06),
+                              gold=(.32, 4.0, .1), crystal=(.14, 2.0, .05), dark=(.9, 3.0, .1),
+                              flame=(.5, 1.0, 0.0))[look]
     noise.inputs["Scale"].default_value = scale
     bsdf.inputs["Roughness"].default_value = rough
     bump = N.new("ShaderNodeBump")
@@ -346,6 +353,21 @@ def lookdev(name, look):
                 bsdf.inputs[k].default_value = .12
     if look == "cloth" and "Sheen Weight" in bsdf.inputs:
         bsdf.inputs["Sheen Weight"].default_value = .4
+    if look == "gold":
+        bsdf.inputs["Metallic"].default_value = 1.0
+    if look in ("crystal", "water") and "Coat Weight" in bsdf.inputs:
+        bsdf.inputs["Coat Weight"].default_value = .5 if look == "crystal" else .0
+    if look == "water":
+        bsdf.inputs["IOR"].default_value = 1.33
+        if "Specular IOR Level" in bsdf.inputs:
+            bsdf.inputs["Specular IOR Level"].default_value = .7
+    if look == "milk" and "Subsurface Weight" in bsdf.inputs:
+        bsdf.inputs["Subsurface Weight"].default_value = .35
+        if "Subsurface Radius" in bsdf.inputs:
+            bsdf.inputs["Subsurface Radius"].default_value = (.4, .35, .3)
+    if look == "flame":
+        L.new(gam.outputs["Color"], bsdf.inputs["Emission Color"])
+        bsdf.inputs["Emission Strength"].default_value = 25.0
     m.diffuse_color = (.6, .58, .52, 1)
     return m
 
@@ -508,7 +530,7 @@ S = {
                           ("c_magadha_army", "block", (0, -420, 600, 240), 90, 180)],
                    props=[("chariot", -6, -300, 0, 0), ("chariot", 7, -292, 0, 0)],
                    fx=[("battle_dust", "box", (0, -330, 14), (420, 200, 28), (.7, .62, .46, .35))],
-                   cam=dict(pos=(0, 4.2, 15.2), aim=(0, -300, 0))),
+                   cam=dict(pos=(3.5, 1.0, 16.8), aim=(0, -300, 0))),     # high over the women's shoulders
  ("T-09", 1): dict(o=(0, -300, 0), cast=[("balarama", 0, 0, 0, dict(walk=(-2.5, 0, 0)))],
                    crowd=[("c_magadha_army", "block", (0, -9, 26, 12), 36, 180)],
                    props=[("plough", 0, -.5, 0, 0, dict(held="balarama"))],
@@ -597,6 +619,47 @@ S = {
 }
 S[("T-10", 2)] = S[("T-10", 0)]
 S[("T-10", 4)] = S[("T-10", 0)]
+
+# From v003 every shot moves. A shot the board calls "static" gets the move its size suggests (a slow push
+# on faces and inserts, a few degrees of arc on mediums, a slow drift on wides); ACTION and POV shots get a
+# hand-held float. MOVES overrides that per shot or per unit.
+MOVES = {
+    "T-01_waoex": dict(rise=-14.0),                 # the aerial sinks toward the churning
+    "T-02_347qc": dict(rise=-3.0),
+    "T-13_sgipu": dict(push=12.0),                  # crane up and in as the city rises
+    "T-16_ieqeu": dict(push=6.0),
+    "T-18_82ert": dict(move="push", amt=1.2, shake=.002),
+    "T-10": dict(shake=.004),                       # the siege night: everything is restless
+    "T-11": dict(shake=.003),
+    "T-19": dict(shake=.004),
+}
+
+
+def camera_move(sh, c, mv, amt, kind, dist):
+    extra = {}
+    if mv == "static" and not c.get("pan"):
+        if kind in ("CLOSE", "MCU", "ECU", "INSERT", "MACRO"):
+            mv, amt = "push", dist * .08
+        elif kind == "POV":
+            mv, amt = "push", dist * .04
+        elif kind == "MS":
+            mv, amt = "arc", 5.0
+        else:
+            mv, amt = "drift", dist * .025
+    if kind == "ACTION":
+        extra["shake"] = .006
+    elif kind == "POV":
+        extra["shake"] = .0025
+    if mv == "track":
+        extra["linear"] = True
+    for key in (sh["unit"], sh["id"]):
+        o = MOVES.get(key, {})
+        mv, amt = o.get("move", mv), o.get("amt", amt)
+        for k in ("rise", "push", "shake", "linear"):
+            if k in o:
+                extra[k] = o[k]
+    return mv, amt, extra
+
 
 SKY = dict(day=((.55, .68, .9), 3.5, 1.0), dawn=((.75, .6, .55), 2.2, .6), dusk=((.7, .45, .4), 2.0, .5),
            night=((.02, .03, .07), .25, .25))
@@ -859,6 +922,19 @@ def build_shot(root, sh, names):
             ob.scale = (base.x * k1, base.y * k1, base.z)
             ob.keyframe_insert("scale", frame=f1)
         key_move(ob, f0, f1, op.get("walk"))
+        # From v003 the renders are meant to be watched: a stand-in that would read as a big grey or glowing
+        # box is left out of the render (it stays in the viewport for layout); fire leaves its light behind.
+        big = max(scale) > 6
+        if VER not in ("v001", "v002") and (op.get("emit", 0) or rgba[3] < 1 or big):
+            ob.hide_render = True
+            if op.get("emit", 0):
+                ld = bpy.data.lights.new("FXLIGHT_" + name, "POINT")
+                ld.color = (1, .5, .18)
+                ld.energy = min(2.0e6, 150.0 * op["emit"] * max(1.0, scale[0] * scale[1]) ** .5)
+                ld.shadow_soft_size = max(.2, min(scale[0], scale[1]) * .3)
+                lo = bpy.data.objects.new("FXLIGHT_" + name, ld)
+                lo.location = o + Vector(loc) + Vector((0, 0, scale[2] * .5))
+                cols["LIGHTS"].objects.link(lo)
 
     # --- camera
     c = st.get("cam", {})
@@ -891,6 +967,10 @@ def build_shot(root, sh, names):
     cols["CAM"].objects.link(cam)
     scene.camera = cam
     mv, amt = sh["camera"]["move"], c.get("amt")
+    if VER not in ("v001", "v002"):
+        mv, amt, extra = camera_move(sh, c, mv, amt, kind, dist)
+    else:
+        extra = {}
     fwd = (aim - pos).normalized()
     right = fwd.cross(Vector((0, 0, 1))).normalized() if abs(fwd.z) < .999 else Vector((1, 0, 0))
     p1, a1 = pos.copy() + travel, aim.copy() + travel
@@ -907,14 +987,44 @@ def build_shot(root, sh, names):
         p1 = pos + Vector((0, 0, amt or 4))
     elif mv == "pan" and not travel.length:
         a1 = aim + right * dist * .2
+    elif mv == "arc":                                   # orbit the subject by `amt` degrees
+        ang = rad(amt or 6)
+        off = pos - aim
+        off = Vector((off.x * math.cos(ang) - off.y * math.sin(ang), off.x * math.sin(ang) + off.y * math.cos(ang), off.z))
+        p1 = aim + off + travel
+    if extra.get("rise"):
+        p1 = p1 + Vector((0, 0, extra["rise"]))
+    if extra.get("push"):
+        p1 = p1 + (a1 - p1).normalized() * extra["push"]
     for f, p, a in ((f0, pos, aim), (f1, p1, a1)):
         cam.location, cam.rotation_euler = p, aim_rot(p, a)
         cam.keyframe_insert("location", frame=f)
         cam.keyframe_insert("rotation_euler", frame=f)
+    if cam.animation_data and cam.animation_data.action:
+        fcs = cam.animation_data.action.fcurves if hasattr(cam.animation_data.action, "fcurves") else []
+        try:
+            fcs = list(fcs) or [fc for layer in cam.animation_data.action.layers for strip in layer.strips
+                                for bag in strip.channelbags for fc in bag.fcurves]
+        except Exception:
+            fcs = list(fcs)
+        for fc in fcs:
+            for kp in fc.keyframe_points:              # follow shots move at the subject's pace; the rest ease
+                kp.interpolation = "LINEAR" if (travel.length or extra.get("linear")) else "BEZIER"
+                kp.easing = "AUTO"
+            if extra.get("shake") and fc.data_path == "rotation_euler":
+                m = fc.modifiers.new("NOISE")
+                m.strength, m.scale, m.phase = extra["shake"], 9.0, 7.0 * fc.array_index + len(sh["id"])
     cam["shot_id"], cam["move"], cam["subject_distance_m"] = sh["id"], mv, round(dist, 3)
+    cam_d.dof.use_dof = VER not in ("v001", "v002") and kind in ("CLOSE", "MCU", "ECU", "INSERT", "MACRO", "MS")
+    cam_d.dof.aperture_fstop = 2.8 if kind in ("CLOSE", "MCU", "MS") else 4.0
     tgt = bpy.data.objects.new("AIM_" + sh["id"], None)
     tgt.location, tgt.empty_display_size = aim, .2
     cols["CAM"].objects.link(tgt)
+    if VER not in ("v001", "v002"):
+        for f, a in ((f0, aim), (f1, a1)):
+            tgt.location = a
+            tgt.keyframe_insert("location", frame=f)
+        cam_d.dof.focus_object = tgt
 
     # --- light
     tod = st.get("tod") or sh["time_of_day"]
@@ -951,6 +1061,28 @@ def build_shot(root, sh, names):
             lo = bpy.data.objects.new("LAMP_practical", ld)
             lo.location = Vector(e.matrix_world.translation) + Vector((0, 0, .2)) if e.parent is None else Vector(e.location) + Vector((0, 0, .2))
             cols["LIGHTS"].objects.link(lo)
+    if VER not in ("v001", "v002") and any(s[0] == "kundina_palace" for s in sets):
+        night = tod == "night"
+        moon, warm = (.55, .65, 1.0), (1.0, .9, .78)
+        for nm, at, rx, size, energy, colr in (
+                ("AREA_hall_well", (0, 4.6, 5.9), 0, (5, 4), 3000, warm),
+                ("AREA_hall_bounce", (0, 5.0, 5.55), 0, (15, 11), 5000, warm),
+                ("AREA_hall_door", (0, -1.9, 2.4), 90, (3, 4), 1500, warm),
+                ("AREA_room_window", (40, 4.72, 1.7), -90, (1.3, 1.5), 140 if night else 700, moon if night else warm),
+                ("AREA_room_front", (40, -1.4, 1.5), 90, (6, 2.2), 40 if night else 1200, moon if night else warm)):
+            ld = bpy.data.lights.new(nm, "AREA")
+            ld.shape, ld.size, ld.size_y = "RECTANGLE", size[0], size[1]
+            ld.energy, ld.color = energy, colr
+            lo = bpy.data.objects.new(nm, ld)
+            lo.location, lo.rotation_euler = at, (rad(rx), 0, 0)
+            cols["LIGHTS"].objects.link(lo)
+            try:
+                lo.lightgroup = "practical"
+            except Exception:
+                pass
+        for lo in cols["LIGHTS"].objects:
+            if lo.name.startswith("LAMP_practical"):
+                lo.data.energy = 140 if night else 60
 
     # --- render set-up: Cycles, every pass, multilayer EXR
     r = scene.render
@@ -1111,14 +1243,105 @@ def exr(root, sh):
     bpy.ops.render.render(animation=True)
 
 
+FINAL = dict(res=(1920, 804), samples=40)
+
+
+def final_paths(root, sh):
+    d = os.path.join(shot_dir(root, sh), "renders", "final", VER)
+    return d, os.path.join(d, "%s_%s.####.png" % (sh["id"], VER)), \
+        os.path.join(shot_dir(root, sh), "renders", "final", "%s_final_%s.mp4" % (sh["id"], VER))
+
+
+def dissolve_handles(root, sh):
+    """Frames to render before and after the cut, so the editor has picture under every dissolve."""
+    p = os.path.join(root, "pipeline", "transitions_%s.json" % VER)
+    if not os.path.exists(p):
+        return 0, 0
+    pre = post = 0
+    for t in json.load(open(p, encoding="utf8"))["transitions"]:
+        if "dissolve" in t["type"] and t["frames"]:
+            h = int(math.ceil(t["frames"] / 2.0)) + 2
+            if t["after"] == sh["id"]:
+                post = max(post, h)
+            if t["before"] == sh["id"]:
+                pre = max(pre, h)
+    return pre, post
+
+
+def final(root, sh):
+    """The watchable render: Cycles on the GPU, denoised, motion blur on, every frame of the cut, written as a
+    PNG sequence (it resumes where it stopped) and then encoded to an H.264 movie of exactly the cut length."""
+    gpu_on()
+    scene = bpy.context.scene
+    r = scene.render
+    r.engine = "CYCLES"
+    cy = scene.cycles
+    cy.device = "GPU"
+    cy.samples, cy.use_adaptive_sampling, cy.adaptive_threshold = FINAL["samples"], True, .03
+    cy.use_denoising = True
+    try:
+        cy.denoiser = "OPENIMAGEDENOISE"
+        cy.denoising_use_gpu = True
+    except Exception:
+        pass
+    cy.max_bounces, cy.diffuse_bounces, cy.glossy_bounces, cy.transmission_bounces = 6, 3, 3, 4
+    cy.caustics_reflective = cy.caustics_refractive = False
+    cy.sample_clamp_indirect = 8.0
+    r.use_motion_blur, r.motion_blur_shutter = True, .5
+    r.resolution_x, r.resolution_y, r.resolution_percentage = FINAL["res"][0], FINAL["res"][1], 100
+    r.use_persistent_data = True
+    r.use_stamp = False
+    vs = scene.view_settings
+    try:
+        vs.view_transform = "AgX"
+        for lk in ("AgX - Medium High Contrast", "Medium High Contrast"):
+            try:
+                vs.look = lk
+                break
+            except Exception:
+                continue
+    except Exception:
+        pass
+    vl = scene.view_layers[0]
+    for k in dir(vl):                      # the beauty only; the all-pass EXRs are a separate job
+        if k.startswith("use_pass_") and k != "use_pass_combined":
+            try:
+                setattr(vl, k, False)
+            except Exception:
+                pass
+    try:
+        scene.use_nodes = False
+    except Exception:
+        pass
+    im = r.image_settings
+    if hasattr(im, "media_type"):
+        im.media_type = "IMAGE"
+    im.file_format, im.color_mode, im.color_depth = "PNG", "RGB", "8"
+    d, pattern, mp4 = final_paths(root, sh)
+    os.makedirs(d, exist_ok=True)
+    r.filepath = pattern.replace("####", "")
+    r.use_overwrite, r.use_placeholder = False, True
+    pre, post = dissolve_handles(root, sh)
+    scene.frame_start, scene.frame_end = sh["frame_start"] - pre, sh["frame_end"] + post
+    bpy.ops.render.render(animation=True)
+    import shutil
+    import subprocess
+    ff = shutil.which("ffmpeg")
+    if ff:
+        subprocess.run([ff, "-y", "-loglevel", "error", "-framerate", "24", "-start_number", str(sh["frame_start"]),
+                        "-i", pattern.replace("####", "%04d"), "-frames:v", str(sh["frames"]),
+                        "-c:v", "libx264", "-preset", "veryfast", "-crf", "17", "-pix_fmt", "yuv420p", mp4], check=False)
+
+
 # ----------------------------------------------------------------------- main
 def main(argv):
     o = dict(root=None, manifest=None, shots=None, assets=False, stills=False, playblast=False, exr=False, missing=False,
-             wait=False, usd=None, asset=None, state="blocking", log="build_status.json", version="v001", force=False)
+             wait=False, usd=None, asset=None, state="blocking", log="build_status.json", version="v001", force=False,
+             final=False)
     i = 0
     while i < len(argv):
         k = argv[i].lstrip("-")
-        if k in ("assets", "stills", "playblast", "exr", "missing", "wait", "force"):
+        if k in ("assets", "stills", "playblast", "exr", "missing", "wait", "force", "final"):
             o[k] = True
         else:
             o[k] = argv[i + 1]
@@ -1169,8 +1392,8 @@ def main(argv):
         save()
 
     if o["shots"]:
-        building = not (o["playblast"] or o["exr"])
-        log["phase"] = "build" if building else ("playblast" if o["playblast"] else "exr")
+        building = not (o["playblast"] or o["exr"] or o["final"])
+        log["phase"] = "build" if building else ("playblast" if o["playblast"] else ("final" if o["final"] else "exr"))
         for sh in want:
             try:
                 d = shot_dir(root, sh)
@@ -1189,12 +1412,19 @@ def main(argv):
                         still(root, sh)
                 else:
                     if o["missing"]:
+                        if o["final"] and os.path.exists(final_paths(root, sh)[2]):
+                            continue
                         if o["playblast"] and os.path.exists(os.path.join(d, "renders", "preview", "%s_blocking_%s.mp4" % (sh["id"], VER))):
                             continue
                         last = os.path.join(d, "renders", "blocking", VER, "%s_blocking_%s.%04d.exr" % (sh["id"], VER, sh["frame_end"]))
                         if o["exr"] and os.path.exists(last):
                             continue
                     bpy.ops.wm.open_mainfile(filepath=blend)
+                    if o["final"]:
+                        final(root, sh)
+                        log["done"].append(sh["id"])
+                        save()
+                        continue
                     if o["playblast"]:
                         playblast(root, sh)
                     if o["exr"]:
