@@ -1,0 +1,552 @@
+{
+ "format": "trailer-transitions/1",
+ "version": "v003",
+ "fps": 24,
+ "handles_needed": 8,
+ "transitions": [
+  {
+   "after": "OPEN",
+   "before": "T-01_waoex",
+   "type": "fade_in",
+   "frames": 24,
+   "picture": "Fade up from black over the aerial.",
+   "sound": "Start the drone and the struck bell 12 frames before picture, in black."
+  },
+  {
+   "after": "T-01_waoex",
+   "before": "T-01_2rj4c",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-01_2rj4c",
+   "before": "T-01_cu9p2",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-01_cu9p2",
+   "before": "T-01_tif2l",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-01_tif2l",
+   "before": "T-02_347qc",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Hard cut. The spinning mountain cuts straight to the stain.",
+   "sound": "Smash the sound. Every layer stops on the cut and only the wide hiss remains."
+  },
+  {
+   "after": "T-02_347qc",
+   "before": "T-02_k6bzl",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-02_k6bzl",
+   "before": "T-02_vb8e2",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-02_vb8e2",
+   "before": "T-02_pg2sr",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-02_pg2sr",
+   "before": "T-03_aaoxs",
+   "type": "dissolve",
+   "frames": 16,
+   "picture": "Dissolve, 16 frames, from the untouched feet to the line of claimants. It is a jump in time; let it read as one.",
+   "sound": "Let the sub drop ring out under the dissolve, then bring in the shingle and cloth of the crowd."
+  },
+  {
+   "after": "T-03_aaoxs",
+   "before": "T-03_tr48n",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-03_tr48n",
+   "before": "T-03_3jm9l",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-03_3jm9l",
+   "before": "T-04_tpqxe",
+   "type": "match_dissolve",
+   "frames": 24,
+   "picture": "Match dissolve, 24 frames. The garland rising toward the empty hands becomes the painted wall. Line up the hands with the painted hand at the gate (centre-right) so the myth turns into the painting. Use this as the trailer's signature transition.",
+   "sound": "The distant bell carries across. The broom fades in under the second half."
+  },
+  {
+   "after": "T-04_tpqxe",
+   "before": "T-04_th0fq",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-04_th0fq",
+   "before": "T-04_5uosr",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-04_5uosr",
+   "before": "T-05_62jaz",
+   "type": "dip_black",
+   "frames": 12,
+   "picture": "Dip to black, 6 frames out and 6 in, between movement I and movement II.",
+   "sound": "Finger on plaster, then silence in the black. The hall's murmur starts on the first frame of picture."
+  },
+  {
+   "after": "T-05_62jaz",
+   "before": "T-05_vy8fq",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-05_vy8fq",
+   "before": "T-05_8qgo9",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-05_8qgo9",
+   "before": "T-05_muxx5",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-05_muxx5",
+   "before": "T-05_tvxlw",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-05_tvxlw",
+   "before": "T-06_ogr8i",
+   "type": "smash",
+   "frames": 0,
+   "picture": "Smash cut from her last word straight to the ink macro, with no breath between them.",
+   "sound": "The bass flute enters on the first frame of T-06. This is the first music in the trailer."
+  },
+  {
+   "after": "T-06_ogr8i",
+   "before": "T-06_8mkvq",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-06_8mkvq",
+   "before": "T-06_y6uzn",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-06_y6uzn",
+   "before": "T-06_gftng",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-06_gftng",
+   "before": "T-06_at71u",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-06_at71u",
+   "before": "T-07_mhwdq",
+   "type": "dissolve",
+   "frames": 18,
+   "picture": "Dissolve, 18 frames: the letter disappearing into cloth becomes first light on the road. Night to dawn, room to country.",
+   "sound": "Bring the wind at altitude in under the dissolve; the flute continues."
+  },
+  {
+   "after": "T-07_mhwdq",
+   "before": "T-07_eif90",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-07_eif90",
+   "before": "T-08_te23q",
+   "type": "dip_black",
+   "frames": 6,
+   "picture": "Six frames of black, then a hard cut in. Movement II gives way to III.",
+   "sound": "The percussion enters on the first frame of T-08, exactly on the frame drum. Make sure nothing is playing in the black."
+  },
+  {
+   "after": "T-08_te23q",
+   "before": "T-08_g72wo",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-08_g72wo",
+   "before": "T-09_tqkp6",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-09_tqkp6",
+   "before": "T-09_iwz3c",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-09_iwz3c",
+   "before": "T-09_lay73",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-09_lay73",
+   "before": "T-10_62zy8",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Hard cut. The T-10 chalk and siege run is cut strictly on the beat, so don't add any transitions inside it.",
+   "sound": "Lay the chalk strokes on the drum beats. If a shot is 12 to 14 frames, keep it that length."
+  },
+  {
+   "after": "T-10_62zy8",
+   "before": "T-10_t11hn",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-10_t11hn",
+   "before": "T-10_fwpet",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-10_fwpet",
+   "before": "T-10_t6l2u",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-10_t6l2u",
+   "before": "T-10_3tbzn",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-10_3tbzn",
+   "before": "T-10_si0ra",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-10_si0ra",
+   "before": "T-11_cgc0q",
+   "type": "l_cut",
+   "frames": 0,
+   "picture": "Cut on the end of Jarasandha's line to the burning hillside.",
+   "sound": "L-cut: let his last word run 8 frames over the fire. The drums come back to full under the fire roar."
+  },
+  {
+   "after": "T-11_cgc0q",
+   "before": "T-11_3aauk",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-11_3aauk",
+   "before": "T-11_9rcg8",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-11_9rcg8",
+   "before": "T-12_n1pj5",
+   "type": "smash",
+   "frames": 0,
+   "picture": "Smash cut to the dropped sword.",
+   "sound": "Kill all the sound one frame before the camera stops, as the sheet says. The drums stop dead on T-12."
+  },
+  {
+   "after": "T-12_n1pj5",
+   "before": "T-12_227t8",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-12_227t8",
+   "before": "T-12_njg91",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-12_njg91",
+   "before": "T-13_sgipu",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Hard cut on the downbeat: the sea gate rising. If the beat wants a flash, add 2 frames of white, otherwise none.",
+   "sound": "The full ensemble enters on the first frame of T-13."
+  },
+  {
+   "after": "T-13_sgipu",
+   "before": "T-13_saf7b",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-13_saf7b",
+   "before": "T-14_sdfel",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-14_sdfel",
+   "before": "T-14_u0pgf",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-14_u0pgf",
+   "before": "T-14_7q9c0",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-14_7q9c0",
+   "before": "T-14_zun0i",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-14_zun0i",
+   "before": "T-15_icm2f",
+   "type": "dip_black",
+   "frames": 18,
+   "picture": "Dip to black, 9 frames out and 9 in. Movement IV begins in one quiet room.",
+   "sound": "Strip everything back to the single sustained note. Start it in the black."
+  },
+  {
+   "after": "T-15_icm2f",
+   "before": "T-15_mbl60",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-15_mbl60",
+   "before": "T-16_ieqeu",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Cut on the first conch to the crane over the procession.",
+   "sound": "The conch is diegetic and arrives a frame early (a J-cut)."
+  },
+  {
+   "after": "T-16_ieqeu",
+   "before": "T-16_ad92v",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-16_ad92v",
+   "before": "T-16_9ihf4",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-16_9ihf4",
+   "before": "T-17_gnue7",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Hard cut onto the temple threshold.",
+   "sound": "Let the sound drop away ACROSS this cut, a 20-frame fade that starts 10 frames before it, not on the cut."
+  },
+  {
+   "after": "T-17_gnue7",
+   "before": "T-17_gpr52",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-17_gpr52",
+   "before": "T-17_3ce96",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-17_3ce96",
+   "before": "T-18_igml4",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-18_igml4",
+   "before": "T-18_82ert",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-18_82ert",
+   "before": "T-18_jifvo",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-18_jifvo",
+   "before": "T-19_dq0gi",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Hard cut on the frame her foot leaves the stone.",
+   "sound": "The full ensemble comes in on the cut; the solo voice ends exactly there."
+  },
+  {
+   "after": "T-19_dq0gi",
+   "before": "T-19_c8zb2",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-19_c8zb2",
+   "before": "T-19_vq2i4",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-19_vq2i4",
+   "before": "T-19_10xv3",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-19_10xv3",
+   "before": "T-19_kup2h",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Straight cut.",
+   "sound": ""
+  },
+  {
+   "after": "T-19_kup2h",
+   "before": "T-20",
+   "type": "cut_black",
+   "frames": 0,
+   "picture": "Cut to black on the conch. Don't fade it.",
+   "sound": "The conch runs 2 seconds past the cut into the black and into the title."
+  },
+  {
+   "after": "T-20",
+   "before": "T-21",
+   "type": "dissolve_black",
+   "frames": 12,
+   "picture": "Title fades in over 12 frames, holds, and fades out 12 frames into black.",
+   "sound": "One struck bell 1.5 s into the title."
+  },
+  {
+   "after": "T-21",
+   "before": "T-22",
+   "type": "cut",
+   "frames": 0,
+   "picture": "Rukmini's line plays over black, then cut to the logos.",
+   "sound": "No music under the line; room tone only."
+  }
+ ]
+}
