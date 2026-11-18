@@ -1409,6 +1409,40 @@ def final_paths(root, sh):
         os.path.join(shot_dir(root, sh), "renders", "final", "%s_final_%s.mp4" % (sh["id"], VER))
 
 
+def bad_frames(root, sh):
+    """Frames of the final range that exist but are broken: empty placeholders or PNGs cut off when a render was
+    stopped mid-frame (no IEND chunk at the end). Blender would skip them on a resume, so they must go."""
+    d, pattern, _ = final_paths(root, sh)
+    pre, post = dissolve_handles(root, sh)
+    bad = []
+    for f in range(sh["frame_start"] - pre, sh["frame_end"] + post + 1):
+        fp = pattern.replace("####", "%04d" % f)
+        if not os.path.exists(fp):
+            continue
+        try:
+            n = os.path.getsize(fp)
+            with open(fp, "rb") as fh:
+                fh.seek(max(0, n - 12))
+                ok = n > 100 and fh.read().endswith(b"IEND\xaeB`\x82")
+        except OSError:
+            ok = False
+        if not ok:
+            bad.append(fp)
+    return bad
+
+
+def clean_frames(root, sh):
+    """Deletes broken frames (and the shot movie, which was made from them); returns how many went."""
+    bad = bad_frames(root, sh)
+    for fp in bad:
+        os.remove(fp)
+        print("trailer_shots: removed broken frame %s" % os.path.basename(fp), flush=True)
+    mp4 = final_paths(root, sh)[2]
+    if bad and os.path.exists(mp4):
+        os.remove(mp4)
+    return len(bad)
+
+
 def dissolve_handles(root, sh):
     """Frames to render before and after the cut, so the editor has picture under every dissolve."""
     p = os.path.join(root, "pipeline", "transitions_%s.json" % VER)
@@ -1476,6 +1510,7 @@ def final(root, sh):
     im.file_format, im.color_mode, im.color_depth = "PNG", "RGB", "8"
     d, pattern, mp4 = final_paths(root, sh)
     os.makedirs(d, exist_ok=True)
+    clean_frames(root, sh)
     r.filepath = pattern.replace("####.png", "")          # Blender adds the frame number and .png
     r.use_overwrite, r.use_placeholder = False, True
     pre, post = dissolve_handles(root, sh)
@@ -1569,7 +1604,7 @@ def main(argv):
                         still(root, sh)
                 else:
                     if o["missing"]:
-                        if o["final"] and os.path.exists(final_paths(root, sh)[2]):
+                        if o["final"] and os.path.exists(final_paths(root, sh)[2]) and not bad_frames(root, sh):
                             continue
                         if o["playblast"] and os.path.exists(os.path.join(d, "renders", "preview", "%s_blocking_%s.mp4" % (sh["id"], VER))):
                             continue
