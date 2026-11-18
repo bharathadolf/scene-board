@@ -113,6 +113,18 @@ def figure(col, cid, kind):
     if cid == "kurma":       # only the top of the shell is ever above the surface
         prim(col, "kurma_shell", "ball", (0, 0, -9), (300, 300, 22), rgba=rgba, seg=32)
         return
+    if cid in ("c_elephants", "airavata"):   # war elephant: about 3 m at the shoulder
+        rgba = (.42, .4, .38, 1) if cid == "c_elephants" else (.92, .92, .9, 1)
+        prim(col, cid + "_body", "ball", (0, 0, 2.3), (2.4, 4.2, 2.6), rgba=rgba)
+        for i, (x, y) in enumerate(((-.7, -1.3), (.7, -1.3), (-.7, 1.3), (.7, 1.3))):
+            prim(col, cid + "_leg%d" % i, "cyl", (x, y, .8), (.7, .7, 1.6), rgba=rgba)
+        prim(col, cid + "_head", "ball", (0, -2.3, 3.0), (1.6, 1.6, 1.7), rgba=rgba)
+        prim(col, cid + "_trunk", "cone", (0, -3.0, 1.6), (.45, .45, 2.2), (rad(-12), 0, 0), rgba)
+        for x in (-.9, .9):
+            prim(col, cid + "_ear%+d" % x, "box", (x, -2.0, 3.1), (.12, 1.1, 1.3), rgba=rgba)
+            prim(col, cid + "_tusk%+d" % x, "cone", (x * .35, -2.9, 2.2), (.12, .12, .9), (rad(-70), 0, 0), (.9, .88, .8, 1))
+        prim(col, cid + "_howdah", "box", (0, .2, 3.9), (1.6, 1.8, .9), rgba=(.55, .2, .12, 1))
+        return
     if kind == "creature":
         prim(col, cid + "_body", "box", (0, 0, .9), (1.2, 2.4, 1.6), rgba=rgba)
         return
@@ -135,6 +147,20 @@ def prop_geo(col, pid):
         prim(col, "chariot_pole", "box", (0, -2.3, .7), (.1, 2.6, .1), rgba=DARK)
         for x in (-.6, .6):
             prim(col, "horse_%s" % ("L" if x < 0 else "R"), "box", (x, -3.6, 1.0), (.5, 2.0, 1.3), rgba=(.3, .22, .16, 1))
+    elif pid == "war_horse":
+        H_ = (.35, .27, .2, 1)
+        prim(col, "horse_body", "ball", (0, 0, 1.35), (.6, 1.7, .75), rgba=H_)
+        prim(col, "horse_neck", "cyl", (0, -.95, 1.75), (.3, .3, .8), (rad(-40), 0, 0), H_)
+        prim(col, "horse_head", "ball", (0, -1.3, 2.05), (.24, .6, .28), (rad(-30), 0, 0), H_)
+        for i, (x, y) in enumerate(((-.2, -.6), (.2, -.6), (-.2, .6), (.2, .6))):
+            prim(col, "horse_leg%d" % i, "cyl", (x, y, .5), (.12, .12, 1.0), rgba=H_)
+    elif pid == "bow":
+        prim(col, "bow_limb", "tube", (0, 0, 0), (.7, .7, .03), (0, rad(90), 0), (.45, .3, .15, 1))
+    elif pid == "siege_ladder":
+        for x in (-.3, .3):
+            prim(col, "ladder_rail%+d" % x, "box", (x, 0, 6), (.08, .08, 12), rgba=(.45, .32, .18, 1))
+        for i in range(24):
+            prim(col, "ladder_rung%02d" % i, "box", (0, 0, .4 + i * .48), (.6, .05, .05), rgba=(.45, .32, .18, 1))
     elif pid == "letter":
         prim(col, "letter_leaf", "box", (0, 0, 0), (.22, .30, .004), rgba=W)
     elif pid in ("garland_lakshmi", "lotus_garland"):
@@ -242,6 +268,17 @@ def set_geo(col, sid):
             g("tower_%d" % i, "cyl", (x, 40 + (i % 2) * 60, 30 + (i % 3) * 14), (26, 26, 60 + (i % 3) * 28), rgba=cry)
             g("terrace_%d" % i, "box", (x + 40, 120, 14), (70, 90, 28), rgba=gold)
         g("citadel", "cone", (0, 220, 70), (160, 160, 140), rgba=gold, seg=24)
+    elif sid == "mucukunda_cave":                         # the mouth faces -Y; the sleeper lies 10 m in
+        g("ground", "plane", (0, -60, 0), (200, 140, 1), rgba=EARTH)
+        g("hill", "ball", (0, 52, 0), (140, 100, 70), rgba=(.42, .38, .32, 1), seg=24)
+        g("cave_floor", "plane", (0, 7, .02), (9, 26, 1), rgba=(.3, .27, .23, 1))
+        for x in (-4.6, 4.6):
+            g("cave_wall%+d" % x, "box", (x, 7, 3), (.6, 26, 6), rgba=(.25, .22, .2, 1))
+        g("cave_roof", "box", (0, 7, 6.2), (9.8, 26, .6), rgba=(.25, .22, .2, 1))
+        g("cave_back", "box", (0, 20, 3), (9.8, .6, 6), rgba=(.25, .22, .2, 1))
+        g("mouth_rock", "box", (0, -5.8, 7.5), (16, 1.6, 4), rgba=(.42, .38, .32, 1))
+        g("ledge", "box", (0, 12, .4), (3.4, 1.2, .8), rgba=(.4, .36, .3, 1))
+        g("shaft", "cyl", (1.2, 11, 3.5), (.8, .8, 7), rgba=(1, .95, .85, 1), emit=4)
     elif sid == "kundina_city":
         g("ground", "plane", (0, 0, 0), (600, 600, 1), rgba=EARTH)
         g("street", "plane", (0, 0, .02), (10, 400, 1), rgba=(.6, .54, .44, 1))
@@ -617,6 +654,106 @@ S = {
                    cam=dict(pos=(-13, -7, 3.0), aim=(0, -20, 1.2), pan=(2, -16, 0))),
  ("T-19", 4): dict(props=[("conch", 0, -70, 1.6, 20)], cam=dict(aim=(0, -70, 1.6), az=30, dist=.85, h=1.6)),
 }
+# ---- v004: the shots the recut adds (beats from the plan; Krishna is never seen from the front)
+FIRE = (1, .55, .22)
+NIGHT_WALL = dict(set="mathura", tod="night", sun=1.4, amb=.6,
+                  fill=[((x, -4, 14), 6000, FIRE) for x in (-24, -8, 8, 24)] +
+                       [((x, -30, 3), 20000, FIRE) for x in (-30, 0, 30)])
+S.update({
+ ("N-01", 0): dict(set="mathura", tod="dawn", cast=[("krishna", 0, 14, 0, dict(walk=(0, -18, 0)))],
+                   props=[("lotus_garland", 0, 0, 1.36, 0, dict(held="krishna"))],
+                   crowd=[("c_guards", "line", (3, 1.0, 5, 1.0), 2, 0, dict(z=12))],
+                   cam=dict(pos=(2.6, 32, 3.4), aim=(0, -8, 2.6))),
+ ("N-01", 1): dict(set="mathura", tod="dawn", cast=[("krishna", 0, -6, 0, dict(walk=(0, -3.4, 0)))],
+                   cam=dict(on="krishna", az=180, dist=1.7, aimh=.12, h=.25, follow=True)),
+ ("N-02", 0): dict(set="mathura", tod="dawn", crowd=[("c_yavana_army", "block", (0, -420, 900, 300), 220, 180)],
+                   cam=dict(pos=(-22, -2.5, 22), aim=(0, -500, 0))),
+ ("N-02", 1): dict(set="mathura", tod="dawn", cast=[("kalayavana", 0, -120, 180, dict(z=1.25))],
+                   props=[("war_horse", 0, -120, 0, 180)],
+                   crowd=[("c_yavana_army", "block", (0, -150, 80, 40), 60, 180)],
+                   cam=dict(on="kalayavana", front=-18, dist=6.5, aimh=1.5, h=2.3)),
+ ("N-07", 0): dict(set="milk_ocean", tod="dusk", o=(0, -640, 0),
+                   cast=[("indra", 0, -8, 180)],
+                   crowd=[("c_devas", "block", (0, -16, 60, 10), 40, 180, dict(walk=(0, 6, 0))),
+                          ("c_asuras", "block", (0, 24, 60, 10), 40, 0, dict(walk=(0, -6, 0)))],
+                   fx=[("thunderbolt", "box", (0, 6, 40), (.6, .6, 80), (.85, .9, 1, 1), dict(emit=30))],
+                   cam=dict(pos=(7, -27, 1.2), aim=(0, -6, 7))),
+ ("N-07", 1): dict(set="milk_ocean", tod="dusk", o=(0, -640, 0), cast=[("bali", 0, 22, 0)],
+                   crowd=[("c_asuras", "block", (0, 28, 30, 8), 20, 0)],
+                   fx=[("illusion_veil", "ball", (0, 24, 3), (14, 10, 8), (.4, .3, .6, .4))],
+                   cam=dict(on="bali", front=20, dist=5.5)),
+ ("N-07", 2): dict(set="milk_ocean", tod="dusk", o=(0, -640, 0),
+                   crowd=[("c_devas", "block", (0, -12, 50, 8), 36, 180, dict(walk=(0, 9, 0))),
+                          ("c_asuras", "block", (0, 12, 50, 8), 36, 0, dict(walk=(0, -9, 0)))],
+                   fx=[("storm_dust", "box", (0, 0, 3), (60, 10, 6), (.6, .58, .55, .35))],
+                   cam=dict(pos=(-32, 0, 4), aim=(0, 0, 1.5), pan=(0, 4, 0))),
+ ("N-08", 0): dict(set="milk_ocean", tod="dusk", o=(0, -600, 0), cast=[("rahu", 0, -2, 180)],
+                   crowd=[("c_devas", "line", (-10, -2, -1.2, -2), 6, 180), ("c_devas", "line", (1.2, -2, 10, -2), 6, 180)],
+                   fx=[("disc_flash", "ball", (0, -2.2, 1.6), (.5, .5, .5), (1, .9, .6, 1), dict(emit=60))],
+                   cam=dict(on="rahu", front=8, dist=4.2)),
+ ("N-13", 0): dict(set="open_country", tod="dawn", cast=[("brahmin", 0, 400, 180, dict(walk=(0, 5, 0)))],
+                   props=[("war_horse", .6, 360, 0, 180, dict(walk=(0, 42, 0)))],
+                   crowd=[("c_guards", "line", (.6, 360, .6, 360.1), 1, 180, dict(z=1.25, walk=(0, 42, 0)))],
+                   cam=dict(pos=(7, 384, 1.4), aim=(0, 398, 1.3), pan=(0, 6, 0))),
+ ("N-15", 0): dict(set="mathura", tod="dusk", cast=[("jarasandha", 0, -2300, 180)],
+                   fx=[("camp_fires", "box", (0, -2312, 1), (40, 6, 2), (1, .5, .1, 1), dict(emit=6))],
+                   cam=dict(on="jarasandha", front=14)),
+ ("N-16", 0): dict(set="mathura", tod="day",
+                   props=[("chariot", -6, -300, 60, 0, dict(walk=(0, 0, -60))), ("chariot", 7, -292, 72, 0, dict(walk=(0, 0, -72)))],
+                   fx=[("glare_a", "ball", (-6, -300, 61), (8, 8, 8), (1, .95, .8, 1), dict(emit=25, walk=(0, 0, -60))),
+                       ("glare_b", "ball", (7, -292, 73), (8, 8, 8), (1, .95, .8, 1), dict(emit=25, walk=(0, 0, -72)))],
+                   cam=dict(pos=(0, -8, 15), aim=(0, -300, 36))),
+ ("N-16", 1): dict(set="mathura", tod="day", props=[("chariot", 0, -300, 0, 0)],
+                   cast=[("krishna", 0, .1, 0, dict(z=.7, on="chariot"))],
+                   fx=[("glare", "ball", (0, -301, 2.4), (6, 6, 6), (1, .95, .8, 1), dict(emit=40))],
+                   cam=dict(pos=(1.2, -284, 2.0), aim=(0, -300, 2.4))),
+ ("N-17", 0): dict(set="mathura", o=(0, -300, 0), cast=[("balarama", 0, 0, 0, dict(walk=(-1.5, 0, 0)))],
+                   props=[("plough", 0, -.5, 0, 0, dict(held="balarama"))],
+                   crowd=[("c_magadha_army", "block", (0, -3.2, 8, 3), 14, 180)],
+                   fx=[("battle_dust", "box", (0, -6, 3), (40, 30, 6), (.7, .62, .46, .35))],
+                   cam=dict(on="balarama", az=62, dist=3.4, aimh=1.2, h=1.1, follow=True)),
+ ("N-17", 1): dict(set="mathura", o=(0, -300, 0),
+                   crowd=[("c_elephants", "line", (-20, -40, 20, -40), 6, 180, dict(walk=(0, 10, 0)))],
+                   fx=[("arrow_streaks", "box", (-30, -38, 3.2), (14, .04, .04), (1, .9, .7, 1), dict(emit=20, walk=(70, 0, -1)))],
+                   cam=dict(pos=(-26, -25, 2), aim=(0, -38, 2.6))),
+ ("N-18", 0): dict(NIGHT_WALL, o=(0, 0, 12),
+                   fx=[("fire_arrows", "box", (0, -30, 18), (60, .05, .05), (1, .5, .1, 1), dict(emit=20, walk=(0, 28, -16)))],
+                   cam=dict(pos=(0, 1, 1.4), aim=(0, -40, 18))),
+ ("N-18", 1): dict(NIGHT_WALL, crowd=[("c_elephants", "line", (-4, -30, 4, -30), 3, 180, dict(walk=(0, 24, 0)))],
+                   fx=[("torches", "box", (0, -40, 2.4), (40, 20, .3), (1, .5, .1, 1), dict(emit=6))],
+                   cam=dict(pos=(12, -12, 3), aim=(0, -8, 3))),
+ ("N-18", 2): dict(NIGHT_WALL, fx=[("flood", "box", (0, -40, 2), (700, 60, 4), (.2, .25, .3, .9), dict(walk=(0, 0, 8)))],
+                   cam=dict(pos=(0, -1, 13.4), aim=(0, -30, 5))),
+ ("N-19", 0): dict(set="mucukunda_cave", cast=[("kalayavana", 0, -22, 180, dict(walk=(0, 16, 0)))],
+                   cam=dict(pos=(0, 13, 1.6), aim=(0, -15, 1.6))),
+ ("N-19", 1): dict(set="mucukunda_cave", cast=[("mucukunda", 0, 12, 0, dict(z=.8))],
+                   cam=dict(on="mucukunda", front=0)),
+ ("N-19", 2): dict(set="mucukunda_cave", cast=[("kalayavana", 0, 9, 180), ("mucukunda", 0, 12, 0, dict(z=.8))],
+                   fx=[("burn", "ball", (0, 9, 1), (1.2, 1.2, 2.2), (1, .45, .1, 1), dict(emit=40, grow=(.3, 1.6)))],
+                   cam=dict(pos=(3.2, 3.5, 1.5), aim=(0, 9, 1.2))),
+ ("N-23", 0): dict(set="open_country", tod="day", cast=[("rukmi", 0, 0, 180)],
+                   crowd=[("c_kings", "block", (0, 7, 14, 4), 16, 0)],
+                   cam=dict(on="rukmi", front=-20)),
+ ("N-23", 1): dict(set="open_country", tod="day", props=[("chariot", 0, 0, 0, 0)],
+                   cast=[("rukmi", 0, .1, 0, dict(z=.7, on="chariot"))],
+                   fx=[("bow_snap", "ball", (.35, -.5, 2.1), (.1, .1, .1), (1, .9, .6, 1), dict(emit=50))],
+                   cam=dict(pos=(2.2, -1.6, 2.3), aim=(.35, -.5, 2.0))),
+ ("N-23", 2): dict(set="open_country", tod="day", props=[("chariot", 0, 0, 0, 0, dict(walk=(0, -18, 0)))],
+                   cast=[("rukmi", 0, .1, 0, dict(z=.7, on="chariot"))],
+                   fx=[("road_dust", "box", (0, 6, 1.5), (8, 12, 3), (.7, .62, .46, .35), dict(walk=(0, -18, 0)))],
+                   cam=dict(pos=(4.5, -2, 2.0), aim=(0, 0, 1.6), travel=(0, -18, 0))),
+ ("N-24", 0): dict(set="open_country", tod="day",
+                   props=[("chariot", x, -40, 0, 0, dict(walk=(0, 34, 0))) for x in (-12, -4, 4, 12)] +
+                         [("chariot", x, 40, 0, 180, dict(walk=(0, -34, 0))) for x in (-10, -2, 6, 14)],
+                   fx=[("clash_dust", "box", (0, 0, 3), (50, 14, 6), (.7, .62, .46, .35))],
+                   cam=dict(pos=(-48, 0, 6), aim=(0, 0, 1.5))),
+ ("N-24", 1): dict(set="open_country", tod="day", props=[("chariot", 0, -8, 0, 0, dict(walk=(0, 10, 0)))],
+                   fx=[("clash_dust", "box", (0, 0, 1.5), (14, 8, 3), (.7, .62, .46, .35))],
+                   cam=dict(pos=(3.4, -4, .45), aim=(0, -1, .8))),
+ ("N-27", 0): dict(set="kundina_temple", crowd=KINGS + [("c_guards", "line", (-9, -12, 9, -12), 10, 0)],
+                   cast=[("rukmini", 0, -16, 0)],
+                   cam=dict(pos=(0, -36, 1.8), aim=(0, -18, 1.6))),
+})
 S[("T-10", 2)] = S[("T-10", 0)]
 S[("T-10", 4)] = S[("T-10", 0)]
 
@@ -632,6 +769,11 @@ MOVES = {
     "T-10": dict(shake=.004),                       # the siege night: everything is restless
     "T-11": dict(shake=.003),
     "T-19": dict(shake=.004),
+    # v004 action: hand-held and restless
+    "N-07": dict(shake=.005), "N-17": dict(shake=.007), "N-18": dict(shake=.006), "N-19": dict(shake=.004),
+    "N-23": dict(shake=.006), "N-24": dict(shake=.008),
+    "N-01_gate": dict(push=5.0),
+    "N-16_glare": dict(push=4.0),
 }
 
 
@@ -1029,6 +1171,13 @@ def build_shot(root, sh, names):
     # --- light
     tod = st.get("tod") or sh["time_of_day"]
     sky, sun_e, amb = SKY.get(tod, SKY["day"])
+    sun_e, amb = st.get("sun", sun_e), st.get("amb", amb)      # per-shot moon / ambient override
+    for i, (at, energy, colr) in enumerate(st.get("fill", [])):  # per-shot practical fills (torches, fires)
+        ld = bpy.data.lights.new("FILL_%d" % i, "POINT")
+        ld.energy, ld.color, ld.shadow_soft_size = energy, colr, .4
+        lo = bpy.data.objects.new("FILL_%d" % i, ld)
+        lo.location = at                                        # world space, not shifted by the shot's o
+        cols["LIGHTS"].objects.link(lo)
     sun_d = bpy.data.lights.new("SUN_key", "SUN")
     sun_d.energy, sun_d.color = sun_e, ((.65, .75, 1) if tod == "night" else (1, .95, .86))
     sun = bpy.data.objects.new("SUN_key", sun_d)

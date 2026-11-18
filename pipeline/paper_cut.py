@@ -82,6 +82,16 @@ def main():
                 label = "v003  " + sh["id"]
             else:
                 p = dict(p, kind="slate", text="%s (not rendered)" % sh["id"], beat="")
+        if p["kind"] == "slate" and p.get("id") and plan.get("new_version"):
+            unit = p["id"].split("_")[0]
+            mp4 = os.path.join(root, "shots", "MVN", unit, p["id"], "renders", "final",
+                               "%s_final_%s.mp4" % (p["id"], plan["new_version"]))
+            if os.path.exists(mp4):
+                args += ["-i", mp4]
+                k += 1
+                ch = "[%d:v]trim=end_frame=%d,setpts=PTS-STARTPTS,scale=%d:%d,setsar=1,format=yuv420p" % (k, n, W, H)
+                label = "%s  %s" % (plan["new_version"], p["id"])
+                p = dict(p, kind="newshot")
         if p["kind"] in ("slate", "black", "card"):
             col = "0x161616" if p["kind"] == "slate" else "black"
             args += ["-f", "lavfi", "-i", "color=c=%s:s=%dx%d:r=%d:d=%.4f" % (col, W, H, fps, n / float(fps) + .1)]

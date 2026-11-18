@@ -63,6 +63,11 @@ SPEC = {
     "c_procession": H(0, .46, .5, .35, .45, "wheat", "sari", (.8, .55, .1), "blouse", (.7, .2, .2), "bun"),
     "c_women_mathura": H(0, .5, .5, .35, .45, "brown", "sari", (.3, .35, .6), "blouse", (.25, .3, .5), "long"),
     "c_sailors": H(0, .5, .5, .5, .5, "dark", "sari", (.6, .55, .4), "blouse", (.5, .45, .3), "bun"),
+    # v004: the war of the gods, Rāhu, and the sleeper in the cave
+    "indra": H(1, .5, .55, .75, .65, "fair", "dhoti", (.15, .25, .6), "armour", (.8, .65, .3), "long", crown=GOLD),
+    "bali": H(1, .55, .65, .85, .72, "red", "dhoti", (.3, .05, .1), "armour", (.35, .25, .2), "long", crown=GOLD),
+    "rahu": H(1, .5, .5, .65, .6, "dark", "dhoti", (.1, .1, .12), "cloth", (.18, .15, .2), "long"),
+    "mucukunda": H(1, .9, .4, .45, .55, "wheat", "dhoti", (.75, .7, .6), None, hair="long", hc=(.85, .85, .82)),
 }
 
 

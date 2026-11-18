@@ -12,25 +12,29 @@
    "kind": "slate",
    "beat": 1,
    "text": "Dawn at Mathura's gate. A guard watches one unarmed man walk out alone — from behind (E04-07)",
-   "frames": 48
+   "frames": 48,
+   "id": "N-01_gate"
   },
   {
    "kind": "slate",
    "beat": 1,
    "text": "His bare feet on the dust, from behind and below",
-   "frames": 48
+   "frames": 48,
+   "id": "N-01_feet"
   },
   {
    "kind": "slate",
    "beat": 2,
    "text": "Thirty million Yavanas on the plain, banners to the horizon (E04-01)",
-   "frames": 48
+   "frames": 48,
+   "id": "N-02_army"
   },
   {
    "kind": "slate",
    "beat": 2,
    "text": "Kalayavana sees him and straightens on his horse (E05-02)",
-   "frames": 48
+   "frames": 48,
+   "id": "N-02_kalayavana"
   },
   {
    "kind": "shot",
@@ -86,25 +90,29 @@
    "kind": "slate",
    "beat": 7,
    "text": "The war of the gods: Indra's thunderbolt splits the sky (E01-15)",
-   "frames": 36
+   "frames": 36,
+   "id": "N-07_thunder"
   },
   {
    "kind": "slate",
    "beat": 7,
    "text": "Bali's illusions fill the field",
-   "frames": 30
+   "frames": 30,
+   "id": "N-07_bali"
   },
   {
    "kind": "slate",
    "beat": 7,
    "text": "Deva and Asura lines crash together in the storm",
-   "frames": 30
+   "frames": 30,
+   "id": "N-07_clash"
   },
   {
    "kind": "slate",
    "beat": 8,
    "text": "Rahu in the line of drinkers. A flash of the disc — his head is gone (E01-14)",
-   "frames": 36
+   "frames": 36,
+   "id": "N-08_rahu"
   },
   {
    "kind": "shot",
@@ -184,7 +192,8 @@
    "kind": "slate",
    "beat": 13,
    "text": "Rukmi's rider closes on the Brahmin on the road (E06-05)",
-   "frames": 82
+   "frames": 82,
+   "id": "N-13_pursuer"
   },
   {
    "kind": "movement",
@@ -210,19 +219,22 @@
    "kind": "slate",
    "beat": 15,
    "text": "Jarasandha, close: 'Tell Mathura their king is ash.' (E03-05)",
-   "frames": 72
+   "frames": 72,
+   "id": "N-15_jarasandha"
   },
   {
    "kind": "slate",
    "beat": 16,
    "text": "Two radiant chariots come down out of the sky into the glare (E03-04)",
-   "frames": 48
+   "frames": 48,
+   "id": "N-16_descent"
   },
   {
    "kind": "slate",
    "beat": 16,
    "text": "The conch; the glare swallows the figures",
-   "frames": 48
+   "frames": 48,
+   "id": "N-16_glare"
   },
   {
    "kind": "shot",
@@ -234,13 +246,15 @@
    "kind": "slate",
    "beat": 17,
    "text": "Close: the plough sweeps a rank of infantry off their feet",
-   "frames": 36
+   "frames": 36,
+   "id": "N-17_plough"
   },
   {
    "kind": "slate",
    "beat": 17,
    "text": "Arrows from outside the frame tear through a line of elephants",
-   "frames": 36
+   "frames": 36,
+   "id": "N-17_arrows"
   },
   {
    "kind": "shot",
@@ -264,7 +278,8 @@
    "kind": "slate",
    "beat": 18,
    "text": "Fire arrows rain on the wall",
-   "frames": 14
+   "frames": 14,
+   "id": "N-18_firearrows"
   },
   {
    "kind": "shot",
@@ -276,7 +291,8 @@
    "kind": "slate",
    "beat": 18,
    "text": "Elephant charge hits the gate; the beam splits",
-   "frames": 14
+   "frames": 14,
+   "id": "N-18_elephants"
   },
   {
    "kind": "shot",
@@ -288,7 +304,8 @@
    "kind": "slate",
    "beat": 18,
    "text": "The flood assault: water over the wall",
-   "frames": 14
+   "frames": 14,
+   "id": "N-18_flood"
   },
   {
    "kind": "shot",
@@ -312,19 +329,22 @@
    "kind": "slate",
    "beat": 19,
    "text": "The chase into the dark of the cave",
-   "frames": 36
+   "frames": 36,
+   "id": "N-19_mouth"
   },
   {
    "kind": "slate",
    "beat": 19,
    "text": "A kick. A sleeper's eyes open in the dark (E05-05)",
-   "frames": 36
+   "frames": 36,
+   "id": "N-19_eyes"
   },
   {
    "kind": "slate",
    "beat": 19,
    "text": "Fire — Kalayavana burns to ash",
-   "frames": 36
+   "frames": 36,
+   "id": "N-19_ash"
   },
   {
    "kind": "shot",
@@ -372,31 +392,36 @@
    "kind": "slate",
    "beat": 23,
    "text": "Rukmi swears before the kings (E06-24)",
-   "frames": 30
+   "frames": 30,
+   "id": "N-23_oath"
   },
   {
    "kind": "slate",
    "beat": 23,
    "text": "His bow snaps — an arrow from nowhere (E06-25)",
-   "frames": 30
+   "frames": 30,
+   "id": "N-23_snap"
   },
   {
    "kind": "slate",
    "beat": 23,
    "text": "A second bow, a third, his shield",
-   "frames": 36
+   "frames": 36,
+   "id": "N-23_shield"
   },
   {
    "kind": "slate",
    "beat": 24,
    "text": "Chariot lines collide in a wide — no bride (E06-22)",
-   "frames": 36
+   "frames": 36,
+   "id": "N-24_lines"
   },
   {
    "kind": "slate",
    "beat": 24,
    "text": "Wheels, dust, a horse going down",
-   "frames": 36
+   "frames": 36,
+   "id": "N-24_wheel"
   },
   {
    "kind": "movement",
@@ -430,7 +455,8 @@
    "kind": "slate",
    "beat": 27,
    "text": "A sound off screen — wheels, hooves. Every king turns his head",
-   "frames": 36
+   "frames": 36,
+   "id": "N-27_turn"
   },
   {
    "kind": "shot",
@@ -460,5 +486,6 @@
    "style": "logo",
    "frames": 36
   }
- ]
+ ],
+ "new_version": "v004"
 }
