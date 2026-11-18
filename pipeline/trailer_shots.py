@@ -671,13 +671,13 @@ S.update({
  ("N-02", 1): dict(set="mathura", tod="dawn", cast=[("kalayavana", 0, -120, 180, dict(z=1.25))],
                    props=[("war_horse", 0, -120, 0, 180)],
                    crowd=[("c_yavana_army", "block", (0, -150, 80, 40), 60, 180)],
-                   cam=dict(on="kalayavana", front=-18, dist=6.5, aimh=1.5, h=2.3)),
+                   cam=dict(on="kalayavana", front=-65, dist=9, aimh=.6, h=2.6)),
  ("N-07", 0): dict(set="milk_ocean", tod="dusk", o=(0, -640, 0),
                    cast=[("indra", 0, -8, 180)],
                    crowd=[("c_devas", "block", (0, -16, 60, 10), 40, 180, dict(walk=(0, 6, 0))),
                           ("c_asuras", "block", (0, 24, 60, 10), 40, 0, dict(walk=(0, -6, 0)))],
-                   fx=[("thunderbolt", "box", (0, 6, 40), (.6, .6, 80), (.85, .9, 1, 1), dict(emit=30))],
-                   cam=dict(pos=(7, -27, 1.2), aim=(0, -6, 7))),
+                   fx=[("thunderbolt", "box", (0, 6, 40), (.6, .6, 80), (.85, .9, 1, 1), dict(emit=30, show=True))],
+                   cam=dict(pos=(5, -24, 1.4), aim=(0, -8, 4))),
  ("N-07", 1): dict(set="milk_ocean", tod="dusk", o=(0, -640, 0), cast=[("bali", 0, 22, 0)],
                    crowd=[("c_asuras", "block", (0, 28, 30, 8), 20, 0)],
                    fx=[("illusion_veil", "ball", (0, 24, 3), (14, 10, 8), (.4, .3, .6, .4))],
@@ -699,10 +699,10 @@ S.update({
                    fx=[("camp_fires", "box", (0, -2312, 1), (40, 6, 2), (1, .5, .1, 1), dict(emit=6))],
                    cam=dict(on="jarasandha", front=14)),
  ("N-16", 0): dict(set="mathura", tod="day",
-                   props=[("chariot", -6, -300, 60, 0, dict(walk=(0, 0, -60))), ("chariot", 7, -292, 72, 0, dict(walk=(0, 0, -72)))],
-                   fx=[("glare_a", "ball", (-6, -300, 61), (8, 8, 8), (1, .95, .8, 1), dict(emit=25, walk=(0, 0, -60))),
-                       ("glare_b", "ball", (7, -292, 73), (8, 8, 8), (1, .95, .8, 1), dict(emit=25, walk=(0, 0, -72)))],
-                   cam=dict(pos=(0, -8, 15), aim=(0, -300, 36))),
+                   props=[("chariot", -6, -110, 40, 0, dict(walk=(0, 0, -38))), ("chariot", 7, -102, 50, 0, dict(walk=(0, 0, -48)))],
+                   fx=[("glare_a", "ball", (-6, -110.5, 41.2), (3, 3, 3), (1, .95, .8, 1), dict(emit=25, walk=(0, 0, -38), show=True)),
+                       ("glare_b", "ball", (7, -102.5, 51.2), (3, 3, 3), (1, .95, .8, 1), dict(emit=25, walk=(0, 0, -48), show=True))],
+                   cam=dict(pos=(0, -8, 15), aim=(0, -110, 30))),
  ("N-16", 1): dict(set="mathura", tod="day", props=[("chariot", 0, -300, 0, 0)],
                    cast=[("krishna", 0, .1, 0, dict(z=.7, on="chariot"))],
                    fx=[("glare", "ball", (0, -301, 2.4), (6, 6, 6), (1, .95, .8, 1), dict(emit=40))],
@@ -717,16 +717,19 @@ S.update({
                    fx=[("arrow_streaks", "box", (-30, -38, 3.2), (14, .04, .04), (1, .9, .7, 1), dict(emit=20, walk=(70, 0, -1)))],
                    cam=dict(pos=(-26, -25, 2), aim=(0, -38, 2.6))),
  ("N-18", 0): dict(NIGHT_WALL, o=(0, 0, 12),
-                   fx=[("fire_arrows", "box", (0, -30, 18), (60, .05, .05), (1, .5, .1, 1), dict(emit=20, walk=(0, 28, -16)))],
-                   cam=dict(pos=(0, 1, 1.4), aim=(0, -40, 18))),
+                   fx=[("fire_arrow_%d" % i, "box", (x, -60 + 3 * i, 20 + 2 * (i % 3)), (.05, 2.2, .05), (1, .5, .1, 1),
+                        dict(emit=40, walk=(0, 56, -18), show=True))
+                       for i, x in enumerate((-9, -5, -2, 1, 3, 6, 9, 12))],
+                   cam=dict(pos=(4, 3, 1.8), aim=(0, -40, 10))),
  ("N-18", 1): dict(NIGHT_WALL, crowd=[("c_elephants", "line", (-4, -30, 4, -30), 3, 180, dict(walk=(0, 24, 0)))],
                    fx=[("torches", "box", (0, -40, 2.4), (40, 20, .3), (1, .5, .1, 1), dict(emit=6))],
-                   cam=dict(pos=(12, -12, 3), aim=(0, -8, 3))),
- ("N-18", 2): dict(NIGHT_WALL, fx=[("flood", "box", (0, -40, 2), (700, 60, 4), (.2, .25, .3, .9), dict(walk=(0, 0, 8)))],
-                   cam=dict(pos=(0, -1, 13.4), aim=(0, -30, 5))),
+                   cam=dict(pos=(16, -24, 3), aim=(0, -14, 3.5))),
+ ("N-18", 2): dict(NIGHT_WALL, fx=[("flood", "box", (0, -40, 2), (700, 60, 4), (.2, .25, .3, .9), dict(walk=(0, 0, 8), show=True))],
+                   cam=dict(pos=(14, -9, 16), aim=(-12, -36, 6))),
  ("N-19", 0): dict(set="mucukunda_cave", cast=[("kalayavana", 0, -22, 180, dict(walk=(0, 16, 0)))],
                    cam=dict(pos=(0, 13, 1.6), aim=(0, -15, 1.6))),
  ("N-19", 1): dict(set="mucukunda_cave", cast=[("mucukunda", 0, 12, 0, dict(z=.8))],
+                   fill=[((.9, 10.6, 2.2), 60, (1, .8, .6))],
                    cam=dict(on="mucukunda", front=0)),
  ("N-19", 2): dict(set="mucukunda_cave", cast=[("kalayavana", 0, 9, 180), ("mucukunda", 0, 12, 0, dict(z=.8))],
                    fx=[("burn", "ball", (0, 9, 1), (1.2, 1.2, 2.2), (1, .45, .1, 1), dict(emit=40, grow=(.3, 1.6)))],
@@ -734,10 +737,11 @@ S.update({
  ("N-23", 0): dict(set="open_country", tod="day", cast=[("rukmi", 0, 0, 180)],
                    crowd=[("c_kings", "block", (0, 7, 14, 4), 16, 0)],
                    cam=dict(on="rukmi", front=-20)),
- ("N-23", 1): dict(set="open_country", tod="day", props=[("chariot", 0, 0, 0, 0)],
+ ("N-23", 1): dict(set="open_country", tod="day",
                    cast=[("rukmi", 0, .1, 0, dict(z=.7, on="chariot"))],
-                   fx=[("bow_snap", "ball", (.35, -.5, 2.1), (.1, .1, .1), (1, .9, .6, 1), dict(emit=50))],
-                   cam=dict(pos=(2.2, -1.6, 2.3), aim=(.35, -.5, 2.0))),
+                   props=[("chariot", 0, 0, 0, 0), ("bow", .35, -.35, 1.3, 0, dict(held="rukmi"))],
+                   fx=[("bow_snap", "ball", (.35, -.5, 2.1), (.1, .1, .1), (1, .9, .6, 1), dict(emit=50, show=True))],
+                   cam=dict(pos=(3.4, -3.0, 2.4), aim=(.3, -.4, 2.0))),
  ("N-23", 2): dict(set="open_country", tod="day", props=[("chariot", 0, 0, 0, 0, dict(walk=(0, -18, 0)))],
                    cast=[("rukmi", 0, .1, 0, dict(z=.7, on="chariot"))],
                    fx=[("road_dust", "box", (0, 6, 1.5), (8, 12, 3), (.7, .62, .46, .35), dict(walk=(0, -18, 0)))],
@@ -867,8 +871,9 @@ def crowd_points(form, a, n):
     return pts
 
 
-def aim_rot(pos, aim):
-    return (Vector(aim) - Vector(pos)).to_track_quat("-Z", "Y").to_euler()
+def aim_rot(pos, aim, compat=None):
+    q = (Vector(aim) - Vector(pos)).to_track_quat("-Z", "Y")
+    return q.to_euler("XYZ", compat) if compat is not None else q.to_euler()
 
 
 def enable_passes(scene, vl):
@@ -1067,7 +1072,7 @@ def build_shot(root, sh, names):
         # From v003 the renders are meant to be watched: a stand-in that would read as a big grey or glowing
         # box is left out of the render (it stays in the viewport for layout); fire leaves its light behind.
         big = max(scale) > 6
-        if VER not in ("v001", "v002") and (op.get("emit", 0) or rgba[3] < 1 or big):
+        if VER not in ("v001", "v002") and not op.get("show") and (op.get("emit", 0) or rgba[3] < 1 or big):
             ob.hide_render = True
             if op.get("emit", 0):
                 ld = bpy.data.lights.new("FXLIGHT_" + name, "POINT")
@@ -1138,8 +1143,11 @@ def build_shot(root, sh, names):
         p1 = p1 + Vector((0, 0, extra["rise"]))
     if extra.get("push"):
         p1 = p1 + (a1 - p1).normalized() * extra["push"]
+    prev = None
     for f, p, a in ((f0, pos, aim), (f1, p1, a1)):
-        cam.location, cam.rotation_euler = p, aim_rot(p, a)
+        e = aim_rot(p, a, prev)                    # the euler closest to the last key, so the camera never spins
+        prev = e
+        cam.location, cam.rotation_euler = p, e
         cam.keyframe_insert("location", frame=f)
         cam.keyframe_insert("rotation_euler", frame=f)
     if cam.animation_data and cam.animation_data.action:
