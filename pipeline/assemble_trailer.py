@@ -36,6 +36,16 @@ def tc(frames):
     return "%02d:%02d:%02d:%02d" % (f // (3600 * FPS), (f // (60 * FPS)) % 60, (f // FPS) % 60, f % FPS)
 
 
+def script_flag(ff):
+    """ffmpeg 7 replaced -filter_complex_script with -/filter_complex (and 8+ dropped the old name)."""
+    try:
+        v = subprocess.run([ff, "-version"], capture_output=True, text=True).stdout.split()[2]
+        major = int("".join(c for c in v.split(".")[0] if c.isdigit()) or 0)
+    except Exception:
+        major = 7
+    return "-/filter_complex" if major >= 7 else "-filter_complex_script"
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--root", default=".")
@@ -119,7 +129,7 @@ def main():
         fh.write(";\n".join(filt))
     mp4 = os.path.join(root, "edit", "trailer_%s_assembly.mp4" % a.version)
     ff = shutil.which("ffmpeg") or "ffmpeg"
-    cmd = [ff, "-y", "-loglevel", "error"] + args + ["-filter_complex_script", fg, "-map", "[%s]" % acc,
+    cmd = [ff, "-y", "-loglevel", "error"] + args + [script_flag(ff), fg, "-map", "[%s]" % acc,
                                                      "-r", str(FPS), "-c:v", "libx264", "-preset", "veryfast",
                                                      "-crf", a.crf, "-pix_fmt", "yuv420p", mp4]
     r = subprocess.run(cmd)

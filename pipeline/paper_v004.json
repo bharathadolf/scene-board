@@ -1,0 +1,464 @@
+{
+ "format": "paper-cut/1",
+ "version": "v004_paper",
+ "fps": 24,
+ "source_version": "v003",
+ "plan": [
+  {
+   "kind": "movement",
+   "name": "Cold open — the hunt"
+  },
+  {
+   "kind": "slate",
+   "beat": 1,
+   "text": "Dawn at Mathura's gate. A guard watches one unarmed man walk out alone — from behind (E04-07)",
+   "frames": 48
+  },
+  {
+   "kind": "slate",
+   "beat": 1,
+   "text": "His bare feet on the dust, from behind and below",
+   "frames": 48
+  },
+  {
+   "kind": "slate",
+   "beat": 2,
+   "text": "Thirty million Yavanas on the plain, banners to the horizon (E04-01)",
+   "frames": 48
+  },
+  {
+   "kind": "slate",
+   "beat": 2,
+   "text": "Kalayavana sees him and straightens on his horse (E05-02)",
+   "frames": 48
+  },
+  {
+   "kind": "shot",
+   "id": "T-12_n1pj5",
+   "start": 0,
+   "frames": 36
+  },
+  {
+   "kind": "shot",
+   "id": "T-12_227t8",
+   "start": 0,
+   "frames": 72
+  },
+  {
+   "kind": "black",
+   "frames": 24
+  },
+  {
+   "kind": "movement",
+   "name": "I — The rope"
+  },
+  {
+   "kind": "shot",
+   "id": "T-01_waoex",
+   "start": 12,
+   "frames": 72
+  },
+  {
+   "kind": "shot",
+   "id": "T-01_2rj4c",
+   "start": 0,
+   "frames": 40
+  },
+  {
+   "kind": "shot",
+   "id": "T-01_cu9p2",
+   "start": 0,
+   "frames": 36
+  },
+  {
+   "kind": "shot",
+   "id": "T-02_347qc",
+   "start": 0,
+   "frames": 52
+  },
+  {
+   "kind": "shot",
+   "id": "T-02_k6bzl",
+   "start": 0,
+   "frames": 38
+  },
+  {
+   "kind": "slate",
+   "beat": 7,
+   "text": "The war of the gods: Indra's thunderbolt splits the sky (E01-15)",
+   "frames": 36
+  },
+  {
+   "kind": "slate",
+   "beat": 7,
+   "text": "Bali's illusions fill the field",
+   "frames": 30
+  },
+  {
+   "kind": "slate",
+   "beat": 7,
+   "text": "Deva and Asura lines crash together in the storm",
+   "frames": 30
+  },
+  {
+   "kind": "slate",
+   "beat": 8,
+   "text": "Rahu in the line of drinkers. A flash of the disc — his head is gone (E01-14)",
+   "frames": 36
+  },
+  {
+   "kind": "shot",
+   "id": "T-03_tr48n",
+   "start": 24,
+   "frames": 48
+  },
+  {
+   "kind": "shot",
+   "id": "T-03_3jm9l",
+   "start": 0,
+   "frames": 38
+  },
+  {
+   "kind": "movement",
+   "name": "II — Her choice"
+  },
+  {
+   "kind": "shot",
+   "id": "T-04_tpqxe",
+   "start": 0,
+   "frames": 48,
+   "t_in": {
+    "type": "dissolve",
+    "frames": 24
+   }
+  },
+  {
+   "kind": "shot",
+   "id": "T-04_th0fq",
+   "start": 0,
+   "frames": 48
+  },
+  {
+   "kind": "shot",
+   "id": "T-05_vy8fq",
+   "start": 0,
+   "frames": 62
+  },
+  {
+   "kind": "shot",
+   "id": "T-05_tvxlw",
+   "start": 0,
+   "frames": 82
+  },
+  {
+   "kind": "shot",
+   "id": "T-06_ogr8i",
+   "start": 0,
+   "frames": 36
+  },
+  {
+   "kind": "shot",
+   "id": "T-06_y6uzn",
+   "start": 0,
+   "frames": 30
+  },
+  {
+   "kind": "shot",
+   "id": "T-06_gftng",
+   "start": 16,
+   "frames": 80
+  },
+  {
+   "kind": "shot",
+   "id": "T-07_mhwdq",
+   "start": 0,
+   "frames": 62
+  },
+  {
+   "kind": "shot",
+   "id": "T-07_eif90",
+   "start": 0,
+   "frames": 53
+  },
+  {
+   "kind": "slate",
+   "beat": 13,
+   "text": "Rukmi's rider closes on the Brahmin on the road (E06-05)",
+   "frames": 82
+  },
+  {
+   "kind": "movement",
+   "name": "III — The war"
+  },
+  {
+   "kind": "shot",
+   "id": "T-08_te23q",
+   "start": 0,
+   "frames": 60,
+   "t_in": {
+    "type": "dip",
+    "frames": 6
+   }
+  },
+  {
+   "kind": "shot",
+   "id": "T-08_g72wo",
+   "start": 0,
+   "frames": 36
+  },
+  {
+   "kind": "slate",
+   "beat": 15,
+   "text": "Jarasandha, close: 'Tell Mathura their king is ash.' (E03-05)",
+   "frames": 72
+  },
+  {
+   "kind": "slate",
+   "beat": 16,
+   "text": "Two radiant chariots come down out of the sky into the glare (E03-04)",
+   "frames": 48
+  },
+  {
+   "kind": "slate",
+   "beat": 16,
+   "text": "The conch; the glare swallows the figures",
+   "frames": 48
+  },
+  {
+   "kind": "shot",
+   "id": "T-09_iwz3c",
+   "start": 0,
+   "frames": 38
+  },
+  {
+   "kind": "slate",
+   "beat": 17,
+   "text": "Close: the plough sweeps a rank of infantry off their feet",
+   "frames": 36
+  },
+  {
+   "kind": "slate",
+   "beat": 17,
+   "text": "Arrows from outside the frame tear through a line of elephants",
+   "frames": 36
+  },
+  {
+   "kind": "shot",
+   "id": "T-09_lay73",
+   "start": 0,
+   "frames": 24
+  },
+  {
+   "kind": "shot",
+   "id": "T-10_62zy8",
+   "start": 0,
+   "frames": 14
+  },
+  {
+   "kind": "shot",
+   "id": "T-10_t11hn",
+   "start": 0,
+   "frames": 14
+  },
+  {
+   "kind": "slate",
+   "beat": 18,
+   "text": "Fire arrows rain on the wall",
+   "frames": 14
+  },
+  {
+   "kind": "shot",
+   "id": "T-10_fwpet",
+   "start": 0,
+   "frames": 12
+  },
+  {
+   "kind": "slate",
+   "beat": 18,
+   "text": "Elephant charge hits the gate; the beam splits",
+   "frames": 14
+  },
+  {
+   "kind": "shot",
+   "id": "T-10_t6l2u",
+   "start": 0,
+   "frames": 14
+  },
+  {
+   "kind": "slate",
+   "beat": 18,
+   "text": "The flood assault: water over the wall",
+   "frames": 14
+  },
+  {
+   "kind": "shot",
+   "id": "T-10_3tbzn",
+   "start": 0,
+   "frames": 12
+  },
+  {
+   "kind": "shot",
+   "id": "T-10_si0ra",
+   "start": 0,
+   "frames": 40
+  },
+  {
+   "kind": "shot",
+   "id": "T-12_njg91",
+   "start": 0,
+   "frames": 58
+  },
+  {
+   "kind": "slate",
+   "beat": 19,
+   "text": "The chase into the dark of the cave",
+   "frames": 36
+  },
+  {
+   "kind": "slate",
+   "beat": 19,
+   "text": "A kick. A sleeper's eyes open in the dark (E05-05)",
+   "frames": 36
+  },
+  {
+   "kind": "slate",
+   "beat": 19,
+   "text": "Fire — Kalayavana burns to ash",
+   "frames": 36
+  },
+  {
+   "kind": "shot",
+   "id": "T-11_cgc0q",
+   "start": 0,
+   "frames": 48
+  },
+  {
+   "kind": "shot",
+   "id": "T-11_3aauk",
+   "start": 0,
+   "frames": 40
+  },
+  {
+   "kind": "shot",
+   "id": "T-11_9rcg8",
+   "start": 0,
+   "frames": 43
+  },
+  {
+   "kind": "shot",
+   "id": "T-13_sgipu",
+   "start": 0,
+   "frames": 60
+  },
+  {
+   "kind": "shot",
+   "id": "T-14_sdfel",
+   "start": 0,
+   "frames": 36
+  },
+  {
+   "kind": "shot",
+   "id": "T-14_u0pgf",
+   "start": 0,
+   "frames": 36
+  },
+  {
+   "kind": "shot",
+   "id": "T-14_zun0i",
+   "start": 0,
+   "frames": 77
+  },
+  {
+   "kind": "slate",
+   "beat": 23,
+   "text": "Rukmi swears before the kings (E06-24)",
+   "frames": 30
+  },
+  {
+   "kind": "slate",
+   "beat": 23,
+   "text": "His bow snaps — an arrow from nowhere (E06-25)",
+   "frames": 30
+  },
+  {
+   "kind": "slate",
+   "beat": 23,
+   "text": "A second bow, a third, his shield",
+   "frames": 36
+  },
+  {
+   "kind": "slate",
+   "beat": 24,
+   "text": "Chariot lines collide in a wide — no bride (E06-22)",
+   "frames": 36
+  },
+  {
+   "kind": "slate",
+   "beat": 24,
+   "text": "Wheels, dust, a horse going down",
+   "frames": 36
+  },
+  {
+   "kind": "movement",
+   "name": "IV — The threshold"
+  },
+  {
+   "kind": "shot",
+   "id": "T-16_ieqeu",
+   "start": 0,
+   "frames": 44
+  },
+  {
+   "kind": "shot",
+   "id": "T-16_ad92v",
+   "start": 0,
+   "frames": 29
+  },
+  {
+   "kind": "shot",
+   "id": "T-17_gnue7",
+   "start": 0,
+   "frames": 43
+  },
+  {
+   "kind": "shot",
+   "id": "T-17_3ce96",
+   "start": 0,
+   "frames": 53
+  },
+  {
+   "kind": "slate",
+   "beat": 27,
+   "text": "A sound off screen — wheels, hooves. Every king turns his head",
+   "frames": 36
+  },
+  {
+   "kind": "shot",
+   "id": "T-18_igml4",
+   "start": 0,
+   "frames": 40
+  },
+  {
+   "kind": "black",
+   "frames": 36
+  },
+  {
+   "kind": "card",
+   "text": "The Unseen Sun",
+   "style": "title",
+   "frames": 72
+  },
+  {
+   "kind": "card",
+   "text": "“Who are you?”  —  “My births are countless.”",
+   "style": "voice",
+   "frames": 60
+  },
+  {
+   "kind": "card",
+   "text": "PRODUCTION LOGOS  /  RELEASE DATE",
+   "style": "logo",
+   "frames": 36
+  }
+ ]
+}
